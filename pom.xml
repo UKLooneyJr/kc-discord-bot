@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <groupId>com.kelvinconnect.discord</groupId>
+    <artifactId>kc-discord-bot</artifactId>
+    <version>1.0.0</version>
+
+    <repositories>
+        <repository>
+            <id>javacord-repo</id>
+            <url>http://repo.bastian-oppermann.de</url>
+        </repository>
+        <repository>
+            <!-- The repo for the sdcf4j -->
+            <id>sdcf4j-repo</id>
+            <url>http://repo.bastian-oppermann.de</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.btobastian.javacord</groupId>
+            <artifactId>javacord</artifactId>
+            <version>2.0.14</version>
+            <!-- This will use the shaded javacord which contains all required dependencies -->
+            <classifier>shaded</classifier>
+        </dependency>
+        <!-- A SLF4J comaptible logging framework. I would recommend to use logback -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+        <!-- The core module for sdcf4j -->
+        <dependency>
+            <groupId>de.btobastian.sdcf4j</groupId>
+            <artifactId>sdcf4j-core</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <!-- The module for your prefered lib-->
+        <dependency>
+            <groupId>de.btobastian.sdcf4j</groupId>
+            <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda, sdcf4j-jda3, sdcf4j-discord4j -->
+            <artifactId>sdcf4j-javacord</artifactId>
+            <version>LATEST</version>
+        </dependency>
+    </dependencies>
+
+</project>
