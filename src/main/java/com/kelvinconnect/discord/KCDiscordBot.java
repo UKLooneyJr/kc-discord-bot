@@ -37,6 +37,7 @@ public class KCDiscordBot {
     }
 
     private static void start(DiscordAPI api) {
+        api.setWaitForServersOnStartup(false);
         api.connect(new FutureCallback<DiscordAPI>() {
             public void onSuccess(final DiscordAPI api) {
                 // do what you want now
