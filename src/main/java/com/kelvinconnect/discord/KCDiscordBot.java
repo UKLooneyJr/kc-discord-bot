@@ -41,6 +41,8 @@ public class KCDiscordBot {
         api.connect(new FutureCallback<DiscordAPI>() {
             public void onSuccess(final DiscordAPI api) {
                 // do what you want now
+                GameRandomiser gameRandomiser = new GameRandomiser();
+                gameRandomiser.start(api);
             }
 
             public void onFailure(Throwable t) {
