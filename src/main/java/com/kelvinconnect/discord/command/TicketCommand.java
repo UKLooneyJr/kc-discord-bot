@@ -16,6 +16,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Creates a embeded link
+ *
  * Created by Adam on 15/03/2017.
  */
 public class TicketCommand implements CommandExecutor {
@@ -29,17 +31,11 @@ public class TicketCommand implements CommandExecutor {
         }
         String ticketNumber = args[0].trim();
 
-        Pattern p = Pattern.compile(TICKET_FORMAT);
-        Matcher m = p.matcher(ticketNumber);
-        if (!m.find()) {
+        if (!isValidTicketNumber(ticketNumber)) {
             return ticketNumber + " is not a valid ticket number.";
         }
 
-        if (ticketNumber.startsWith("#")) {
-            ticketNumber = ticketNumber.substring(1);
-        }
-
-        String url = "http://trac/KC/ticket/" + ticketNumber;
+        String url = getUrl(ticketNumber);
 
         Document doc;
         try {
@@ -49,6 +45,25 @@ public class TicketCommand implements CommandExecutor {
             return "Error connecting to " + url;
         }
 
+        sendEmbedMessage(url, message, doc);
+        return null;
+    }
+
+    private boolean isValidTicketNumber(String ticketNumber) {
+        Pattern p = Pattern.compile(TICKET_FORMAT);
+        Matcher m = p.matcher(ticketNumber);
+        return m.find();
+    }
+
+    private String getUrl(String ticketNumber) {
+        if (ticketNumber.startsWith("#")) {
+            ticketNumber = ticketNumber.substring(1);
+        }
+
+        return "http://trac/KC/ticket/" + ticketNumber;
+    }
+
+    private void sendEmbedMessage(String url, Message message, Document doc) {
         EmbedBuilder embed = new EmbedBuilder();
 
         String tracStatus = getTracPropertyByClass(doc, "trac-status");
@@ -67,9 +82,7 @@ public class TicketCommand implements CommandExecutor {
             embed.setFooter(getTracPropertyByClass(doc, "summary"));
         }
 
-        message.reply(null, embed);
-
-        return null;
+        message.reply(url, embed);
     }
 
     private String buildDescription(Document doc, String tracStatus) {
@@ -107,6 +120,9 @@ public class TicketCommand implements CommandExecutor {
             case "closed":
                 embed.setColor(Color.GRAY);
                 break;
+            case "new":
+                embed.setColor(Color.WHITE);
+                break;
             case "dev_ready":
             case "assigned_dev":
                 embed.setColor(Color.BLUE);
@@ -121,6 +137,9 @@ public class TicketCommand implements CommandExecutor {
             case "review":
             case "info_needed":
                 embed.setColor(Color.YELLOW);
+                break;
+            case "failed_test":
+                embed.setColor(Color.ORANGE);
                 break;
             case "blocked":
             case "core_needed":
