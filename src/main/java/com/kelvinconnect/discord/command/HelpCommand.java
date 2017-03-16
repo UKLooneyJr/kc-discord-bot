@@ -1,13 +1,15 @@
 package com.kelvinconnect.discord.command;
 
+import de.btobastian.javacord.entities.message.Message;
+import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 import de.btobastian.sdcf4j.CommandHandler;
 
+import java.awt.*;
+
 /**
- * Displays help message
- *
- * Created by Adam on 14/03/2017.
+ * Created by Adam on 15/03/2017.
  */
 public class HelpCommand implements CommandExecutor {
 
@@ -18,7 +20,21 @@ public class HelpCommand implements CommandExecutor {
     }
 
     @Command(aliases = {"!help", "!commands"}, description = "Shows this page.")
-    public String onHelpCommand() {
+    public String onHelpCommand(Message message) {
+
+        StringBuilder builder = buildDescription();
+        String description = builder.toString();
+
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setDescription(description);
+        embed.setTitle("Commands");
+
+        message.reply("", embed);
+
+        return null;
+    }
+
+    private StringBuilder buildDescription() {
         StringBuilder builder = new StringBuilder();
         builder.append("```xml"); // a xml code block looks fancy
         for (CommandHandler.SimpleCommand simpleCommand : commandHandler.getCommands()) {
@@ -41,7 +57,6 @@ public class HelpCommand implements CommandExecutor {
             }
         }
         builder.append("\n```"); // end of xml code block
-        return builder.toString();
+        return builder;
     }
-
 }
