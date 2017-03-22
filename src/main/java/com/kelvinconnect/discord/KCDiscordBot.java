@@ -7,16 +7,13 @@ import com.kelvinconnect.discord.command.InfoCommand;
 import com.kelvinconnect.discord.command.TicketCommand;
 import com.kelvinconnect.discord.login.Login;
 import com.kelvinconnect.discord.login.TokenFileLogin;
+import com.kelvinconnect.discord.scheduler.PubChatAlert;
+import com.kelvinconnect.discord.scheduler.TaskScheduler;
 import de.btobastian.javacord.DiscordAPI;
-import de.btobastian.javacord.entities.Channel;
-import de.btobastian.javacord.entities.Server;
-import de.btobastian.javacord.listener.server.ServerJoinListener;
 import de.btobastian.javacord.utils.LoggerUtil;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
 import org.slf4j.Logger;
-
-import java.util.Collection;
 
 /**
  * Entry point for KC Discord Bot
@@ -46,6 +43,11 @@ public class KCDiscordBot {
         handler.registerCommand(new DebugCommand());
     }
 
+    private static void startTasks(DiscordAPI api) {
+        TaskScheduler scheduler = new TaskScheduler();
+        scheduler.runWeekly("pub chat", new PubChatAlert(api), 4, 19, 14);
+    }
+
     private static void start(DiscordAPI api) {
         api.setWaitForServersOnStartup(false);
         api.connect(new FutureCallback<DiscordAPI>() {
@@ -53,9 +55,7 @@ public class KCDiscordBot {
                 // do what you want now
                 GameRandomiser gameRandomiser = new GameRandomiser();
                 gameRandomiser.start(api);
-
-                PubChatAlert pubChatAlert = new PubChatAlert(api);
-                pubChatAlert.start();
+                startTasks(api);
             }
 
             public void onFailure(Throwable t) {
