@@ -53,6 +53,9 @@ public class KCDiscordBot {
                 // do what you want now
                 GameRandomiser gameRandomiser = new GameRandomiser();
                 gameRandomiser.start(api);
+
+                PubChatAlert pubChatAlert = new PubChatAlert(api);
+                pubChatAlert.start();
             }
 
             public void onFailure(Throwable t) {
