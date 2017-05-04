@@ -1,10 +1,7 @@
 package com.kelvinconnect.discord;
 
 import com.google.common.util.concurrent.FutureCallback;
-import com.kelvinconnect.discord.command.DebugCommand;
-import com.kelvinconnect.discord.command.HelpCommand;
-import com.kelvinconnect.discord.command.InfoCommand;
-import com.kelvinconnect.discord.command.TicketCommand;
+import com.kelvinconnect.discord.command.*;
 import com.kelvinconnect.discord.login.Login;
 import com.kelvinconnect.discord.login.TokenFileLogin;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
@@ -41,11 +38,12 @@ public class KCDiscordBot {
         handler.registerCommand(new InfoCommand());
         handler.registerCommand(new TicketCommand());
         handler.registerCommand(new DebugCommand());
+        handler.registerCommand(new BangCommand());
     }
 
     private static void startTasks(DiscordAPI api) {
         TaskScheduler scheduler = new TaskScheduler();
-        scheduler.runWeekly("pub chat", new PubChatAlert(api), 4, 19, 14);
+        scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 15, 0);
     }
 
     private static void start(DiscordAPI api) {
