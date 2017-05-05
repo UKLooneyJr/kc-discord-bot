@@ -1,6 +1,5 @@
 package com.kelvinconnect.discord.scheduler;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Timestamp;
@@ -18,66 +17,81 @@ import static org.junit.Assert.assertThat;
 public class TaskSchedulerCalculateDelayTest {
 
     private static class TaskSchedulerFixedDate extends TaskScheduler {
+
+        final private Date date;
+
+        TaskSchedulerFixedDate(Date date) {
+            this.date = date;
+        }
+
         @Override
         protected Date getCurrentTime() {
-            return new Date(Timestamp.valueOf("2017-03-22 17:00:00").getTime()); // Wednesday
+            return date; // Wednesday
         }
     }
 
     private TaskScheduler scheduler;
 
-    @Before
-    public void initScheduler() {
-        scheduler = new TaskSchedulerFixedDate();
+    public void defaultScheduler() {
+        scheduler = new TaskSchedulerFixedDate(new Date(Timestamp.valueOf("2017-03-22 17:00:00").getTime()));
     }
 
     @Test
     public void halfHourDelay() throws Exception {
+        defaultScheduler();
         int delayInMinutes = scheduler.calculateDelay(4, 17, 30);
         assertEquals(30, delayInMinutes);
     }
 
     @Test
     public void hourAndAHalfDelay() throws Exception {
+        defaultScheduler();
         int delayInMinutes = scheduler.calculateDelay(4, 18, 30);
         assertEquals(90, delayInMinutes);
     }
 
     @Test
     public void dayDelay() throws Exception {
+        defaultScheduler();
         int delayInMinutes = scheduler.calculateDelay(5, 17, 0);
         assertEquals(60 * 24, delayInMinutes);
     }
 
     @Test
     public void noDelay() throws Exception {
+        defaultScheduler();
         int delayInMinutes = scheduler.calculateDelay(4, 17, 0);
         assertEquals(0, delayInMinutes);
     }
 
     @Test
     public void halfHourAgoDelay() throws Exception {
+        defaultScheduler();
         int delayInMinutes = scheduler.calculateDelay(4, 16, 30);
-        assertEquals((60 * 24) - 30, delayInMinutes);
+        assertEquals((7 * 60 * 24) - 30, delayInMinutes);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalDays() {
+        defaultScheduler();
         scheduler.calculateDelay(8, 17, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalHours() {
+        defaultScheduler();
         scheduler.calculateDelay(7, 25, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalMinutes() {
+        defaultScheduler();
         scheduler.calculateDelay(7, 17, 61);
     }
 
     @Test
     public void delayNeverLessThanZero() {
+        defaultScheduler();
         for (int day = 1; day <= 7; ++day) {
             for (int hour = 0; hour <= 24; ++hour) {
                 for (int minute = 0; minute <= 60; ++minute) {
@@ -88,5 +102,12 @@ public class TaskSchedulerCalculateDelayTest {
                 }
             }
         }
+    }
+
+    @Test
+    public void halfAnHourFromHalf() {
+        scheduler = new TaskSchedulerFixedDate(new Date(Timestamp.valueOf("2017-03-22 16:30:00").getTime()));
+        int delayInMinutes = scheduler.calculateDelay(4, 17, 0);
+        assertEquals(30, delayInMinutes);
     }
 }

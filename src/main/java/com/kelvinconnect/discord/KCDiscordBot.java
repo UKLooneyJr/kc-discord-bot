@@ -43,7 +43,7 @@ public class KCDiscordBot {
 
     private static void startTasks(DiscordAPI api) {
         TaskScheduler scheduler = new TaskScheduler();
-        scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 15, 0);
+        scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
     }
 
     private static void start(DiscordAPI api) {

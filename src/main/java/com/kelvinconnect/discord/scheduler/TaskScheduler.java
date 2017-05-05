@@ -77,19 +77,23 @@ public class TaskScheduler {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
-        int delayInMinutes;
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int delayInDays = dayOfWeek <= day ? day - dayOfWeek : 7 - (dayOfWeek - day);
+        int delay = 0;
+
+        int currentMinute = calendar.get(Calendar.MINUTE);
+        int delayInMinutes = currentMinute <= minute ? minute - currentMinute : 60 - (currentMinute - minute);
+        delay += delayInMinutes;
+        calendar.add(Calendar.MINUTE, delayInMinutes);
 
         int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         int delayInHours = currentHour <= hour ? hour - currentHour : 24 - (currentHour - hour);
-        delayInHours += delayInDays * 24;
+        delay += delayInHours * 60;
+        calendar.add(Calendar.HOUR_OF_DAY, delayInHours);
 
-        int currentMinute = calendar.get(Calendar.MINUTE);
-        delayInMinutes = currentMinute <= minute ? minute - currentMinute : 60 - (currentMinute - minute);
-        delayInMinutes += delayInHours * 60;
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int delayInDays = dayOfWeek <= day ? day - dayOfWeek : 7 - (dayOfWeek - day);
+        delay += delayInDays * 24 * 60;
 
-        return delayInMinutes;
+        return delay;
     }
 
     protected Date getCurrentTime() {
