@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class StandoCommand implements CommandExecutor {
 
-    private final static String[] choices = { "Thats what she said!", "I have ate 4 Mr Kiplings exceedingly good cakes.",
+    private final static String[] choices = { "That's what she said!", "I have ate four of Mr Kiplings cakes. He does make exceedingly good cakes.",
             "The world is flat", "Global warming is made up by the USA government", "I sleep with a tin foil hat on", "The moon landings WERE faked" , "I threw it in the Clyde",
             "I threw half away" };
 
