@@ -53,7 +53,7 @@ public class PubCommand implements CommandExecutor {
     private String timeUntilPub() {
         LocalDate date = LocalDate.now();
         if (DayOfWeek.FRIDAY != date.getDayOfWeek()) {
-            return "It's not Friday, no pub!";
+            return "It's not Friday, no pub.";
         }
         LocalTime pubTime = LocalTime.parse("16:00:00");
         LocalTime now = LocalTime.now();

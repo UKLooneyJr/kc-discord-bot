@@ -7,8 +7,23 @@ import java.util.List;
 public class VotingBooth {
 
     private static class Candidate {
+        Candidate(String name) {
+            this.name = name;
+            this.count = 0;
+        }
+
         String name;
         int count;
+    }
+
+    private static class Voter {
+        Voter(String id) {
+            this.id = id;
+            this.candidate = null;
+        }
+
+        String id;
+        Candidate candidate;
     }
 
     private static class CandidateComparator implements Comparator<Candidate> {
@@ -19,20 +34,32 @@ public class VotingBooth {
     }
 
     private List<Candidate> candidates;
+    private List<Voter> voters;
 
     public VotingBooth() {
         candidates = new ArrayList<>();
+        voters = new ArrayList<>();
     }
 
-    public void vote(String name) {
-        Candidate candidate = findCandidate(name);
-        if (candidate == null) {
-            candidate = new Candidate();
-            candidate.name = name;
-            candidate.count = 0;
-            candidates.add(candidate);
-        }
+    /**
+     * @return False if this is the voter's first vote. True if they have changed vote.
+     */
+    public boolean vote(String name, String voterId) {
+        Candidate candidate = getCandidate(name);
+        Voter voter = getVoter(voterId);
         candidate.count++;
+        if (voter.candidate == null) {
+            voter.candidate = candidate;
+            return false;
+        } else {
+            Candidate previousCandidate = voter.candidate;
+            previousCandidate.count--;
+            if (previousCandidate.count == 0) {
+                candidates.remove(previousCandidate);
+            }
+            voter.candidate = candidate;
+            return true;
+        }
     }
 
     public String getResults() {
@@ -51,17 +78,26 @@ public class VotingBooth {
         return sb.toString();
     }
 
-    public boolean hasVotes() {
-        return !candidates.isEmpty();
-    }
-
-    private Candidate findCandidate(String name) {
+    private Candidate getCandidate(String name) {
         for (Candidate c : candidates) {
             if (c.name.equals(name)) {
                 return c;
             }
         }
-        return null;
+        Candidate candidate = new Candidate(name);
+        candidates.add(candidate);
+        return candidate;
+    }
+
+    private Voter getVoter(String id) {
+        for (Voter v : voters) {
+            if (v.id.equals(id)) {
+                return v;
+            }
+        }
+        Voter voter = new Voter(id);
+        voters.add(voter);
+        return voter;
     }
 
     public String getWinner() {
