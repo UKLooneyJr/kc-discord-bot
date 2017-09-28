@@ -35,7 +35,7 @@ public class StandoCommand implements CommandExecutor {
         standoStatements = new ArrayList<>();
         addStatement("That's what she said.", "LOW");
         addStatement("I have ate four of Mr Kiplings cakes. He does make exceedingly good cakes.", "LOW");
-        addStatement("I threw it in the Clyde", "LOW");
+        addStatement("I chucked it in the Clyde.", "LOW");
         addStatement("I thew half away.", "LOW");
         addStatement("The world is flat.", "MEDIUM");
         addStatement("I sleep with a tin foil hat on.", "MEDIUM");
@@ -56,7 +56,7 @@ public class StandoCommand implements CommandExecutor {
         standoStatements.add(new StandoStatement(statement, severity));
     }
 
-    @Command(aliases = "!stando", description = "Ask for some help from stando.", usage = "!stando")
+    @Command(aliases = "!stando", description = "Have a chat with Stando. Get him a beer or two for some fun facts.", usage = "!stando [beverages]")
     public String onStandoCommand(String[] args, DiscordAPI api) {
         int beers = getBeerCount(args);
 
