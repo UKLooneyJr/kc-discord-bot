@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 public class StandoCommand implements CommandExecutor {
 
     private static final String LEARN_LOW = "New Scientist said ";
-    private static final String LEARN_MEDIUM = "The Daily Mail said ";
-    private static final String LEARN_HIGH = "That weird guy over there said ";
+    private static final String LEARN_MEDIUM = "The Times said ";
+    private static final String LEARN_HIGH = "The Daily Mail said ";
 
     private static class StandoStatement {
         enum Severity {
