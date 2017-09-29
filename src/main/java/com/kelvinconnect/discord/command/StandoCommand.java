@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
  */
 public class StandoCommand implements CommandExecutor {
 
+    private static final String LEARN_LOW = "New Scientist said ";
+    private static final String LEARN_MEDIUM = "The Daily Mail said ";
+    private static final String LEARN_HIGH = "That weird guy over there said ";
+
     private static class StandoStatement {
         enum Severity {
             LOW, MEDIUM, HIGH
@@ -58,22 +62,66 @@ public class StandoCommand implements CommandExecutor {
 
     @Command(aliases = "!stando", description = "Have a chat with Stando. Get him a beer or two for some fun facts.", usage = "!stando [beverages]")
     public String onStandoCommand(String[] args, DiscordAPI api) {
+
+        String response;
+
+        if (isLearnMessage(args, LEARN_LOW)) {
+            response = learnFromLowSource(args);
+        } else if (isLearnMessage(args, LEARN_MEDIUM)) {
+            response = learnFromMediumSource(args);
+        } else if (isLearnMessage(args, LEARN_HIGH)) {
+            response = learnFromHighSource(args);
+        } else {
+            response = giveFunFact(args);
+        }
+
+        return "**Steven Standaloft** " + response;
+    }
+
+    private String learnFromLowSource(String[] args) {
+        String message = String.join(" ", args);
+        String fact = message.substring(LEARN_LOW.length());
+        addStatement(fact, "LOW");
+        return "That's very interesting.";
+    }
+
+    private String learnFromMediumSource(String[] args) {
+        String message = String.join(" ", args);
+        String fact = message.substring(LEARN_MEDIUM.length());
+        addStatement(fact, "MEDIUM");
+        return "I never knew that.";
+    }
+
+    private String learnFromHighSource(String[] args) {
+        String message = String.join(" ", args);
+        String fact = message.substring(LEARN_HIGH.length());
+        addStatement(fact, "HIGH");
+        return "Sounds plausible.";
+    }
+
+    private boolean isLearnMessage(String[] args, String learnMessagePrefix) {
+        String message = String.join(" ", args);
+        return message.toLowerCase().startsWith(learnMessagePrefix.toLowerCase()) &&
+                message.length() > learnMessagePrefix.length();
+    }
+
+    private String giveFunFact(String[] args) {
         int beers = getBeerCount(args);
 
-        String message;
+        String fact;
         if (beers >= 4) {
-            message = getRandomStandoStatement(StandoStatement.Severity.HIGH);
+            fact = getRandomStandoStatement(StandoStatement.Severity.HIGH);
         } else if (beers >= 2) {
-            message = getRandomStandoStatement(StandoStatement.Severity.MEDIUM);
+            fact = getRandomStandoStatement(StandoStatement.Severity.MEDIUM);
         } else {
-            message = getRandomStandoStatement(StandoStatement.Severity.LOW);
+            fact = getRandomStandoStatement(StandoStatement.Severity.LOW);
         }
 
         if (beers >= 6) {
-            message = slur(message);
+            fact = slur(fact);
         }
 
-        return "**Steven Standaloft** " + message;
+        return fact;
     }
 
     private static int getBeerCount(String[] args) {
