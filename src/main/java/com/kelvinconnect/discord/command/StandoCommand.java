@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.DiscordApi;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 
@@ -61,7 +61,7 @@ public class StandoCommand implements CommandExecutor {
     }
 
     @Command(aliases = "!stando", description = "Have a chat with Stando. Get him a beer or two for some fun facts.", usage = "!stando [beverages]")
-    public String onStandoCommand(String[] args, DiscordAPI api) {
+    public String onStandoCommand(String[] args, DiscordApi api) {
 
         String response;
 

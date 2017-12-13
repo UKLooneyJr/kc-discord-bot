@@ -1,15 +1,15 @@
 package com.kelvinconnect.discord;
 
-import com.google.common.util.concurrent.FutureCallback;
 import com.kelvinconnect.discord.command.*;
 import com.kelvinconnect.discord.login.Login;
 import com.kelvinconnect.discord.login.TokenFileLogin;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
-import de.btobastian.javacord.DiscordAPI;
-import de.btobastian.javacord.utils.LoggerUtil;
+import de.btobastian.javacord.DiscordApi;
+import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
+import org.apache.http.concurrent.FutureCallback;
 import org.slf4j.Logger;
 
 /**
@@ -22,7 +22,7 @@ public class KCDiscordBot {
 
     public static void main(String[] args) {
         Login l = new TokenFileLogin("src/main/resources/loginToken.txt");
-        DiscordAPI api = l.login();
+        DiscordApi api = l.login();
 
         if (null == api) {
             return;
@@ -32,7 +32,7 @@ public class KCDiscordBot {
         start(api);
     }
 
-    private static void registerCommands(DiscordAPI api) {
+    private static void registerCommands(DiscordApi api) {
         CommandHandler handler = new JavacordHandler(api);
         handler.registerCommand(new HelpCommand(handler));
         handler.registerCommand(new InfoCommand());
@@ -47,25 +47,30 @@ public class KCDiscordBot {
         handler.registerCommand(new VoteCommand(votingBooth));
     }
 
-    private static void startTasks(DiscordAPI api) {
+    private static void startTasks(DiscordApi api) {
         TaskScheduler scheduler = new TaskScheduler();
         scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
     }
 
-    private static void start(DiscordAPI api) {
-        api.setWaitForServersOnStartup(false);
-        api.connect(new FutureCallback<DiscordAPI>() {
-            public void onSuccess(final DiscordAPI api) {
-                // do what you want now
-                GameRandomiser gameRandomiser = new GameRandomiser();
-                gameRandomiser.start(api);
-                startTasks(api);
-            }
-
-            public void onFailure(Throwable t) {
-                // login failed
-                t.printStackTrace();
-            }
-        });
+    private static void start(DiscordApi api) {
+//        api.setWaitForServersOnStartup(false);
+//        api.connect(new FutureCallback<DiscordApi>() {
+//            @Override
+//            public void completed(DiscordApi discordApi) {
+//                GameRandomiser gameRandomiser = new GameRandomiser();
+//                gameRandomiser.start(api);
+//                startTasks(api);
+//            }
+//
+//            @Override
+//            public void failed(Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void cancelled() {
+//
+//            }
+//        });
     }
 }

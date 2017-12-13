@@ -29,7 +29,7 @@ public class HelpCommand implements CommandExecutor {
         embed.setDescription(description);
         embed.setTitle("Commands");
 
-        message.reply("", embed);
+        message.getChannel().sendMessage(embed);
 
         return null;
     }

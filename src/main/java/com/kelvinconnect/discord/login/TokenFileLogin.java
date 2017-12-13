@@ -1,6 +1,7 @@
 package com.kelvinconnect.discord.login;
 
-import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.DiscordApi;
+import de.btobastian.javacord.DiscordApiBuilder;
 import de.btobastian.javacord.Javacord;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class TokenFileLogin implements Login {
         this.filepath = filepath;
     }
 
-    public DiscordAPI login() {
+    public DiscordApi login() {
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
         String token;
@@ -30,6 +31,6 @@ public class TokenFileLogin implements Login {
             System.out.println("Could not read file " + filepath);
             return null; // TODO: Make this throw an appropriate exception rather than returning null
         }
-        return Javacord.getApi(token, true);
+        return new DiscordApiBuilder().setToken(token).login().join();
     }
 }

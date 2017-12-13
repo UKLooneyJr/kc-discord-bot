@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord.login;
 
-import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.DiscordApi;
 
 /**
  * Interface for login classes
@@ -9,5 +9,5 @@ import de.btobastian.javacord.DiscordAPI;
  */
 public interface Login {
 
-    DiscordAPI login();
+    DiscordApi login();
 }

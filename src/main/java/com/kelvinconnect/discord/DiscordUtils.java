@@ -3,23 +3,19 @@ package com.kelvinconnect.discord;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.entities.User;
 import de.btobastian.javacord.entities.message.Message;
+import de.btobastian.javacord.entities.message.MessageAuthor;
 
 public class DiscordUtils {
 
     public static String getAuthorShortUserName(Message message) {
-        return getShortUserName(message.getAuthor(),
-                message.getChannelReceiver().getServer());
+        return getShortUserName(message.getAuthor());
     }
 
-    public static String getShortUserName(User user, Server server) {
-        String fullName = user.getNickname(server);
-        if (fullName == null) {
-            fullName = user.getName();
+    private static String getShortUserName(MessageAuthor user) {
+        String name = user.getDisplayName();
+        if(name.contains(" ")){
+            return name.substring(0, name.indexOf(" "));
         }
-        String shortName = fullName;
-        if(shortName.contains(" ")){
-            shortName = shortName.substring(0, shortName.indexOf(" "));
-        }
-        return shortName;
+        return name;
     }
 }

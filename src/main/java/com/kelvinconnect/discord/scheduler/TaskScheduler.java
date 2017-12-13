@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord.scheduler;
 
-import de.btobastian.javacord.utils.LoggerUtil;
+import de.btobastian.javacord.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 
 import java.util.Calendar;

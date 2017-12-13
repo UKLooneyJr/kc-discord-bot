@@ -1,7 +1,7 @@
 package com.kelvinconnect.discord.command;
 
 import com.kelvinconnect.discord.VotingBooth;
-import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.DiscordApi;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 
@@ -32,7 +32,7 @@ public class PubCommand implements CommandExecutor {
     }
 
     @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results|reset]")
-    public String onPubCommand(String[] args, DiscordAPI api) {
+    public String onPubCommand(String[] args, DiscordApi api) {
 
         if (args.length == 1) {
             if  (args[0].equals("time")) {

@@ -24,8 +24,8 @@
 
     <repositories>
         <repository>
-            <id>javacord-repo</id>
-            <url>http://repo.bastian-oppermann.de</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <!-- The repo for the sdcf4j -->
@@ -36,11 +36,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.btobastian.javacord</groupId>
-            <artifactId>javacord</artifactId>
-            <version>LATEST</version>
-            <!-- This will use the shaded javacord which contains all required dependencies -->
-            <classifier>shaded</classifier>
+            <groupId>de.btobastian</groupId>
+            <artifactId>Javacord</artifactId>
+            <!-- See below what to insert here -->
+            <version>70bd3a2</version>
         </dependency>
         <!-- A SLF4J comaptible logging framework. I would recommend to use logback -->
         <dependency>

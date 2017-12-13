@@ -82,9 +82,9 @@ public class TicketCommand implements CommandExecutor {
             embed.setFooter(getTracPropertyByClass(doc, "summary"));
         }
 
-        //embed.setUrl(url);
+        embed.setUrl(url);
 
-        message.reply(url, embed);
+        message.getChannel().sendMessage(url, embed);
     }
 
     private String buildDescription(Document doc, String tracStatus) {

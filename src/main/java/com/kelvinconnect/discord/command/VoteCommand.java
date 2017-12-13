@@ -2,7 +2,7 @@ package com.kelvinconnect.discord.command;
 
 import com.kelvinconnect.discord.DiscordUtils;
 import com.kelvinconnect.discord.VotingBooth;
-import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
@@ -25,7 +25,7 @@ public class VoteCommand implements CommandExecutor {
     }
 
     @Command(aliases = "!vote", description = "Vote for what pub you want to go to.", usage = "!vote [name]")
-    public String onVoteCommand(String[] args, Message message, DiscordAPI api) {
+    public String onVoteCommand(String[] args, Message message, DiscordApi api) {
 
         if (args.length < 1) {
             return "You need to vote for something.";
@@ -33,7 +33,7 @@ public class VoteCommand implements CommandExecutor {
 
         String name = String.join(" ", args);
 
-        boolean voteChanged = votingBooth.vote(name, message.getAuthor().getId());
+        boolean voteChanged = votingBooth.vote(name, message.getAuthor().getIdAsString());
 
         String voterName = DiscordUtils.getAuthorShortUserName(message);
 

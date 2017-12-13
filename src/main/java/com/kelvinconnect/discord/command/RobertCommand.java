@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.DiscordApi;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 
@@ -16,7 +16,7 @@ public class RobertCommand implements CommandExecutor {
             "You got a minute?" };
 
     @Command(aliases = "!robert", description = "Ask for some help from robert.", usage = "!robert")
-    public String onRobertCommand(String[] args, DiscordAPI api) {
+    public String onRobertCommand(String[] args, DiscordApi api) {
         String message = choices[new Random().nextInt(choices.length)];
         return "**Robert Mackin** " +  message;
     }

@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord;
 
-import de.btobastian.javacord.DiscordAPI;
+import de.btobastian.javacord.DiscordApi;
 
 import java.util.Random;
 import java.util.Timer;
@@ -19,12 +19,12 @@ public class GameRandomiser {
         timer = new Timer();
     }
 
-    public void start(final DiscordAPI api) {
+    public void start(final DiscordApi api) {
 
         TimerTask gameRandomiserTask = new TimerTask() {
             @Override
             public void run() {
-                api.setGame(getRandomGame());
+                api.updateGame(getRandomGame());
             }
         };
 
