@@ -43,9 +43,7 @@ public class KCDiscordBot {
         handler.registerCommand(new StandoCommand());
 
         VotingBooth votingBooth = new VotingBooth();
-        VoteCommand voteCommand = new VoteCommand(votingBooth);
-        handler.registerCommand(new PubCommand(votingBooth, voteCommand));
-        handler.registerCommand(new VoteCommand(votingBooth));
+        handler.registerCommand(new PubCommand(votingBooth));
     }
 
     private static void startTasks(DiscordApi api) {

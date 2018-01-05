@@ -1,5 +1,6 @@
 package com.kelvinconnect.discord.command;
 
+import com.kelvinconnect.discord.DiscordUtils;
 import com.kelvinconnect.discord.VotingBooth;
 import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.entities.message.Message;
@@ -28,11 +29,9 @@ public class PubCommand implements CommandExecutor {
 
 
     private VotingBooth votingBooth;
-    private final VoteCommand voteCommand;
 
-    public PubCommand(VotingBooth votingBooth, VoteCommand voteCommand) {
+    public PubCommand(VotingBooth votingBooth) {
         this.votingBooth = votingBooth;
-        this.voteCommand = voteCommand;
     }
 
     @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results|reset]")
@@ -52,12 +51,18 @@ public class PubCommand implements CommandExecutor {
         if(args.length >= 2)
         {
             if (args[0].equals("vote")) {
-                return submitVote(args, message, api);
+                String[] nameArgs = Arrays.copyOfRange(args, 1, args.length);
+                return submitVote(nameArgs, message);
             }
         }
 
         String suggestion = choices[new Random().nextInt(choices.length)];
         return "What about " +  suggestion + "?";
+    }
+
+    @Command(aliases = "!vote", description = "Vote for what pub you want to go to.", usage = "!vote [name]")
+    public String onVoteCommand(String[] args, Message message) {
+        return submitVote(args, message);
     }
 
     private String timeUntilPub() {
@@ -80,8 +85,22 @@ public class PubCommand implements CommandExecutor {
         return "The results are in!\n\n" + votingBooth.getResults();
     }
 
-    private String submitVote(String[] args, Message message, DiscordApi api) {
-        String[] nameArgs = Arrays.copyOfRange(args, 1, args.length);
-        return voteCommand.onVoteCommand(nameArgs, message, api);
+    private String submitVote(String[] args, Message message) {
+        if (args.length < 1) {
+            return "You need to vote for something.";
+        }
+
+        String name = String.join(" ", args);
+
+        boolean voteChanged = votingBooth.vote(name, message.getAuthor().getIdAsString());
+
+        String voterName = DiscordUtils.getAuthorShortUserName(message);
+
+        if (voteChanged) {
+            return "You have changed your vote " + voterName + ".";
+        } else {
+            return "Thanks for voting " + voterName + ".";
+        }
     }
+
 }
