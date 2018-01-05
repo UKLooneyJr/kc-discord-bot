@@ -43,7 +43,8 @@ public class KCDiscordBot {
         handler.registerCommand(new StandoCommand());
 
         VotingBooth votingBooth = new VotingBooth();
-        handler.registerCommand(new PubCommand(votingBooth));
+        VoteCommand voteCommand = new VoteCommand(votingBooth);
+        handler.registerCommand(new PubCommand(votingBooth, voteCommand));
         handler.registerCommand(new VoteCommand(votingBooth));
     }
 

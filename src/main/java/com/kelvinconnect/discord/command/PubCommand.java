@@ -2,6 +2,7 @@ package com.kelvinconnect.discord.command;
 
 import com.kelvinconnect.discord.VotingBooth;
 import de.btobastian.javacord.DiscordApi;
+import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 
@@ -9,6 +10,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -26,13 +28,15 @@ public class PubCommand implements CommandExecutor {
 
 
     private VotingBooth votingBooth;
+    private final VoteCommand voteCommand;
 
-    public PubCommand(VotingBooth votingBooth) {
+    public PubCommand(VotingBooth votingBooth, VoteCommand voteCommand) {
         this.votingBooth = votingBooth;
+        this.voteCommand = voteCommand;
     }
 
     @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results|reset]")
-    public String onPubCommand(String[] args, DiscordApi api) {
+    public String onPubCommand(String[] args, Message message, DiscordApi api) {
 
         if (args.length == 1) {
             if  (args[0].equals("time")) {
@@ -45,9 +49,15 @@ public class PubCommand implements CommandExecutor {
                 return voteResults();
             }
         }
+        if(args.length >= 2)
+        {
+            if (args[0].equals("vote")) {
+                return submitVote(args, message, api);
+            }
+        }
 
-        String message = choices[new Random().nextInt(choices.length)];
-        return "What about " +  message + "?";
+        String suggestion = choices[new Random().nextInt(choices.length)];
+        return "What about " +  suggestion + "?";
     }
 
     private String timeUntilPub() {
@@ -68,5 +78,10 @@ public class PubCommand implements CommandExecutor {
 
     private String voteResults() {
         return "The results are in!\n\n" + votingBooth.getResults();
+    }
+
+    private String submitVote(String[] args, Message message, DiscordApi api) {
+        String[] nameArgs = Arrays.copyOfRange(args, 1, args.length);
+        return voteCommand.onVoteCommand(nameArgs, message, api);
     }
 }
