@@ -35,7 +35,7 @@ public class PubCommand implements CommandExecutor {
     }
 
     @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results|reset]")
-    public String onPubCommand(String[] args, Message message, DiscordApi api) {
+    public String onPubCommand(String[] args, Message message) {
 
         if (args.length == 1) {
             if  (args[0].equals("time")) {
