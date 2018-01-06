@@ -30,7 +30,6 @@ public class KCDiscordBot {
 
         registerCommands(api);
         startTasks(api);
-        start(api);
     }
 
     private static void registerCommands(DiscordApi api) {
@@ -49,29 +48,9 @@ public class KCDiscordBot {
     }
 
     private static void startTasks(DiscordApi api) {
+        GameRandomiser gameRandomiser = new GameRandomiser();
+        gameRandomiser.start(api);
         TaskScheduler scheduler = new TaskScheduler();
         scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
-    }
-
-    private static void start(DiscordApi api) {
-//        api.setWaitForServersOnStartup(false);
-//        api.connect(new FutureCallback<DiscordApi>() {
-//            @Override
-//            public void completed(DiscordApi discordApi) {
-//                GameRandomiser gameRandomiser = new GameRandomiser();
-//                gameRandomiser.start(api);
-//                startTasks(api);
-//            }
-//
-//            @Override
-//            public void failed(Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            @Override
-//            public void cancelled() {
-//
-//            }
-//        });
     }
 }
