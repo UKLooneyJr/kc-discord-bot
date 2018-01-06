@@ -29,6 +29,7 @@ public class KCDiscordBot {
         }
 
         registerCommands(api);
+        startTasks(api);
         start(api);
     }
 
