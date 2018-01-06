@@ -31,7 +31,7 @@ public class PubCommandTest {
         Message message = mockMessage();
 
         String response = command.onVoteCommand(args, message);
-        assertEquals("Thanks for voting Roy.", response);q
+        assertEquals("Thanks for voting Roy.", response);
     }
 
     @Test
