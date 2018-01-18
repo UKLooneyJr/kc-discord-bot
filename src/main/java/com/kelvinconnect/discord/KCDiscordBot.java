@@ -9,7 +9,6 @@ import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
-import org.apache.http.concurrent.FutureCallback;
 import org.slf4j.Logger;
 
 /**
