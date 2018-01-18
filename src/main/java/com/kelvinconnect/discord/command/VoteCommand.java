@@ -24,7 +24,7 @@ public class VoteCommand implements CommandExecutor {
         this.votingBooth = votingBooth;
     }
 
-    @Command(aliases = "!vote", description = "Vote for what pub you want to go to.", usage = "!vote [name]")
+    @Command(aliases = "!vote", description = "Vote for what pub you want to go to.", usage = "!vote <pub-name>")
     public String onVoteCommand(String[] args, Message message, DiscordApi api) {
 
         if (args.length < 1) {

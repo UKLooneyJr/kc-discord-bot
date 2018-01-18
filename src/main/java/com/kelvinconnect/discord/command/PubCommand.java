@@ -31,7 +31,7 @@ public class PubCommand implements CommandExecutor {
         this.votingBooth = votingBooth;
     }
 
-    @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results|reset]")
+    @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results | reset | time]")
     public String onPubCommand(String[] args, DiscordApi api) {
 
         if (args.length == 1) {
