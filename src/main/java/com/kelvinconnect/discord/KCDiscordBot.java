@@ -41,6 +41,7 @@ public class KCDiscordBot {
         handler.registerCommand(new BangCommand());
         handler.registerCommand(new RobertCommand());
         handler.registerCommand(new StandoCommand());
+        handler.registerCommand(new JoinLeaveCommand());
 
         VotingBooth votingBooth = new VotingBooth();
         handler.registerCommand(new PubCommand(votingBooth));
