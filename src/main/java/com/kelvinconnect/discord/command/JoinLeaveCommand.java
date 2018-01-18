@@ -11,6 +11,8 @@ import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
 import de.btobastian.javacord.entities.permissions.Role;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JoinLeaveCommand implements CommandExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(JoinLeaveCommand.class);
 
     private final static String INVALID_CHANNEL_NAME = "Invalid channel name, try '!channels' for a list of all channels.";
     private final static String CANT_LEAVE_CHANNEL = "Sorry, you can't leave this channel.";
@@ -207,8 +210,10 @@ public class JoinLeaveCommand implements CommandExecutor {
     }
 
     private static void debugPrintChannels(Server server) {
-        for (Role role : server.getRoles()) {
-            System.out.println(role.getName() + " - " + role.getIdAsString());
+        if (logger.isInfoEnabled()) {
+            for (Role role : server.getRoles()) {
+                logger.info(role.getName() + " - " + role.getIdAsString());
+            }
         }
     }
 }
