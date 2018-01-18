@@ -60,7 +60,7 @@ public class StandoCommand implements CommandExecutor {
         standoStatements.add(new StandoStatement(statement, severity));
     }
 
-    @Command(aliases = "!stando", description = "Have a chat with Stando. Get him a beer or two for some fun facts.", usage = "!stando [beverages]")
+    @Command(aliases = "!stando", description = "Have a chat with Stando. Get him a beer or two for some fun facts.", usage = "!stando [<beverages>]")
     public String onStandoCommand(String[] args, DiscordApi api) {
 
         String response;

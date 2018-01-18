@@ -24,7 +24,7 @@ public class TicketCommand implements CommandExecutor {
 
     private static final String TICKET_FORMAT = "^(\\d|#)\\d*$";
 
-    @Command(aliases = "!ticket", description = "Creates a trac link to the mentioned ticket.", usage = "!ticket [ticket-number]")
+    @Command(aliases = "!ticket", description = "Creates a trac link to the mentioned ticket.", usage = "!ticket <ticket-number>")
     public String onTicketCommand(String[] args, Message message) {
         if (args.length != 1) { // more than 1 argument
             return "Incorrect number of arguments!";
