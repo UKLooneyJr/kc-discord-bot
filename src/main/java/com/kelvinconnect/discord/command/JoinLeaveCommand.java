@@ -10,10 +10,8 @@ import de.btobastian.javacord.entities.permissions.Role;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class JoinLeaveCommand implements CommandExecutor {
 
@@ -64,16 +62,36 @@ public class JoinLeaveCommand implements CommandExecutor {
 
     private void assignRole(String roleId, Message message) {
         Server server = message.getServer().orElseThrow(() -> new RuntimeException("Failed to get Server"));
-        Role role = server.getRoleById(roleId).orElseThrow(() -> new RuntimeException("Failed to get Role"));
+        Role role = server.getRoleById(roleId).orElseThrow(() -> new RuntimeException("Failed to get Role: " + roleId));
         User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
+
+        Collection<Role> roles = user.getRoles(server);
+        if (!roles.contains(role)) {
+            roles.add(role);
+        }
+
+        server.updateRoles(user, roles);
     }
 
     @Command(aliases = "!leave", description = "Leaves a channel.", usage = "!leave [<channel-name>]")
-    public String onLeaveCommand(String args[], DiscordApi api, Message message) {
+    public void onLeaveCommand(String args[], DiscordApi api, Message message) {
         if (args.length > 1) {
-            return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
+            message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
         }
-        return null;
+        getIdFromAlias(args[0]).<Runnable>map(id -> () -> unassignRole(id, message))
+                .orElse(() -> channelNotFound(message))
+                .run();
+    }
+
+    private void unassignRole(String roleId, Message message) {
+        Server server = message.getServer().orElseThrow(() -> new RuntimeException("Failed to get Server"));
+        Role role = server.getRoleById(roleId).orElseThrow(() -> new RuntimeException("Failed to get Role"));
+        User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
+
+        Collection<Role> roles = user.getRoles(server);
+        roles.remove(role);
+
+        server.updateRoles(user, roles);
     }
 
     private void channelNotFound(Message message) {
@@ -84,7 +102,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         for (KCChannel c : channels) {
             for (String channelAlias : c.aliases) {
                 if (channelAlias.equals(alias)) {
-                    return Optional.of(alias);
+                    return Optional.of(c.id);
                 }
             }
         }
@@ -99,7 +117,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         StringBuilder channelList = new StringBuilder();
         for (KCChannel c : channels) {
             channelList.append("* ");
-            channelList.append(c.aliases.get(0));
+            channelList.append(c.aliases.stream().collect(Collectors.joining(" | ")));
             channelList.append("\n");
         }
         embed.setDescription(channelList.toString());
