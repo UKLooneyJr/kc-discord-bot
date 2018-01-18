@@ -4,6 +4,7 @@ import com.kelvinconnect.discord.DiscordUtils;
 import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.entities.Server;
 import de.btobastian.javacord.entities.User;
+import de.btobastian.javacord.entities.channels.ServerChannel;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
 import de.btobastian.javacord.entities.permissions.Role;
@@ -17,36 +18,43 @@ public class JoinLeaveCommand implements CommandExecutor {
 
     private final static String INVALID_CHANNEL_NAME = "Invalid channel name, try '!channels' for a list of all channels.";
 
-    private static class KCChannel {
-        String id;
+    private class KCChannel {
         List<String> aliases;
+        Role role;
+        ServerChannel channel;
 
-        KCChannel(String id, String... aliases) {
-            this.id = id;
+        KCChannel(long channelId, long roleId, String... aliases) {
+            channel = kcServer.getChannelById(channelId).orElseThrow(() ->
+                    new RuntimeException("Failed to find channel " + channelId + ". alias=" + aliases[0]));
+            role = kcServer.getRoleById(roleId).orElseThrow(() ->
+                    new RuntimeException("Failed to find role " + roleId + ". alias=" + aliases[0]));
             this.aliases = Arrays.asList(aliases);
         }
     }
 
+    private Server kcServer;
     private List<KCChannel> channels;
 
-    public JoinLeaveCommand() {
+    public JoinLeaveCommand(DiscordApi api) {
+        kcServer = api.getServerById(239013363387072514L)
+                .orElseThrow(() -> new RuntimeException("Failed to find KC server."));
         initChannels();
     }
 
     private void initChannels() {
         channels = Arrays.asList(
-                new KCChannel("365039527607140353", "niche"),
-                new KCChannel("365039532829179904", "pnc"),
-                new KCChannel("365039576521244672", "storm"),
-                new KCChannel("365039600210804738", "nspis"),
-                new KCChannel("365039626362290179", "compass"),
-                new KCChannel("365039651721052161", "qas"),
-                new KCChannel("365039660184895489", "singlepoint"),
-                new KCChannel("365039678212276224", "connect"),
-                new KCChannel("365039717017976835", "unifi"),
-                new KCChannel("365039737402294274", "crash"),
-                new KCChannel("365039767152492545", "compact"),
-                new KCChannel("365039790028226563", "socrates")
+                new KCChannel(365038764738871297L, 365039527607140353L, "niche"),
+                new KCChannel(365040110867054592L, 365039532829179904L, "pnc"),
+                new KCChannel(365040137974972428L, 365039576521244672L, "storm", "neilstorm"),
+                new KCChannel(365040187689926656L, 365039600210804738L, "nspis"),
+                new KCChannel(365040239867330572L, 365039626362290179L, "compass"),
+                new KCChannel(365040284398256139L, 365039651721052161L, "qas"),
+                new KCChannel(365040322176090126L, 365039660184895489L, "singlepoint"),
+                new KCChannel(365040358179995658L, 365039678212276224L, "connect"),
+                new KCChannel(365040398416084992L, 365039717017976835L, "unifi"),
+                new KCChannel(365040428598165516L, 365039737402294274L, "crash"),
+                new KCChannel(365040459027841024L, 365039767152492545L, "compact"),
+                new KCChannel(365040501339979776L, 365039790028226563L, "socrates")
         );
     }
 
@@ -55,22 +63,20 @@ public class JoinLeaveCommand implements CommandExecutor {
         if (args.length != 1) {
             message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
         }
-        getIdFromAlias(args[0]).<Runnable>map(id -> () -> assignRole(id, message))
+        getChannelFromAlias(args[0]).<Runnable>map(id -> () -> assignRole(id, message))
                 .orElse(() -> channelNotFound(message))
                 .run();
     }
 
-    private void assignRole(String roleId, Message message) {
-        Server server = message.getServer().orElseThrow(() -> new RuntimeException("Failed to get Server"));
-        Role role = server.getRoleById(roleId).orElseThrow(() -> new RuntimeException("Failed to get Role: " + roleId));
+    private void assignRole(KCChannel channel, Message message) {
         User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
 
-        Collection<Role> roles = user.getRoles(server);
-        if (!roles.contains(role)) {
-            roles.add(role);
+        Collection<Role> roles = user.getRoles(kcServer);
+        if (!roles.contains(channel.role)) {
+            roles.add(channel.role);
         }
 
-        server.updateRoles(user, roles);
+        kcServer.updateRoles(user, roles);
     }
 
     @Command(aliases = "!leave", description = "Leaves a channel.", usage = "!leave [<channel-name>]")
@@ -78,31 +84,29 @@ public class JoinLeaveCommand implements CommandExecutor {
         if (args.length > 1) {
             message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
         }
-        getIdFromAlias(args[0]).<Runnable>map(id -> () -> unassignRole(id, message))
+        getChannelFromAlias(args[0]).<Runnable>map(id -> () -> unassignRole(id, message))
                 .orElse(() -> channelNotFound(message))
                 .run();
     }
 
-    private void unassignRole(String roleId, Message message) {
-        Server server = message.getServer().orElseThrow(() -> new RuntimeException("Failed to get Server"));
-        Role role = server.getRoleById(roleId).orElseThrow(() -> new RuntimeException("Failed to get Role"));
+    private void unassignRole(KCChannel channel, Message message) {
         User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
 
-        Collection<Role> roles = user.getRoles(server);
-        roles.remove(role);
+        Collection<Role> roles = user.getRoles(kcServer);
+        roles.remove(channel.role);
 
-        server.updateRoles(user, roles);
+        kcServer.updateRoles(user, roles);
     }
 
     private void channelNotFound(Message message) {
         message.getChannel().sendMessage(INVALID_CHANNEL_NAME);
     }
 
-    private Optional<String> getIdFromAlias(String alias) {
+    private Optional<KCChannel> getChannelFromAlias(String alias) {
         for (KCChannel c : channels) {
             for (String channelAlias : c.aliases) {
                 if (channelAlias.equals(alias)) {
-                    return Optional.of(c.id);
+                    return Optional.of(c);
                 }
             }
         }
