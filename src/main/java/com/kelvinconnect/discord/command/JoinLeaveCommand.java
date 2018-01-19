@@ -162,8 +162,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         return Optional.empty();
     }
 
-    @Command(aliases = { "!channels", "!channel" },
-            description = "Shows all channels that can be joined.", usage = "!channel")
+    @Command(aliases = "!channels", description = "Shows all channels that can be joined.", usage = "!channels")
     public void onChannelsCommand(Message message) {
         message.getServer().ifPresent(JoinLeaveCommand::debugPrintChannels);
         EmbedBuilder embed = new EmbedBuilder();
