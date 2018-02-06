@@ -8,9 +8,12 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class RollCommand implements CommandExecutor {
     private static final Logger logger = LoggerUtil.getLogger(RollCommand.class);
@@ -19,29 +22,33 @@ public class RollCommand implements CommandExecutor {
     public String onRollCommand(String[] args) {
 
         if (args.length == 0) {
-            return rollSingle("6");
+            return rollSingle(6);
         } else
         if (args.length > 1) {
             return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
         }
 
-        Pattern pattern = Pattern.compile("((\\d+)(([d\\-])(\\d+))?)?");
+        Pattern pattern = Pattern.compile("(\\d+)(([d\\-])(\\d+))?");
         Matcher matcher = pattern.matcher(args[0]);
 
         if (matcher.find()) {
-            String num1 = matcher.group(2);
-            String rollType = matcher.group(4);
-            String num2 = matcher.group(5);
+            String num1 = matcher.group(1);
+            String num2 = matcher.group(4);
+            String rollType = matcher.group(3);
             try {
-                return roll(num1, num2, rollType);
+                return roll(Integer.parseInt(num1), num2 != null ? Integer.parseInt(num2) : null, rollType);
             } catch (IllegalArgumentException e) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Failed to parse roll command; num1=" +
+                            num1 + ", num2=" + num2 + ", rollType=" + rollType, e);
+                }
                 return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
             }
         }
         return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
     }
 
-    private String roll(String num1, String num2, String rollType) {
+    private String roll(Integer num1, Integer num2, String rollType) {
         if (null == rollType) {
             return rollSingle(num1);
         } else if (rollType.equals("d")) {
@@ -53,41 +60,21 @@ public class RollCommand implements CommandExecutor {
         }
     }
 
-    private String rollMultiple(String count, String number) {
-        int n = Integer.parseInt(number);
-        int c = Integer.parseInt(count);
-        List<Integer> rolls = new ArrayList<>();
-        int sum = 0;
-        for (int i = 0; i < c; ++i) {
-            int roll = new Random().nextInt(n) + 1;
-            rolls.add(roll);
-            sum += roll;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append(sum);
-        sb.append(" (");
-        for (int i = 0; i < c; ++i) {
-            if (i > 0) sb.append(", ");
-            sb.append(String.valueOf(rolls.get(i)));
-        }
-        sb.append(")");
-        return sb.toString();
+    private String rollMultiple(int count, int number) {
+        int[] rolls = new Random().ints(count, 1, number + 1).toArray();
+        int sum = IntStream.of(rolls).sum();
+        return IntStream.of(rolls).mapToObj(String::valueOf)
+                .collect(Collectors.joining(", ", sum + " (", ")"));
     }
 
-    private String rollRange(String num1, String num2) {
-        int min = Integer.parseInt(num1);
-        int max = Integer.parseInt(num2);
-        if (min == max) return String.valueOf(min);
-        if (min > max) {
-            int temp = min;
-            min = max;
-            max = temp;
-        }
+    private String rollRange(int num1, int num2) {
+        if (num1 == num2) return String.valueOf(num1);
+        int min = Math.min(num1, num2);
+        int max = Math.max(num1, num2);
         return String.valueOf(new Random().nextInt(max - min + 1) + min);
     }
 
-    private String rollSingle(String number) {
-        int n = Integer.parseInt(number);
-        return String.valueOf(new Random().nextInt(n) + 1);
+    private String rollSingle(int maxRoll) {
+        return String.valueOf(new Random().nextInt(maxRoll) + 1);
     }
 }
