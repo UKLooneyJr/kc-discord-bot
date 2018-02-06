@@ -3,9 +3,6 @@ package com.kelvinconnect.discord.command;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * Displays info about the bot
  *

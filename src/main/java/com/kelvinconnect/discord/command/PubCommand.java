@@ -25,7 +25,7 @@ public class PubCommand implements CommandExecutor {
             "Sloans", "Waxy O'Connors", "Blue Dog", "Gallus", "The Tap House"};
 
 
-    private VotingBooth votingBooth;
+    private final VotingBooth votingBooth;
 
     public PubCommand(VotingBooth votingBooth) {
         this.votingBooth = votingBooth;

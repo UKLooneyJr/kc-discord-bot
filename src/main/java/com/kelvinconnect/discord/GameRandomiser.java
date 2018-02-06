@@ -36,7 +36,7 @@ public class GameRandomiser {
         timer.purge();
     }
 
-    public static String getRandomActivity() {
+    private static String getRandomActivity() {
         String[] randomGames = {
                 "Builder 19.14.14.4a",
                 "Builder 17.44.37.3.1d",

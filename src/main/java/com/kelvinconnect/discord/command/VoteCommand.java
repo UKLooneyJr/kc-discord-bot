@@ -7,18 +7,12 @@ import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Random;
-
 /**
  * Created by Adam on 21/04/2017.
  */
 public class VoteCommand implements CommandExecutor {
 
-    private VotingBooth votingBooth;
+    private final VotingBooth votingBooth;
 
     public VoteCommand(VotingBooth votingBooth) {
         this.votingBooth = votingBooth;

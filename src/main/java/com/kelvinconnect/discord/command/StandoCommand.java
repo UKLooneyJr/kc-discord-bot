@@ -24,8 +24,8 @@ public class StandoCommand implements CommandExecutor {
             LOW, MEDIUM, HIGH
         }
 
-        String statement;
-        Severity severity;
+        final String statement;
+        final Severity severity;
 
         StandoStatement(String statement, Severity severity) {
             this.statement = statement;
@@ -33,7 +33,7 @@ public class StandoCommand implements CommandExecutor {
         }
     }
 
-    private List<StandoStatement> standoStatements;
+    private final List<StandoStatement> standoStatements;
 
     public StandoCommand() {
         standoStatements = new ArrayList<>();
@@ -146,12 +146,16 @@ public class StandoCommand implements CommandExecutor {
         Random r = new Random();
         StringBuilder sb = new StringBuilder();
         for (char c : message.toCharArray()) {
-            if (c == ' ') {
-                sb.append(r.nextInt(5) == 0 ? " ...hic! " : " ");
-            } else if (c == 's') {
-                sb.append(r.nextBoolean() ? "sh" : "s");
-            } else {
-                sb.append(c);
+            switch (c) {
+                case ' ':
+                    sb.append(r.nextInt(5) == 0 ? " ...hic! " : " ");
+                    break;
+                case 's':
+                    sb.append(r.nextBoolean() ? "sh" : "s");
+                    break;
+                default:
+                    sb.append(c);
+                    break;
             }
         }
         return sb.toString();

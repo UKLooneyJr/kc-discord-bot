@@ -1,7 +1,5 @@
 package com.kelvinconnect.discord;
 
-import de.btobastian.javacord.entities.Server;
-import de.btobastian.javacord.entities.User;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.MessageAuthor;
 

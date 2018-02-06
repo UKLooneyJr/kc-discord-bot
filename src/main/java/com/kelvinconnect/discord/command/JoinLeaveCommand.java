@@ -27,9 +27,9 @@ public class JoinLeaveCommand implements CommandExecutor {
     private final static String CANT_LEAVE_CHANNEL = "Sorry, you can't leave this channel.";
 
     private class KCChannel {
-        List<String> aliases;
-        Role role;
-        ServerChannel channel;
+        final List<String> aliases;
+        final Role role;
+        final ServerChannel channel;
 
         KCChannel(long channelId, long roleId, String... aliases) {
             channel = kcServer.getChannelById(channelId).orElseThrow(() ->
@@ -40,7 +40,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         }
     }
 
-    private Server kcServer;
+    private final Server kcServer;
     private List<KCChannel> channels;
 
     // keep references to pubchat and music channels as we will use them elsewhere
@@ -108,16 +108,20 @@ public class JoinLeaveCommand implements CommandExecutor {
     @Command(aliases = "!leave", description = "Leaves a named channel. Leaves the current channel if none specified.",
             usage = "!leave [<channel-name>]")
     public void onLeaveCommand(String args[], DiscordApi api, Message message) {
-        if (args.length == 0) {
-            getCurrentChannel(message).<Runnable>map(id -> () -> unassignRole(id, message))
-                    .orElse(() -> cantLeaveChannel(message))
-                    .run();
-        } else if (args.length == 1) {
-            getChannelFromAlias(args[0]).<Runnable>map(id -> () -> unassignRole(id, message))
-                    .orElse(() -> channelNotFound(message))
-                    .run();
-        } else {
-            message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
+        switch (args.length) {
+            case 0:
+                getCurrentChannel(message).<Runnable>map(id -> () -> unassignRole(id, message))
+                        .orElse(() -> cantLeaveChannel(message))
+                        .run();
+                break;
+            case 1:
+                getChannelFromAlias(args[0]).<Runnable>map(id -> () -> unassignRole(id, message))
+                        .orElse(() -> channelNotFound(message))
+                        .run();
+                break;
+            default:
+                message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
+                break;
         }
     }
 
