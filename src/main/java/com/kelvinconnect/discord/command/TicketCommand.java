@@ -60,7 +60,7 @@ public class TicketCommand implements CommandExecutor {
             ticketNumber = ticketNumber.substring(1);
         }
 
-        return "http://trac/KC/ticket/" + ticketNumber;
+        return "http://trac.kelvinconnect.local/KC/ticket/" + ticketNumber;
     }
 
     private void sendEmbedMessage(String url, Message message, Document doc) {
