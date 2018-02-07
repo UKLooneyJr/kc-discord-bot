@@ -6,6 +6,7 @@ import de.btobastian.javacord.entities.message.MessageAuthor;
 public class DiscordUtils {
 
     public static final String INVALID_ARGUMENTS_MESSAGE = "Invalid arguments, try '!help' to see instructions.";
+    public static final int MAX_MESSAGE_LENGTH = 2000;
 
     public static String getAuthorShortUserName(Message message) {
         return getShortUserName(message.getAuthor());

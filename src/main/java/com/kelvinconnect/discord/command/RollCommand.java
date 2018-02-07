@@ -6,9 +6,6 @@ import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,8 +60,12 @@ public class RollCommand implements CommandExecutor {
     private String rollMultiple(int count, int number) {
         int[] rolls = new Random().ints(count, 1, number + 1).toArray();
         int sum = IntStream.of(rolls).sum();
-        return IntStream.of(rolls).mapToObj(String::valueOf)
+        String message = IntStream.of(rolls).mapToObj(String::valueOf)
                 .collect(Collectors.joining(", ", sum + " (", ")"));
+        if (message.length() < DiscordUtils.MAX_MESSAGE_LENGTH) {
+            return message;
+        }
+        return message.substring(0, DiscordUtils.MAX_MESSAGE_LENGTH - 3) + "...";
     }
 
     private String rollRange(int num1, int num2) {
