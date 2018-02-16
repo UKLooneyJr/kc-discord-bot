@@ -1,8 +1,6 @@
-package com.kelvinconnect.discord.command;
+package com.kelvinconnect.discord.command.pub;
 
 import com.kelvinconnect.discord.DiscordUtils;
-import com.kelvinconnect.discord.VotingBooth;
-import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
@@ -34,7 +32,7 @@ public class PubCommand implements CommandExecutor {
         this.votingBooth = new VotingBooth();
     }
 
-    @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results | reset | time]")
+    @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results | reset | time | vote]")
     public String onPubCommand(String[] args, Message message) {
 
         if (args.length == 1) {

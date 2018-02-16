@@ -1,4 +1,4 @@
-package com.kelvinconnect.discord;
+package com.kelvinconnect.discord.command.pub;
 
 import java.util.ArrayList;
 import java.util.Comparator;

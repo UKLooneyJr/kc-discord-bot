@@ -1,5 +1,6 @@
 package com.kelvinconnect.discord.command;
 
+import com.kelvinconnect.discord.command.pub.PubCommand;
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.MessageAuthor;
 import org.junit.Test;
