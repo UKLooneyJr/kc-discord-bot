@@ -12,7 +12,7 @@ public class VotingBooth {
             this.count = 0;
         }
 
-        String name;
+        final String name;
         int count;
     }
 
@@ -22,7 +22,7 @@ public class VotingBooth {
             this.candidate = null;
         }
 
-        String id;
+        final String id;
         Candidate candidate;
     }
 
@@ -33,8 +33,8 @@ public class VotingBooth {
         }
     }
 
-    private List<Candidate> candidates;
-    private List<Voter> voters;
+    private final List<Candidate> candidates;
+    private final List<Voter> voters;
 
     public VotingBooth() {
         candidates = new ArrayList<>();

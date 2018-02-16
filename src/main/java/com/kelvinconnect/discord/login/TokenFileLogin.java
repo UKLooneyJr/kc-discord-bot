@@ -2,7 +2,6 @@ package com.kelvinconnect.discord.login;
 
 import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.DiscordApiBuilder;
-import de.btobastian.javacord.Javacord;
 
 import java.io.IOException;
 import java.nio.file.Files;

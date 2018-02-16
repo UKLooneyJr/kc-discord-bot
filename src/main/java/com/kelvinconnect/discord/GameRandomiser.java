@@ -24,7 +24,7 @@ public class GameRandomiser {
         TimerTask gameRandomiserTask = new TimerTask() {
             @Override
             public void run() {
-                api.updateGame(getRandomGame());
+                api.updateActivity(getRandomActivity());
             }
         };
 
@@ -36,7 +36,7 @@ public class GameRandomiser {
         timer.purge();
     }
 
-    public static String getRandomGame() {
+    private static String getRandomActivity() {
         String[] randomGames = {
                 "Builder 19.14.14.4a",
                 "Builder 17.44.37.3.1d",

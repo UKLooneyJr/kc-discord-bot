@@ -22,7 +22,7 @@ public class TaskScheduler {
 
     private static final int WEEK_PERIOD = 60 * 24 * 7; // every week
 
-    private Map<String, ScheduledFuture> tasks;
+    private final Map<String, ScheduledFuture> tasks;
 
     public TaskScheduler() {
         tasks = new HashMap<>();

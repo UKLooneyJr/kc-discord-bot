@@ -9,7 +9,6 @@ import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
-import org.apache.http.concurrent.FutureCallback;
 import org.slf4j.Logger;
 
 /**
@@ -29,7 +28,7 @@ public class KCDiscordBot {
         }
 
         registerCommands(api);
-        start(api);
+        startTasks(api);
     }
 
     private static void registerCommands(DiscordApi api) {
@@ -37,37 +36,20 @@ public class KCDiscordBot {
         handler.registerCommand(new HelpCommand(handler));
         handler.registerCommand(new InfoCommand());
         handler.registerCommand(new TicketCommand());
+        handler.registerCommand(new ChangeSetCommand());
         handler.registerCommand(new DebugCommand());
         handler.registerCommand(new BangCommand());
         handler.registerCommand(new RobertCommand());
         handler.registerCommand(new StandoCommand());
         handler.registerCommand(new PubCommand());
+        handler.registerCommand(new RollCommand());
+        handler.registerCommand(new JoinLeaveCommand(api));
     }
 
     private static void startTasks(DiscordApi api) {
+        GameRandomiser gameRandomiser = new GameRandomiser();
+        gameRandomiser.start(api);
         TaskScheduler scheduler = new TaskScheduler();
         scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
-    }
-
-    private static void start(DiscordApi api) {
-//        api.setWaitForServersOnStartup(false);
-//        api.connect(new FutureCallback<DiscordApi>() {
-//            @Override
-//            public void completed(DiscordApi discordApi) {
-//                GameRandomiser gameRandomiser = new GameRandomiser();
-//                gameRandomiser.start(api);
-//                startTasks(api);
-//            }
-//
-//            @Override
-//            public void failed(Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            @Override
-//            public void cancelled() {
-//
-//            }
-//        });
     }
 }

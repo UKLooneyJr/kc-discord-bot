@@ -1,14 +1,10 @@
 package com.kelvinconnect.discord.command;
 
 import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.entities.Server;
-import de.btobastian.javacord.entities.channels.Channel;
 import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 import org.slf4j.Logger;
-
-import java.util.Collection;
 
 /**
  * Displays info about the bot

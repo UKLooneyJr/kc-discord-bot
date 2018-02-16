@@ -28,13 +28,13 @@ public class PubCommand implements CommandExecutor {
             "Sloans", "Waxy O'Connors", "Blue Dog", "Gallus", "The Tap House"};
 
 
-    private VotingBooth votingBooth;
+    private final VotingBooth votingBooth;
 
     public PubCommand() {
         this.votingBooth = new VotingBooth();
     }
 
-    @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results|reset]")
+    @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results | reset | time]")
     public String onPubCommand(String[] args, Message message) {
 
         if (args.length == 1) {

@@ -1,11 +1,8 @@
 package com.kelvinconnect.discord.scheduler;
 
 import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.entities.channels.Channel;
 import de.btobastian.javacord.entities.channels.TextChannel;
 import de.btobastian.javacord.entities.message.MessageBuilder;
-
-import java.util.Optional;
 
 /**
  * Sends an alert to the pub chat channel every friday at 4.

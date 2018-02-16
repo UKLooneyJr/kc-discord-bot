@@ -8,7 +8,7 @@ import de.btobastian.sdcf4j.CommandExecutor;
  */
 public class BangCommand implements CommandExecutor {
 
-    int line = 0;
+    private int line = 0;
 
     @Command(aliases = "!bang", description = "Sings a line of a song.", usage = "!bang")
     public String onInfoCommand(String[] args) {
