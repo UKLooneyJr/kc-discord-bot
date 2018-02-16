@@ -15,6 +15,8 @@ import java.util.stream.IntStream;
 public class RollCommand implements CommandExecutor {
     private static final Logger logger = LoggerUtil.getLogger(RollCommand.class);
 
+    private static final String ROLL_PATTERN = "d?(\\d+)(([d\\-])(\\d+))?";
+
     @Command(aliases = "!roll", description = "Rolls a dice.", usage = "!roll [<number>[(-|d)<number>]]")
     public String onRollCommand(String[] args) {
 
@@ -25,7 +27,11 @@ public class RollCommand implements CommandExecutor {
             return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
         }
 
-        Pattern pattern = Pattern.compile("(\\d+)(([d\\-])(\\d+))?");
+        if (!Pattern.matches(ROLL_PATTERN, args[0])) {
+            return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
+        }
+
+        Pattern pattern = Pattern.compile(ROLL_PATTERN);
         Matcher matcher = pattern.matcher(args[0]);
 
         if (matcher.find()) {
