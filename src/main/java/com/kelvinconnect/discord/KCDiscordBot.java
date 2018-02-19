@@ -2,6 +2,8 @@ package com.kelvinconnect.discord;
 
 import com.kelvinconnect.discord.command.*;
 import com.kelvinconnect.discord.command.pub.PubCommand;
+import com.kelvinconnect.discord.command.trac.ChangeSetCommand;
+import com.kelvinconnect.discord.command.trac.TicketCommand;
 import com.kelvinconnect.discord.login.Login;
 import com.kelvinconnect.discord.login.TokenFileLogin;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
