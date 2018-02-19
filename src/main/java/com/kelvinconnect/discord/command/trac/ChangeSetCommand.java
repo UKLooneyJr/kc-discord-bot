@@ -1,4 +1,4 @@
-package com.kelvinconnect.discord.command;
+package com.kelvinconnect.discord.command.trac;
 
 import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
