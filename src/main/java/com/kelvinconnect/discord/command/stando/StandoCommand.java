@@ -1,8 +1,10 @@
-package com.kelvinconnect.discord.command;
+package com.kelvinconnect.discord.command.stando;
 
+import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import de.btobastian.javacord.DiscordApi;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,24 +21,22 @@ public class StandoCommand implements CommandExecutor {
     private static final String LEARN_MEDIUM = "The Times said ";
     private static final String LEARN_HIGH = "The Daily Mail said ";
 
-    private static class StandoStatement {
-        enum Severity {
-            LOW, MEDIUM, HIGH
-        }
+    private List<StandoStatement> standoStatements;
 
-        final String statement;
-        final Severity severity;
-
-        StandoStatement(String statement, Severity severity) {
-            this.statement = statement;
-            this.severity = severity;
+    public StandoCommand() {
+        standoStatements = getDatabaseTable().selectAll();
+        if (standoStatements.isEmpty()) {
+            populateWithDefaultStandoStatements();
         }
     }
 
-    private final List<StandoStatement> standoStatements;
+    private StandoStatementTable getDatabaseTable() {
+        KCBotDatabase db = KCBotDatabase.getInstance();
+        return (StandoStatementTable) db.getTable(StandoStatementTable.TABLE_NAME)
+                .orElseThrow(() -> new IllegalStateException("Could not find StandoStatementTable in database"));
+    }
 
-    public StandoCommand() {
-        standoStatements = new ArrayList<>();
+    private void populateWithDefaultStandoStatements() {
         addStatement("That's what she said.", "LOW");
         addStatement("I have ate four of Mr Kiplings cakes. He does make exceedingly good cakes.", "LOW");
         addStatement("I chucked it in the Clyde.", "LOW");
@@ -57,7 +57,9 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private void addStatement(String statement, StandoStatement.Severity severity) {
-        standoStatements.add(new StandoStatement(statement, severity));
+        StandoStatement s = new StandoStatement(statement, severity);
+        standoStatements.add(s);
+        getDatabaseTable().insert(s);
     }
 
     @Command(aliases = "!stando", description = "Have a chat with Stando. Get him a beer or two for some fun facts.", usage = "!stando [<beverages>]")
