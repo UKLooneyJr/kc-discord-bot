@@ -4,6 +4,7 @@ import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.entities.channels.TextChannel;
 import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,6 +45,16 @@ public class TracTimeline implements Runnable {
         eb.setTitle(message.getTitle());
         eb.setAuthor(message.getAuthor());
         eb.setUrl(message.getLink());
+
+        if (message.getLink().contains("/KC/changeset/")) {
+            eb.setColor(Color.BLUE);
+        } else if (message.getLink().contains("/KC/ticket/")) {
+            eb.setColor(Color.YELLOW);
+        } else if (message.getLink().contains("/KC/wiki/")) {
+            eb.setColor(Color.GREEN);
+        } else if (message.getLink().contains("/KC/milestone/")) {
+            eb.setColor(Color.RED);
+        }
 
         channel.sendMessage(eb);
     }
