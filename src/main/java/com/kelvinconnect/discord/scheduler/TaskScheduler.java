@@ -44,6 +44,14 @@ public class TaskScheduler {
         tasks.put(name, future);
     }
 
+    public void runMinutely(String name, Runnable runnable) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        logger.info("Task '" + name + "' will next run every minute.");
+        ScheduledFuture future = scheduler.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
+        tasks.put(name, future);
+    }
+
     public void cancel(String name) {
         ScheduledFuture scheduled = tasks.get(name);
         if (null == scheduled) {

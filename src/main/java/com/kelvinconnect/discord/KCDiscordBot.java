@@ -6,6 +6,7 @@ import com.kelvinconnect.discord.command.trac.ChangeSetCommand;
 import com.kelvinconnect.discord.command.trac.TicketCommand;
 import com.kelvinconnect.discord.login.Login;
 import com.kelvinconnect.discord.login.TokenFileLogin;
+import com.kelvinconnect.discord.rss.TracTimeline;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
 import de.btobastian.javacord.DiscordApi;
@@ -54,5 +55,6 @@ public class KCDiscordBot {
         gameRandomiser.start(api);
         TaskScheduler scheduler = new TaskScheduler();
         scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
+        scheduler.runMinutely("timeline", new TracTimeline(api));
     }
 }
