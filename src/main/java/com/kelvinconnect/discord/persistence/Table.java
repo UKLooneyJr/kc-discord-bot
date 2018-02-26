@@ -1,7 +1,5 @@
 package com.kelvinconnect.discord.persistence;
 
-import java.sql.Connection;
-
 public abstract class Table {
     protected final KCBotDatabase db;
     protected final String tableName;
