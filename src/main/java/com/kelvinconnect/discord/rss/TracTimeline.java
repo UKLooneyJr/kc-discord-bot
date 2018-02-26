@@ -33,10 +33,10 @@ public class TracTimeline implements Runnable {
     private void writeFeedToChannel(Feed feed, TextChannel channel) {
         for (int i = 0; i < Math.min(MAX_FEED, feed.getMessages().size()); ++i) {
             FeedMessage message = feed.getMessages().get(i);
-            if (!lastEntries.contains(message.getLink())) {
+            if (!lastEntries.contains(message.getGuid())) {
                 writeMessageToChannel(message, channel);
             }
-            lastEntries.set(i, message.getLink());
+            lastEntries.set(i, message.getGuid());
         }
     }
 
