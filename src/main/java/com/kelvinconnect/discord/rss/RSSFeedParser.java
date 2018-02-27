@@ -47,6 +47,7 @@ public class RSSFeedParser {
             String guid = "";
 
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
             InputStream in = read();
             XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
             while (eventReader.hasNext()) {
