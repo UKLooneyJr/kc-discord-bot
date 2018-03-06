@@ -46,7 +46,6 @@ public class JoinLeaveCommand implements CommandExecutor {
     // keep references to pubchat and music channels as we will use them elsewhere
     // (maybe want to group these under party channels? will do that if we end up having more similar channels)
     private KCChannel pubchatChannel;
-    private KCChannel musicChannel;
 
     public JoinLeaveCommand(DiscordApi api) {
         kcServer = api.getServerById(239013363387072514L)
@@ -56,8 +55,7 @@ public class JoinLeaveCommand implements CommandExecutor {
 
     private void initChannels() {
         pubchatChannel = new KCChannel(276318041443270657L, 403663671148150797L, "pubchat");
-        musicChannel = new KCChannel(380822484855029760L, 403663738177191938L, "music");
-        channels = Arrays.asList(pubchatChannel, musicChannel,
+        channels = Arrays.asList(pubchatChannel,
                 new KCChannel(365038764738871297L, 365039527607140353L, "niche"),
                 new KCChannel(365040110867054592L, 365039532829179904L, "pnc"),
                 new KCChannel(365040137974972428L, 365039576521244672L, "storm", "neilstorm"),
@@ -202,10 +200,6 @@ public class JoinLeaveCommand implements CommandExecutor {
             Collection<Role> roles = user.getRoles(kcServer);
             if (!roles.contains(pubchatChannel.role)) {
                 roles.add(pubchatChannel.role);
-                dirty = true;
-            }
-            if (!roles.contains(musicChannel.role)) {
-                roles.add(musicChannel.role);
                 dirty = true;
             }
             if (dirty) {
