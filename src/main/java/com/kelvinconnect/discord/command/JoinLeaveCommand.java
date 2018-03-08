@@ -181,9 +181,9 @@ public class JoinLeaveCommand implements CommandExecutor {
     }
 
     /**
-     * Adds all users on the server to the pubchat and music channels. Can only be ran by the bot owner (Adamin)
+     * Adds all users on the server to the pubchat channel. Can only be ran by the bot owner (Adamin)
      */
-    @Command(aliases = "!partytime")
+    @Command(aliases = "!partytime", showInHelpPage = false)
     public void onPartyTimeCommand(Message message) {
         User authorUser = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
         if (!authorUser.isBotOwner()) {
