@@ -12,6 +12,11 @@ public class TracTimeline implements Runnable {
 
     private static final int MAX_FEED = 5;
 
+    private static final boolean INCLUDE_TICKET = true;
+    private static final boolean INCLUDE_MILESTONE = true;
+    private static final boolean INCLUDE_CHANGESET = true;
+    private static final boolean INCLUDE_WIKI = true;
+
     private final DiscordApi api;
     private final List<String> lastEntries = Arrays.asList(new String[MAX_FEED]);
 
@@ -60,9 +65,24 @@ public class TracTimeline implements Runnable {
     }
 
     private Feed getFeed() {
-        RSSFeedParser parser = new RSSFeedParser(
-                "http://trac.kelvinconnect.local/KC/timeline?ticket=on&milestone=on&changeset=on&wiki=on&max=" +
-                        MAX_FEED + "&authors=&daysback=90&format=rss");
+        StringBuilder sb = new StringBuilder();
+        sb.append("http://trac.kelvinconnect.local/KC/timeline?");
+        if (INCLUDE_TICKET) {
+            sb.append("ticket=on&");
+        }
+        if (INCLUDE_MILESTONE) {
+            sb.append("milestone=on&");
+        }
+        if (INCLUDE_CHANGESET) {
+            sb.append("changeset=on&");
+        }
+        if (INCLUDE_WIKI) {
+            sb.append("ticket=on&");
+        }
+        sb.append("max=");
+        sb.append(MAX_FEED);
+        sb.append("&authors=&daysback=90&format=rss");
+        RSSFeedParser parser = new RSSFeedParser(sb.toString());
         return parser.readFeed();
     }
 }
