@@ -56,6 +56,8 @@ public class JoinLeaveCommand implements CommandExecutor {
     private void initChannels() {
         pubchatChannel = new KCChannel(276318041443270657L, 403663671148150797L, "pubchat");
         channels = Arrays.asList(pubchatChannel,
+                new KCChannel(421223895513956352L, 421225268057735168L, "music"),
+                new KCChannel(421623339145232404L, 421623272434565130L, "games", "gaming"),
                 new KCChannel(365038764738871297L, 365039527607140353L, "niche"),
                 new KCChannel(365040110867054592L, 365039532829179904L, "pnc"),
                 new KCChannel(365040137974972428L, 365039576521244672L, "storm", "neilstorm"),
@@ -68,8 +70,7 @@ public class JoinLeaveCommand implements CommandExecutor {
                 new KCChannel(365040428598165516L, 365039737402294274L, "crash"),
                 new KCChannel(365040459027841024L, 365039767152492545L, "compact"),
                 new KCChannel(365040501339979776L, 365039790028226563L, "socrates"),
-                new KCChannel(408933031064371200L, 408933228037144577L, "roll", "roll-club", "rollclub"),
-                new KCChannel(421223895513956352L, 421225268057735168L, "music")
+                new KCChannel(408933031064371200L, 408933228037144577L, "roll", "roll-club", "rollclub")
         );
     }
 
@@ -173,7 +174,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         embed.setTitle("KC Discord Channels");
         StringBuilder channelList = new StringBuilder();
         for (KCChannel c : channels) {
-            channelList.append("* ");
+            channelList.append("• ");
             channelList.append(c.aliases.stream().collect(Collectors.joining(" | ")));
             channelList.append("\n");
         }

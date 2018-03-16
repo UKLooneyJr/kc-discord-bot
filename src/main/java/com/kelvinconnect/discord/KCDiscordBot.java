@@ -42,6 +42,7 @@ public class KCDiscordBot {
         handler.registerCommand(new InfoCommand());
         handler.registerCommand(new TicketCommand());
         handler.registerCommand(new ChangeSetCommand());
+        handler.registerCommand(new SlackCommand());
         handler.registerCommand(new DebugCommand());
         handler.registerCommand(new BangCommand());
         handler.registerCommand(new RobertCommand());
