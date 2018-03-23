@@ -10,7 +10,7 @@ import com.kelvinconnect.discord.login.TokenFileLogin;
 import com.kelvinconnect.discord.rss.TracTimeline;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
-import com.kelvinconnect.discord.ui.BotFrame;
+import com.kelvinconnect.discord.ui.BotUI;
 import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.CommandHandler;
@@ -63,7 +63,7 @@ public class KCDiscordBot {
     }
 
     private static void initUI() {
-        BotFrame f = new BotFrame();
+        BotUI f = new BotUI();
         f.setVisible(true);
     }
 }
