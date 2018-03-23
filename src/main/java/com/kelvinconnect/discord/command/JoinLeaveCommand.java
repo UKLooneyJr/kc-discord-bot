@@ -70,6 +70,7 @@ public class JoinLeaveCommand implements CommandExecutor {
                 new KCChannel(365040428598165516L, 365039737402294274L, "crash"),
                 new KCChannel(365040459027841024L, 365039767152492545L, "compact"),
                 new KCChannel(365040501339979776L, 365039790028226563L, "socrates"),
+                new KCChannel(425314799455436801L, 425314649458737163L, "anime"),
                 new KCChannel(408933031064371200L, 408933228037144577L, "roll", "roll-club", "rollclub")
         );
     }
@@ -127,6 +128,11 @@ public class JoinLeaveCommand implements CommandExecutor {
 
     private void unassignRole(KCChannel channel, Message message) {
         User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
+
+        if (user.getId() == 289378873777324033L || user.getId() == 299929391935520769L) {
+            cantLeaveChannel(message);
+            return;
+        }
 
         Collection<Role> roles = user.getRoles(kcServer);
         boolean dirty = roles.remove(channel.role);
