@@ -10,6 +10,7 @@ import com.kelvinconnect.discord.login.TokenFileLogin;
 import com.kelvinconnect.discord.rss.TracTimeline;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
+import com.kelvinconnect.discord.ui.BotFrame;
 import de.btobastian.javacord.DiscordApi;
 import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.CommandHandler;
@@ -34,6 +35,7 @@ public class KCDiscordBot {
 
         registerCommands(api);
         startTasks(api);
+        initUI();
     }
 
     private static void registerCommands(DiscordApi api) {
@@ -58,5 +60,10 @@ public class KCDiscordBot {
         TaskScheduler scheduler = new TaskScheduler();
         scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
         scheduler.runMinutely("timeline", new TracTimeline(api));
+    }
+
+    private static void initUI() {
+        BotFrame f = new BotFrame();
+        f.setVisible(true);
     }
 }
