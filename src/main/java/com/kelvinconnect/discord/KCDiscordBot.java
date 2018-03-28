@@ -7,6 +7,7 @@ import com.kelvinconnect.discord.command.trac.ChangeSetCommand;
 import com.kelvinconnect.discord.command.trac.TicketCommand;
 import com.kelvinconnect.discord.login.Login;
 import com.kelvinconnect.discord.login.TokenFileLogin;
+import com.kelvinconnect.discord.login.TokenLogin;
 import com.kelvinconnect.discord.rss.TracTimeline;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
@@ -26,16 +27,30 @@ public class KCDiscordBot {
     private static final Logger logger = LoggerUtil.getLogger(KCDiscordBot.class);
 
     public static void main(String[] args) {
-        Login l = new TokenFileLogin("src/main/resources/loginToken.txt");
-        DiscordApi api = l.login();
+        Parameters parameters = Parameters.getInstance();
+        parameters.parseCommandLine(args);
+
+        DiscordApi api = login(parameters);
 
         if (null == api) {
+            logger.error("Error logging in.");
             return;
         }
 
         registerCommands(api);
         startTasks(api);
         initUI();
+    }
+
+    private static DiscordApi login(Parameters parameters) {
+        String token = parameters.getToken();
+        Login l;
+        if (token != null) {
+            l = new TokenLogin(token);
+        } else {
+            l = new TokenFileLogin("src/main/resources/loginToken.txt");
+        }
+        return l.login();
     }
 
     private static void registerCommands(DiscordApi api) {
