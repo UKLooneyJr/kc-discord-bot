@@ -48,7 +48,7 @@ public class KCDiscordBot {
         if (token != null) {
             l = new TokenLogin(token);
         } else {
-            l = new TokenFileLogin("src/main/resources/loginToken.txt");
+            l = new TokenFileLogin("resources/loginToken.txt");
         }
         return l.login();
     }
