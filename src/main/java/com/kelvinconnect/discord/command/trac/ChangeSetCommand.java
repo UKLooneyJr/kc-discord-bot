@@ -62,7 +62,7 @@ public class ChangeSetCommand implements CommandExecutor {
     }
 
     private String getUrl(String revision) {
-        return "http://trac.kelvinconnect.local/KC/changeset/" + revision;
+        return "http://trac.pronto.pri/KC/changeset/" + revision;
     }
 
     private void sendEmbedMessage(String revision, String url, Message message, Document doc) {

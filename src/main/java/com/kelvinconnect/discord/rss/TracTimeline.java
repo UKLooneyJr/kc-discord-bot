@@ -66,7 +66,7 @@ public class TracTimeline implements Runnable {
 
     private Feed getFeed() {
         StringBuilder sb = new StringBuilder();
-        sb.append("http://trac.kelvinconnect.local/KC/timeline?");
+        sb.append("http://trac.pronto.pri/KC/timeline?");
         if (INCLUDE_TICKET) {
             sb.append("ticket=on&");
         }
