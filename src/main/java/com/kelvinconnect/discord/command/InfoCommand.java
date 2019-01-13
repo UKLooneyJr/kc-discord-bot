@@ -14,6 +14,6 @@ public class InfoCommand implements CommandExecutor {
     public String onInfoCommand(String[] args) {
         return "- **Author:** Adam Docherty\n" +
                 "- **Language:** Java\n" +
-                "- **Source:** http: https://bitbucket.org/AdamDocherty/kc-discord-bot/";
+                "- **Source:** https://github.com/UKLooneyJr/kc-discord-bot/";
     }
 }
