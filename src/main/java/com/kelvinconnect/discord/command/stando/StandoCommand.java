@@ -1,6 +1,7 @@
 package com.kelvinconnect.discord.command.stando;
 
 import com.kelvinconnect.discord.command.stando.filter.EveryoneFilter;
+import com.kelvinconnect.discord.command.stando.filter.SlurFilter;
 import com.kelvinconnect.discord.command.stando.filter.StandoFilter;
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import de.btobastian.javacord.entities.message.Message;
@@ -25,7 +26,8 @@ public class StandoCommand implements CommandExecutor {
     private static final String LEARN_HIGH = "The Daily Mail said ";
 
     private List<StandoStatement> standoStatements;
-    private List<StandoFilter> filters;
+    private List<StandoFilter> inputFilters;
+    private List<StandoFilter> outputFilters;
 
     public StandoCommand() {
         loadFilters();
@@ -33,8 +35,11 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private void loadFilters() {
-        filters = new ArrayList<>();
-        filters.add(new EveryoneFilter());
+        inputFilters = new ArrayList<>();
+        inputFilters.add(new EveryoneFilter());
+        outputFilters = new ArrayList<>();
+        outputFilters.add(new SlurFilter());
+        outputFilters.add(new EveryoneFilter());
     }
 
     private void loadStatements() {
@@ -67,7 +72,7 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private void addStatement(String statement, StandoStatement.Severity severity, Message message) {
-        for (StandoFilter filter : filters) {
+        for (StandoFilter filter : inputFilters) {
             statement = message != null ? filter.filterWithMessage(statement, message) : filter.filter(statement);
         }
         StandoStatement s = new StandoStatement(statement, severity);
@@ -88,7 +93,7 @@ public class StandoCommand implements CommandExecutor {
         } else if (isLearnMessage(args, LEARN_HIGH)) {
             response = learnFromHighSource(fullFact, message);
         } else {
-            response = giveFunFact(args);
+            response = giveFunFact(args, message);
         }
 
         return "**Steven Standaloft** " + response;
@@ -118,7 +123,7 @@ public class StandoCommand implements CommandExecutor {
                 message.length() > learnMessagePrefix.length();
     }
 
-    private String giveFunFact(String[] args) {
+    private String giveFunFact(String[] args, Message message) {
         int beers = getBeerCount(args);
 
         String fact;
@@ -130,10 +135,15 @@ public class StandoCommand implements CommandExecutor {
             fact = getRandomStandoStatement(LOW);
         }
 
-        if (beers >= 6) {
-            fact = slur(fact);
-        }
+        fact = filterFact(fact, message);
 
+        return fact;
+    }
+
+    private String filterFact(String fact, Message message) {
+        for (StandoFilter filter : outputFilters) {
+            fact = filter.filterWithMessage(fact, message);
+        }
         return fact;
     }
 
@@ -153,24 +163,5 @@ public class StandoCommand implements CommandExecutor {
         List<StandoStatement> possibleStatements = standoStatements.stream()
                 .filter(s -> s.severity.ordinal() <= maxSeverity.ordinal()).collect(Collectors.toList());
         return possibleStatements.get(new Random().nextInt(possibleStatements.size())).statement;
-    }
-
-    private String slur(String message) {
-        Random r = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (char c : message.toCharArray()) {
-            switch (c) {
-                case ' ':
-                    sb.append(r.nextInt(5) == 0 ? " ...hic! " : " ");
-                    break;
-                case 's':
-                    sb.append(r.nextBoolean() ? "sh" : "s");
-                    break;
-                default:
-                    sb.append(c);
-                    break;
-            }
-        }
-        return sb.toString();
     }
 }

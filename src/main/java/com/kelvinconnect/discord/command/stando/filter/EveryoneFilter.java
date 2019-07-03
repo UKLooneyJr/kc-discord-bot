@@ -6,15 +6,22 @@ public class EveryoneFilter implements StandoFilter {
 
     @Override
     public String filter(String input) {
-        return replaceEveryone(input, "everyone");
+        input = replaceEveryone(input, "everyone");
+        return replaceHere(input, "here");
     }
 
     @Override
     public String filterWithMessage(String input, Message message) {
-        return replaceEveryone(input, "<@!" + message.getAuthor().getIdAsString() + ">");
+        String authorId = "<@!" + message.getAuthor().getIdAsString() +  ">";
+        input = replaceEveryone(input,  authorId);
+        return replaceHere(input, authorId);
     }
 
     private String replaceEveryone(String input, String replace) {
         return input.replaceAll("@everyone", replace);
+    }
+
+    private String replaceHere(String input, String replace) {
+        return input.replaceAll("@here", replace);
     }
 }
