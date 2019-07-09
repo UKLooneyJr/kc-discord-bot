@@ -13,8 +13,13 @@ public class EveryoneFilter implements StandoFilter {
     @Override
     public String filterWithMessage(String input, Message message) {
         String authorId = "<@!" + message.getAuthor().getIdAsString() +  ">";
+        input = replaceUser(input, authorId);
         input = replaceEveryone(input,  authorId);
         return replaceHere(input, authorId);
+    }
+
+    private String replaceUser(String input, String replace) {
+        return input.replaceAll("<@!\\d{18}>", replace);
     }
 
     private String replaceEveryone(String input, String replace) {
