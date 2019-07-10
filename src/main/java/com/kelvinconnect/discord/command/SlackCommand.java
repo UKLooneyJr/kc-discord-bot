@@ -7,6 +7,6 @@ public class SlackCommand implements CommandExecutor {
 
     @Command(aliases = "!slack", description = "Gets a link to the Motorola Slack instance.", usage = "!slack")
     public String onSlackCommand(String[] args) {
-        return "https://msisoftwareenterprise.slack.com";
+        return "⚰️R.I.P";
     }
 }
