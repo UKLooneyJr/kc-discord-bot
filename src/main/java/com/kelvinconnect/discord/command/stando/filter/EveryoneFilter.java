@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord.command.stando.filter;
 
-import de.btobastian.javacord.entities.message.Message;
+import org.javacord.api.entity.message.Message;
 
 public class EveryoneFilter implements StandoFilter {
 
@@ -12,9 +12,9 @@ public class EveryoneFilter implements StandoFilter {
 
     @Override
     public String filterWithMessage(String input, Message message) {
-        String authorId = "<@!" + message.getAuthor().getIdAsString() +  ">";
+        String authorId = "<@!" + message.getAuthor().getIdAsString() + ">";
         input = replaceUser(input, authorId);
-        input = replaceEveryone(input,  authorId);
+        input = replaceEveryone(input, authorId);
         return replaceHere(input, authorId);
     }
 

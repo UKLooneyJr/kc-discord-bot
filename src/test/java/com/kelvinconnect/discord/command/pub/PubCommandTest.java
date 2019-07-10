@@ -1,7 +1,7 @@
 package com.kelvinconnect.discord.command.pub;
 
-import de.btobastian.javacord.entities.message.Message;
-import de.btobastian.javacord.entities.message.MessageAuthor;
+import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.MessageAuthor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

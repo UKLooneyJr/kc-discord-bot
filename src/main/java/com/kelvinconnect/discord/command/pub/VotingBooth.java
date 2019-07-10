@@ -6,33 +6,6 @@ import java.util.List;
 
 public class VotingBooth {
 
-    private static class Candidate {
-        Candidate(String name) {
-            this.name = name;
-            this.count = 0;
-        }
-
-        final String name;
-        int count;
-    }
-
-    private static class Voter {
-        Voter(String id) {
-            this.id = id;
-            this.candidate = null;
-        }
-
-        final String id;
-        Candidate candidate;
-    }
-
-    private static class CandidateComparator implements Comparator<Candidate> {
-        @Override
-        public int compare(Candidate o1, Candidate o2) {
-            return Integer.compare(o2.count, o1.count);
-        }
-    }
-
     private final List<Candidate> candidates;
     private final List<Voter> voters;
 
@@ -110,6 +83,31 @@ public class VotingBooth {
 
     public void reset() {
         candidates.clear();
+    }
+
+    private static class Candidate {
+        final String name;
+        int count;
+        Candidate(String name) {
+            this.name = name;
+            this.count = 0;
+        }
+    }
+
+    private static class Voter {
+        final String id;
+        Candidate candidate;
+        Voter(String id) {
+            this.id = id;
+            this.candidate = null;
+        }
+    }
+
+    private static class CandidateComparator implements Comparator<Candidate> {
+        @Override
+        public int compare(Candidate o1, Candidate o2) {
+            return Integer.compare(o2.count, o1.count);
+        }
     }
 
 }

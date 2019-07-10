@@ -1,14 +1,14 @@
 package com.kelvinconnect.discord.rss;
 
-import de.btobastian.javacord.utils.logging.LoggerUtil;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FeedMessage implements Comparable<FeedMessage> {
-    private static final Logger logger = LoggerUtil.getLogger(FeedMessage.class);
+    private static final Logger logger = LogManager.getLogger(FeedMessage.class);
 
     private String title;
     private String description;
@@ -61,10 +61,6 @@ public class FeedMessage implements Comparable<FeedMessage> {
         return pubDate;
     }
 
-    public void setPubDate(Date pubDate) {
-        this.pubDate = pubDate;
-    }
-
     public void setPubDate(String pubDateAsString) {
         SimpleDateFormat parser = new SimpleDateFormat("EEE, dd MMM YYYY HH:mm:ss zzz");
         try {
@@ -73,6 +69,10 @@ public class FeedMessage implements Comparable<FeedMessage> {
             logger.error("Failed to parse date " + pubDateAsString, e);
             this.pubDate = new Date(253402300799000L);
         }
+    }
+
+    public void setPubDate(Date pubDate) {
+        this.pubDate = pubDate;
     }
 
     @Override

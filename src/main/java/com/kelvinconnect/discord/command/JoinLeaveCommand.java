@@ -1,18 +1,18 @@
 package com.kelvinconnect.discord.command;
 
 import com.kelvinconnect.discord.DiscordUtils;
-import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.entities.Server;
-import de.btobastian.javacord.entities.User;
-import de.btobastian.javacord.entities.channels.ServerChannel;
-import de.btobastian.javacord.entities.channels.TextChannel;
-import de.btobastian.javacord.entities.message.Message;
-import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
-import de.btobastian.javacord.entities.permissions.Role;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.channel.ServerChannel;
+import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
+import org.javacord.api.entity.permission.Role;
+import org.javacord.api.entity.server.Server;
+import org.javacord.api.entity.user.User;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,28 +21,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JoinLeaveCommand implements CommandExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(JoinLeaveCommand.class);
+    private static final Logger logger = LogManager.getLogger(JoinLeaveCommand.class);
 
     private final static String INVALID_CHANNEL_NAME = "Invalid channel name, try '!channels' for a list of all channels.";
     private final static String CANT_LEAVE_CHANNEL = "Sorry, you can't leave this channel.";
-
-    private class KCChannel {
-        final List<String> aliases;
-        final Role role;
-        final ServerChannel channel;
-
-        KCChannel(long channelId, long roleId, String... aliases) {
-            channel = kcServer.getChannelById(channelId).orElseThrow(() ->
-                    new RuntimeException("Failed to find channel " + channelId + ". alias=" + aliases[0]));
-            role = kcServer.getRoleById(roleId).orElseThrow(() ->
-                    new RuntimeException("Failed to find role " + roleId + ". alias=" + aliases[0]));
-            this.aliases = Arrays.asList(aliases);
-        }
-    }
-
     private final Server kcServer;
     private List<KCChannel> channels;
-
     // keep references to pubchat and music channels as we will use them elsewhere
     // (maybe want to group these under party channels? will do that if we end up having more similar channels)
     private KCChannel pubchatChannel;
@@ -51,6 +35,14 @@ public class JoinLeaveCommand implements CommandExecutor {
         kcServer = api.getServerById(239013363387072514L)
                 .orElseThrow(() -> new RuntimeException("Failed to find KC server."));
         initChannels();
+    }
+
+    private static void debugPrintChannels(Server server) {
+        if (logger.isInfoEnabled()) {
+            for (Role role : server.getRoles()) {
+                logger.info(role.getName() + " - " + role.getIdAsString());
+            }
+        }
     }
 
     private void initChannels() {
@@ -101,7 +93,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         }
 
         if (dirty) {
-            ((TextChannel)channel.channel).sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!");
+            ((TextChannel) channel.channel).sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!");
             kcServer.updateRoles(user, roles);
         }
     }
@@ -138,7 +130,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         boolean dirty = roles.remove(channel.role);
 
         if (dirty) {
-            ((TextChannel)channel.channel).sendMessage("Bye " + DiscordUtils.getAuthorShortUserName(message));
+            ((TextChannel) channel.channel).sendMessage("Bye " + DiscordUtils.getAuthorShortUserName(message));
             kcServer.updateRoles(user, roles);
         }
     }
@@ -216,11 +208,17 @@ public class JoinLeaveCommand implements CommandExecutor {
         }
     }
 
-    private static void debugPrintChannels(Server server) {
-        if (logger.isInfoEnabled()) {
-            for (Role role : server.getRoles()) {
-                logger.info(role.getName() + " - " + role.getIdAsString());
-            }
+    private class KCChannel {
+        final List<String> aliases;
+        final Role role;
+        final ServerChannel channel;
+
+        KCChannel(long channelId, long roleId, String... aliases) {
+            channel = kcServer.getChannelById(channelId).orElseThrow(() ->
+                    new RuntimeException("Failed to find channel " + channelId + ". alias=" + aliases[0]));
+            role = kcServer.getRoleById(roleId).orElseThrow(() ->
+                    new RuntimeException("Failed to find role " + roleId + ". alias=" + aliases[0]));
+            this.aliases = Arrays.asList(aliases);
         }
     }
 }

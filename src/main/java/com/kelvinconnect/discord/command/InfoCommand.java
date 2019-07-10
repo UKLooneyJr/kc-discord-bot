@@ -5,7 +5,7 @@ import de.btobastian.sdcf4j.CommandExecutor;
 
 /**
  * Displays info about the bot
- *
+ * <p>
  * Created by Adam on 14/03/2017.
  */
 public class InfoCommand implements CommandExecutor {

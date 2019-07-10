@@ -1,23 +1,28 @@
 package com.kelvinconnect.discord.persistence;
 
 import com.kelvinconnect.discord.command.stando.StandoStatementTable;
-import de.btobastian.javacord.utils.logging.LoggerUtil;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class KCBotDatabase {
-    private static final Logger logger = LoggerUtil.getLogger(KCBotDatabase.class);
-
+    private static final Logger logger = LogManager.getLogger(KCBotDatabase.class);
+    private static KCBotDatabase instance;
     private final String url;
-
     private List<Table> tables;
 
-    private static KCBotDatabase instance;
+    private KCBotDatabase(String url) {
+        this.url = url;
+        initialiseDaos();
+        createDatabase();
+    }
 
     public static KCBotDatabase getInstance() {
         if (instance == null) {
@@ -39,12 +44,6 @@ public class KCBotDatabase {
         return tables.stream()
                 .filter(table -> tableName.equals(table.getTableName()))
                 .findFirst();
-    }
-
-    private KCBotDatabase(String url) {
-        this.url = url;
-        initialiseDaos();
-        createDatabase();
     }
 
     private void initialiseDaos() {

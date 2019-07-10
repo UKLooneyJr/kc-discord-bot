@@ -1,8 +1,8 @@
 package com.kelvinconnect.discord.rss;
 
-import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.entities.channels.TextChannel;
-import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 import java.awt.*;
 import java.util.Arrays;
