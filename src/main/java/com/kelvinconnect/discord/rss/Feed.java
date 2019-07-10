@@ -6,11 +6,11 @@ import java.util.List;
 
 public class Feed {
 
-    final String title;
-    final String link;
-    final String description;
-    final String language;
-    final String copyright;
+    private final String title;
+    private final String link;
+    private final String description;
+    private final String language;
+    private final String copyright;
 
     final List<FeedMessage> entries = new ArrayList<>();
 

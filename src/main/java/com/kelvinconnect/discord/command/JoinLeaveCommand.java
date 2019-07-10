@@ -181,7 +181,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         StringBuilder channelList = new StringBuilder();
         for (KCChannel c : channels) {
             channelList.append("• ");
-            channelList.append(c.aliases.stream().collect(Collectors.joining(" | ")));
+            channelList.append(String.join(" | ", c.aliases));
             channelList.append("\n");
         }
         embed.setDescription(channelList.toString());

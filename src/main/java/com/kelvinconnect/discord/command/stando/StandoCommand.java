@@ -152,7 +152,7 @@ public class StandoCommand implements CommandExecutor {
                 "\uD83C\uDF78", "\uD83C\uDF79", "\uD83C\uDF7E", "\uD83C\uDF76"};
         int beers = 0;
         for (String arg : args) {
-            if (Arrays.stream(beerEmojis).anyMatch(x -> x.equals(arg))) {
+            if (Arrays.asList(beerEmojis).contains(arg)) {
                 beers++;
             }
         }

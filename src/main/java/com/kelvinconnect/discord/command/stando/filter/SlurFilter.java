@@ -26,7 +26,7 @@ public class SlurFilter implements StandoFilter {
         final String[] words = message.split("\\s");
         int beers = 0;
         for (String word : words) {
-            if (Arrays.stream(beerEmojis).anyMatch(x -> x.equals(word))) {
+            if (Arrays.asList(beerEmojis).contains(word)) {
                 beers++;
             }
         }
