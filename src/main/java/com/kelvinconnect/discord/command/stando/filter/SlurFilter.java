@@ -6,6 +6,19 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class SlurFilter implements StandoFilter {
+    private final int hicOccurrence;
+    private final int shOccurrence;
+
+    public SlurFilter() {
+        hicOccurrence = 5;
+        shOccurrence = 2;
+    }
+
+    public SlurFilter(int hicOccurrence, int shOccurrence) {
+        this.hicOccurrence = hicOccurrence;
+        this.shOccurrence = shOccurrence;
+    }
+
     @Override
     public String filter(String input) {
         // We only want to slur if the message contains beer emoji
@@ -39,10 +52,10 @@ public class SlurFilter implements StandoFilter {
         for (char c : input.toCharArray()) {
             switch (c) {
                 case ' ':
-                    sb.append(r.nextInt(5) == 0 ? " ...hic! " : " ");
+                    sb.append(r.nextInt(hicOccurrence) == 0 ? " ...hic! " : " ");
                     break;
                 case 's':
-                    sb.append(r.nextBoolean() ? "sh" : "s");
+                    sb.append(r.nextInt(shOccurrence) == 0 ? "sh" : "s");
                     break;
                 default:
                     sb.append(c);
