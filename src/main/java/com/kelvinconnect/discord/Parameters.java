@@ -1,11 +1,11 @@
 package com.kelvinconnect.discord;
 
-import de.btobastian.javacord.utils.logging.LoggerUtil;
 import org.apache.commons.cli.*;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Parameters {
-    private static final Logger logger = LoggerUtil.getLogger(Parameters.class);
+    private static final Logger logger = LogManager.getLogger(Parameters.class);
 
     private static Parameters instance;
 

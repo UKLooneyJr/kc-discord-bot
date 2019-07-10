@@ -12,19 +12,19 @@ import com.kelvinconnect.discord.rss.TracTimeline;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
 import com.kelvinconnect.discord.ui.BotUI;
-import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.javacord.api.DiscordApi;
 
 /**
  * Entry point for KC Discord Bot
- *
+ * <p>
  * Created by Adam on 14/03/2017.
  */
 public class KCDiscordBot {
-    private static final Logger logger = LoggerUtil.getLogger(KCDiscordBot.class);
+    private static final Logger logger = LogManager.getLogger(KCDiscordBot.class);
 
     public static void main(String[] args) {
         Parameters parameters = Parameters.getInstance();

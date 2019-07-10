@@ -1,9 +1,9 @@
 package com.kelvinconnect.discord.command.trac;
 
-import de.btobastian.javacord.entities.message.Message;
-import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 /**
  * Creates a embeded link
- *
+ * <p>
  * Created by Adam on 15/03/2017.
  */
 public class TicketCommand implements CommandExecutor {

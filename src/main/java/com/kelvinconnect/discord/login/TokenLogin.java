@@ -1,7 +1,7 @@
 package com.kelvinconnect.discord.login;
 
-import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.DiscordApiBuilder;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.DiscordApiBuilder;
 
 public class TokenLogin implements Login {
 

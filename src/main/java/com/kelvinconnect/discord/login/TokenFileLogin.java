@@ -1,9 +1,9 @@
 package com.kelvinconnect.discord.login;
 
-import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.DiscordApiBuilder;
-import de.btobastian.javacord.utils.logging.LoggerUtil;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.DiscordApiBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,11 +11,11 @@ import java.nio.file.Paths;
 
 /**
  * Logs in with a Token read from a file
- *
+ * <p>
  * Created by Adam on 14/03/2017.
  */
 public class TokenFileLogin implements Login {
-    private static final Logger logger = LoggerUtil.getLogger(TokenFileLogin.class);
+    private static final Logger logger = LogManager.getLogger(TokenFileLogin.class);
 
     private final String filepath;
 

@@ -1,7 +1,7 @@
 package com.kelvinconnect.discord;
 
-import de.btobastian.javacord.entities.message.Message;
-import de.btobastian.javacord.entities.message.MessageAuthor;
+import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.MessageAuthor;
 
 public class DiscordUtils {
 
@@ -14,7 +14,7 @@ public class DiscordUtils {
 
     private static String getShortUserName(MessageAuthor user) {
         String name = user.getDisplayName();
-        if(name.contains(" ")){
+        if (name.contains(" ")) {
             return name.substring(0, name.indexOf(" "));
         }
         return name;

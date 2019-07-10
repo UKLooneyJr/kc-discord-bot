@@ -1,18 +1,18 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.javacord.api.DiscordApi;
 
 /**
  * Displays info about the bot
- *
+ * <p>
  * Created by Adam on 14/03/2017.
  */
 public class DebugCommand implements CommandExecutor {
-    private static final Logger logger = LoggerUtil.getLogger(DebugCommand.class);
+    private static final Logger logger = LogManager.getLogger(DebugCommand.class);
 
     @Command(aliases = "!debug", showInHelpPage = false)
     public void onDebugCommand(DiscordApi api) {

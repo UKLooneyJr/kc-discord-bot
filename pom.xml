@@ -59,29 +59,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.btobastian</groupId>
-            <artifactId>Javacord</artifactId>
-            <!-- See below what to insert here -->
-            <version>c8792b4</version>
+            <groupId>org.javacord</groupId>
+            <artifactId>javacord</artifactId>
+            <version>3.0.4</version>
+            <type>pom</type>
         </dependency>
-        <!-- A SLF4J comaptible logging framework. I would recommend to use logback -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-        <!-- The core module for sdcf4j -->
         <dependency>
             <groupId>de.btobastian.sdcf4j</groupId>
             <artifactId>sdcf4j-core</artifactId>
-            <version>b4559b3</version>
+            <version>1.0.10</version>
         </dependency>
-        <!-- The module for your prefered lib-->
         <dependency>
             <groupId>de.btobastian.sdcf4j</groupId>
-            <!-- Possible artifact ids: sdcf4j-javacord, sdcf4j-jda, sdcf4j-jda3, sdcf4j-discord4j -->
             <artifactId>sdcf4j-javacord</artifactId>
-            <version>b4559b3</version>
+            <version>1.0.10</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>
@@ -93,6 +84,17 @@
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.3</version>
         </dependency>
         <!-- For testing -->
         <dependency>
@@ -112,12 +114,6 @@
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
             <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.8.3</version>
         </dependency>
     </dependencies>
 

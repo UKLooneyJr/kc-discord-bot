@@ -1,8 +1,8 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.javacord.DiscordApi;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import org.javacord.api.DiscordApi;
 
 import java.util.Random;
 
@@ -11,13 +11,13 @@ import java.util.Random;
  */
 public class RobertCommand implements CommandExecutor {
 
-    private final static String[] choices = { "...Terri?", "That's not the first time I've heard that",
+    private final static String[] choices = {"...Terri?", "That's not the first time I've heard that",
             "Happy with that?", "From my point of view", "Come and read this email", "You got a second?",
-            "You got a minute?" };
+            "You got a minute?"};
 
     @Command(aliases = "!robert", description = "Ask for some help from robert.", usage = "!robert")
     public String onRobertCommand(String[] args, DiscordApi api) {
         String message = choices[new Random().nextInt(choices.length)];
-        return "**Robert Mackin** " +  message;
+        return "**Robert Mackin** " + message;
     }
 }

@@ -4,9 +4,9 @@ import com.kelvinconnect.discord.command.stando.filter.EveryoneFilter;
 import com.kelvinconnect.discord.command.stando.filter.SlurFilter;
 import com.kelvinconnect.discord.command.stando.filter.StandoFilter;
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
-import de.btobastian.javacord.entities.message.Message;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import org.javacord.api.entity.message.Message;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +32,18 @@ public class StandoCommand implements CommandExecutor {
     public StandoCommand() {
         loadFilters();
         loadStatements();
+    }
+
+    private static int getBeerCount(String[] args) {
+        final String[] beerEmojis = {"\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77",
+                "\uD83C\uDF78", "\uD83C\uDF79", "\uD83C\uDF7E", "\uD83C\uDF76"};
+        int beers = 0;
+        for (String arg : args) {
+            if (Arrays.asList(beerEmojis).contains(arg)) {
+                beers++;
+            }
+        }
+        return beers;
     }
 
     private void loadFilters() {
@@ -145,18 +157,6 @@ public class StandoCommand implements CommandExecutor {
             fact = filter.filterWithMessage(fact, message);
         }
         return fact;
-    }
-
-    private static int getBeerCount(String[] args) {
-        final String[] beerEmojis = {"\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77",
-                "\uD83C\uDF78", "\uD83C\uDF79", "\uD83C\uDF7E", "\uD83C\uDF76"};
-        int beers = 0;
-        for (String arg : args) {
-            if (Arrays.asList(beerEmojis).contains(arg)) {
-                beers++;
-            }
-        }
-        return beers;
     }
 
     private String getRandomStandoStatement(StandoStatement.Severity maxSeverity) {

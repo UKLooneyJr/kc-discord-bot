@@ -1,10 +1,10 @@
 package com.kelvinconnect.discord.command;
 
 import com.kelvinconnect.discord.DiscordUtils;
-import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class RollCommand implements CommandExecutor {
-    private static final Logger logger = LoggerUtil.getLogger(RollCommand.class);
+    private static final Logger logger = LogManager.getLogger(RollCommand.class);
 
     private static final String ROLL_PATTERN = "d?(\\d+)(([d\\-])(\\d+))?";
 
@@ -22,8 +22,7 @@ public class RollCommand implements CommandExecutor {
 
         if (args.length == 0) {
             return rollSingle(6);
-        } else
-        if (args.length > 1) {
+        } else if (args.length > 1) {
             return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
         }
 

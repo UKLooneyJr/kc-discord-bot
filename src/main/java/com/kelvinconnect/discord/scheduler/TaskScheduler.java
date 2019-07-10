@@ -1,7 +1,7 @@
 package com.kelvinconnect.discord.scheduler;
 
-import de.btobastian.javacord.utils.logging.LoggerUtil;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -14,11 +14,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Schedules "tasks" (i.e. Runnables) to be run at a set time weekly.
- *
+ * <p>
  * Created by Adam on 22/03/2017.
  */
 public class TaskScheduler {
-    private static final Logger logger = LoggerUtil.getLogger(TaskScheduler.class);
+    private static final Logger logger = LogManager.getLogger(TaskScheduler.class);
 
     private static final int WEEK_PERIOD = 60 * 24 * 7; // every week
 

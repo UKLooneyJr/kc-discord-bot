@@ -1,17 +1,17 @@
 package com.kelvinconnect.discord.command.trac;
 
-import de.btobastian.javacord.entities.message.Message;
-import de.btobastian.javacord.entities.message.embed.EmbedBuilder;
-import de.btobastian.javacord.utils.logging.LoggerUtil;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +21,11 @@ import java.util.regex.Pattern;
 
 /**
  * Creates a embeded link
- *
+ * <p>
  * Created by Adam on 15/03/2017.
  */
 public class ChangeSetCommand implements CommandExecutor {
-    private static final Logger logger = LoggerUtil.getLogger(ChangeSetCommand.class);
+    private static final Logger logger = LogManager.getLogger(ChangeSetCommand.class);
 
     private static final String REVISION_NUMBER_FORMAT = "^[1-9]\\d*$";
     private static final int MAX_CHANGES_PER_MESSAGE = 25;
@@ -121,6 +121,6 @@ public class ChangeSetCommand implements CommandExecutor {
     }
 
     private Document getDocument(String url) throws IOException {
-        return Jsoup.connect(url).timeout(10*1000).get();
+        return Jsoup.connect(url).timeout(10 * 1000).get();
     }
 }

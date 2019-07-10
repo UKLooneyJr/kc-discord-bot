@@ -2,8 +2,8 @@ package com.kelvinconnect.discord.command.stando;
 
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import com.kelvinconnect.discord.persistence.Table;
-import de.btobastian.javacord.utils.logging.LoggerUtil;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,9 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StandoStatementTable extends Table {
-    private static final Logger logger = LoggerUtil.getLogger(StandoStatementTable.class);
-
     public static final String TABLE_NAME = "stando_statements";
+    private static final Logger logger = LogManager.getLogger(StandoStatementTable.class);
 
     public StandoStatementTable(KCBotDatabase db) {
         super(db, TABLE_NAME);
@@ -52,9 +51,9 @@ public class StandoStatementTable extends Table {
 
         db.connect().ifPresent(conn -> {
             try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+                 ResultSet rs = stmt.executeQuery(sql)) {
 
-                while(rs.next()) {
+                while (rs.next()) {
                     String statement = rs.getString("statement");
                     Integer severity = rs.getInt("severity");
                     standoStatements.add(new StandoStatement(statement,

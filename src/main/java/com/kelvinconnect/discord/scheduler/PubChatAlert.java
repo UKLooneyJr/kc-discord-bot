@@ -1,12 +1,12 @@
 package com.kelvinconnect.discord.scheduler;
 
-import de.btobastian.javacord.DiscordApi;
-import de.btobastian.javacord.entities.channels.TextChannel;
-import de.btobastian.javacord.entities.message.MessageBuilder;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.message.MessageBuilder;
 
 /**
  * Sends an alert to the pub chat channel every friday at 4.
- *
+ * <p>
  * Created by Adam on 22/03/2017.
  */
 public class PubChatAlert implements Runnable {
@@ -26,6 +26,6 @@ public class PubChatAlert implements Runnable {
         // pubchat = 276318041443270657
         api.getChannelById("276318041443270657")
                 .filter(c -> c instanceof TextChannel)
-                .ifPresent(c -> ((TextChannel)c).sendMessage(builder.toString()));
+                .ifPresent(c -> ((TextChannel) c).sendMessage(builder.toString()));
     }
 }

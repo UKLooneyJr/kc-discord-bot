@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord;
 
-import de.btobastian.javacord.DiscordApi;
+import org.javacord.api.DiscordApi;
 
 import java.util.Random;
 import java.util.Timer;
@@ -8,7 +8,7 @@ import java.util.TimerTask;
 
 /**
  * Randomises the game the bot is playing every two minutes
- *
+ * <p>
  * Created by Adam on 15/03/2017.
  */
 public class GameRandomiser {
@@ -19,7 +19,7 @@ public class GameRandomiser {
     public GameRandomiser() {
         timer = new Timer();
 
-        randomGames = new String[] {
+        randomGames = new String[]{
                 "Builder 19.14.14.4a",
                 "Builder 17.44.37.3.1d",
                 "Netbeans",

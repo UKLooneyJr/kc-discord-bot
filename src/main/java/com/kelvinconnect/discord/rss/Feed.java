@@ -6,13 +6,12 @@ import java.util.List;
 
 public class Feed {
 
+    private final List<FeedMessage> entries = new ArrayList<>();
     private final String title;
     private final String link;
     private final String description;
     private final String language;
     private final String copyright;
-
-    final List<FeedMessage> entries = new ArrayList<>();
 
     public Feed(String title, String link, String description, String language,
                 String copyright) {
