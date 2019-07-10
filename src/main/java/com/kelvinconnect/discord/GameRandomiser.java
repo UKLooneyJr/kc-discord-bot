@@ -14,9 +14,25 @@ import java.util.TimerTask;
 public class GameRandomiser {
 
     private final Timer timer;
+    private final String[] randomGames;
 
     public GameRandomiser() {
         timer = new Timer();
+
+        randomGames = new String[] {
+                "Builder 19.14.14.4a",
+                "Builder 17.44.37.3.1d",
+                "Netbeans",
+                "Oxygen",
+                "Cygwin",
+                "Tortoise SVN",
+                "Jenkins",
+                "Command Central App",
+                "SourceTree",
+                "Android Studio",
+                "Builder 21",
+                "osu!"
+        };
     }
 
     public void start(final DiscordApi api) {
@@ -36,16 +52,7 @@ public class GameRandomiser {
         timer.purge();
     }
 
-    private static String getRandomActivity() {
-        String[] randomGames = {
-                "Builder 19.14.14.4a",
-                "Builder 17.44.37.3.1d",
-                "Netbeans",
-                "Oxygen",
-                "Cygwin",
-                "Tortoise SVN",
-                "Jenkins"
-        };
+    private String getRandomActivity() {
         int rnd = new Random().nextInt(randomGames.length);
         return randomGames[rnd];
     }
