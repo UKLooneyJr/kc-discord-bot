@@ -40,7 +40,19 @@ public class EveryoneFilterTest {
 
     @Test
     public void testUser() {
+        String result = everyoneFilter.filterWithMessage("prefix <@098765432112345678> suffix", message);
+        assertEquals("prefix " + MOCK_ID_WRAPPED + " suffix", result);
+    }
+
+    @Test
+    public void testUserWithNick() {
         String result = everyoneFilter.filterWithMessage("prefix <@!098765432112345678> suffix", message);
+        assertEquals("prefix " + MOCK_ID_WRAPPED + " suffix", result);
+    }
+
+    @Test
+    public void testUserOld() {
+        String result = everyoneFilter.filterWithMessage("prefix @Old User#1234 suffix", message);
         assertEquals("prefix " + MOCK_ID_WRAPPED + " suffix", result);
     }
 

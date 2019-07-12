@@ -19,7 +19,7 @@ public class EveryoneFilter implements StandoFilter {
     }
 
     private String replaceUser(String input, String replace) {
-        return input.replaceAll("<@!\\d{18}>", replace);
+        return input.replaceAll("(<@!?\\d{18}>|@[^#]*#\\d{4})", replace);
     }
 
     private String replaceEveryone(String input, String replace) {
