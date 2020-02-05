@@ -18,6 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 
+import java.time.Instant;
+
 /**
  * Entry point for KC Discord Bot
  * <p>
@@ -57,6 +59,7 @@ public class KCDiscordBot {
         CommandHandler handler = new JavacordHandler(api);
         handler.registerCommand(new HelpCommand(handler));
         handler.registerCommand(new InfoCommand());
+        handler.registerCommand(new UptimeCommand(Instant.now()));
         handler.registerCommand(new TicketCommand());
         handler.registerCommand(new ChangeSetCommand());
         handler.registerCommand(new SlackCommand());

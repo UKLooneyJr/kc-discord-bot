@@ -1,13 +1,14 @@
 package com.kelvinconnect.discord.command;
 
 import de.btobastian.sdcf4j.Command;
+import de.btobastian.sdcf4j.CommandExecutor;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 
-public class UptimeCommand {
+public class UptimeCommand implements CommandExecutor {
     private Temporal startTime;
 
     public UptimeCommand(Temporal startTime) {
