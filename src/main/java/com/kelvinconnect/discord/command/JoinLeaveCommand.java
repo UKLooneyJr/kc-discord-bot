@@ -81,18 +81,11 @@ public class JoinLeaveCommand implements CommandExecutor {
     private void assignRole(KCChannel channel, Message message) {
         User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
 
-        boolean dirty = false;
-
         Collection<Role> roles = user.getRoles(kcServer);
-        if (!roles.contains(channel.role)) {
-            dirty = true;
-            roles.add(channel.role);
-        }
 
-        if (dirty) {
-            ((TextChannel) channel.channel)
-                    .sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!");
-            kcServer.updateRoles(user, roles);
+        if (!roles.contains(channel.role)) {
+            kcServer.addRoleToUser(user, channel.role).thenRun(() -> ((TextChannel) channel.channel)
+                    .sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!"));
         }
     }
 
@@ -116,17 +109,11 @@ public class JoinLeaveCommand implements CommandExecutor {
     private void unassignRole(KCChannel channel, Message message) {
         User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
 
-        if (user.getId() == 289378873777324033L || user.getId() == 299929391935520769L) {
-            cantLeaveChannel(message);
-            return;
-        }
-
         Collection<Role> roles = user.getRoles(kcServer);
-        boolean dirty = roles.remove(channel.role);
 
-        if (dirty) {
-            ((TextChannel) channel.channel).sendMessage("Bye " + DiscordUtils.getAuthorShortUserName(message));
-            kcServer.updateRoles(user, roles);
+        if (roles.contains(channel.role)) {
+            kcServer.removeRoleFromUser(user, channel.role).thenRun(() -> ((TextChannel) channel.channel)
+                    .sendMessage("Bye " + DiscordUtils.getAuthorShortUserName(message)));
         }
     }
 
