@@ -4,7 +4,6 @@ public abstract class Table {
     protected final KCBotDatabase db;
     protected final String tableName;
 
-
     public Table(KCBotDatabase db, String tableName) {
         this.db = db;
         this.tableName = tableName;

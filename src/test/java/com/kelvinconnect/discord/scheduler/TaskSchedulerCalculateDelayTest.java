@@ -96,8 +96,8 @@ public class TaskSchedulerCalculateDelayTest {
             for (int hour = 0; hour <= 24; ++hour) {
                 for (int minute = 0; minute <= 60; ++minute) {
                     int delay = scheduler.calculateDelay(day, hour, minute);
-                    assertThat("delay should not be less than 0 {day=" +
-                            day + ",hour=" + hour + ",minute=" + minute + "}",
+                    assertThat(
+                            "delay should not be less than 0 {day=" + day + ",hour=" + hour + ",minute=" + minute + "}",
                             delay, greaterThanOrEqualTo(0));
                 }
             }

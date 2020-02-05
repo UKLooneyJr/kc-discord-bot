@@ -22,16 +22,16 @@ public class DebugCommand implements CommandExecutor {
 
         // Don't need these anymore, discord has added features to get the channel and server ids from discord.
 
-//        Collection<Server> sList = api.getServers();
-//        logger.debug("Server List:");
-//        for (Server s : sList) {
-//            logger.debug(s.getName() + " : " + s.getId());
-//        }
-//
-//        Collection<Channel> cList = api.getChannels();
-//        logger.debug("Channel List:");
-//        for (Channel c : cList) {
-//            logger.debug(c.getIdAsString());
-//        }
+        // Collection<Server> sList = api.getServers();
+        // logger.debug("Server List:");
+        // for (Server s : sList) {
+        // logger.debug(s.getName() + " : " + s.getId());
+        // }
+        //
+        // Collection<Channel> cList = api.getChannels();
+        // logger.debug("Channel List:");
+        // for (Channel c : cList) {
+        // logger.debug(c.getIdAsString());
+        // }
     }
 }

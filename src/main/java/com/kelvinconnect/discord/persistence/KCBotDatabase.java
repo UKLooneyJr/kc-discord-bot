@@ -41,9 +41,7 @@ public class KCBotDatabase {
     }
 
     public Optional<Table> getTable(String tableName) {
-        return tables.stream()
-                .filter(table -> tableName.equals(table.getTableName()))
-                .findFirst();
+        return tables.stream().filter(table -> tableName.equals(table.getTableName())).findFirst();
     }
 
     private void initialiseDaos() {
@@ -52,8 +50,7 @@ public class KCBotDatabase {
     }
 
     private void createDatabase() {
-        connect().ifPresent((Connection c) ->
-                tables.forEach((Table table) -> createTable(c, table)));
+        connect().ifPresent((Connection c) -> tables.forEach((Table table) -> createTable(c, table)));
     }
 
     private void createTable(Connection conn, Table table) {

@@ -47,8 +47,7 @@ public class JoinLeaveCommand implements CommandExecutor {
 
     private void initChannels() {
         pubchatChannel = new KCChannel(276318041443270657L, 403663671148150797L, "pubchat");
-        channels = Arrays.asList(pubchatChannel,
-                new KCChannel(421223895513956352L, 421225268057735168L, "music"),
+        channels = Arrays.asList(pubchatChannel, new KCChannel(421223895513956352L, 421225268057735168L, "music"),
                 new KCChannel(421623339145232404L, 421623272434565130L, "games", "gaming"),
                 new KCChannel(365038764738871297L, 365039527607140353L, "niche"),
                 new KCChannel(365040110867054592L, 365039532829179904L, "pnc"),
@@ -63,8 +62,7 @@ public class JoinLeaveCommand implements CommandExecutor {
                 new KCChannel(365040459027841024L, 365039767152492545L, "compact"),
                 new KCChannel(365040501339979776L, 365039790028226563L, "socrates"),
                 new KCChannel(425314799455436801L, 425314649458737163L, "anime"),
-                new KCChannel(408933031064371200L, 408933228037144577L, "roll", "roll-club", "rollclub")
-        );
+                new KCChannel(408933031064371200L, 408933228037144577L, "roll", "roll-club", "rollclub"));
     }
 
     @Command(aliases = "!join", description = "Joins a channel.", usage = "!join [<channel-name>]")
@@ -76,9 +74,8 @@ public class JoinLeaveCommand implements CommandExecutor {
         } else if (args.length > 1) {
             message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
         }
-        getChannelFromAlias(args[0]).<Runnable>map(id -> () -> assignRole(id, message))
-                .orElse(() -> channelNotFound(message))
-                .run();
+        getChannelFromAlias(args[0]).<Runnable> map(id -> () -> assignRole(id, message))
+                .orElse(() -> channelNotFound(message)).run();
     }
 
     private void assignRole(KCChannel channel, Message message) {
@@ -93,28 +90,26 @@ public class JoinLeaveCommand implements CommandExecutor {
         }
 
         if (dirty) {
-            ((TextChannel) channel.channel).sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!");
+            ((TextChannel) channel.channel)
+                    .sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!");
             kcServer.updateRoles(user, roles);
         }
     }
 
-    @Command(aliases = "!leave", description = "Leaves a named channel. Leaves the current channel if none specified.",
-            usage = "!leave [<channel-name>]")
+    @Command(aliases = "!leave", description = "Leaves a named channel. Leaves the current channel if none specified.", usage = "!leave [<channel-name>]")
     public void onLeaveCommand(String args[], DiscordApi api, Message message) {
         switch (args.length) {
-            case 0:
-                getCurrentChannel(message).<Runnable>map(id -> () -> unassignRole(id, message))
-                        .orElse(() -> cantLeaveChannel(message))
-                        .run();
-                break;
-            case 1:
-                getChannelFromAlias(args[0]).<Runnable>map(id -> () -> unassignRole(id, message))
-                        .orElse(() -> channelNotFound(message))
-                        .run();
-                break;
-            default:
-                message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
-                break;
+        case 0:
+            getCurrentChannel(message).<Runnable> map(id -> () -> unassignRole(id, message))
+                    .orElse(() -> cantLeaveChannel(message)).run();
+            break;
+        case 1:
+            getChannelFromAlias(args[0]).<Runnable> map(id -> () -> unassignRole(id, message))
+                    .orElse(() -> channelNotFound(message)).run();
+            break;
+        default:
+            message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
+            break;
         }
     }
 
@@ -190,9 +185,7 @@ public class JoinLeaveCommand implements CommandExecutor {
             message.getChannel().sendMessage("Only the party master can initiate party time.");
             return;
         }
-        Role everyone = authorUser.getRoles(kcServer).stream()
-                .filter(Role::isEveryoneRole)
-                .collect(Collectors.toList())
+        Role everyone = authorUser.getRoles(kcServer).stream().filter(Role::isEveryoneRole).collect(Collectors.toList())
                 .get(0);
         for (User user : everyone.getUsers()) {
             // keep track of whether the roles are dirty to prevent hitting rate limits
@@ -214,10 +207,10 @@ public class JoinLeaveCommand implements CommandExecutor {
         final ServerChannel channel;
 
         KCChannel(long channelId, long roleId, String... aliases) {
-            channel = kcServer.getChannelById(channelId).orElseThrow(() ->
-                    new RuntimeException("Failed to find channel " + channelId + ". alias=" + aliases[0]));
-            role = kcServer.getRoleById(roleId).orElseThrow(() ->
-                    new RuntimeException("Failed to find role " + roleId + ". alias=" + aliases[0]));
+            channel = kcServer.getChannelById(channelId).orElseThrow(
+                    () -> new RuntimeException("Failed to find channel " + channelId + ". alias=" + aliases[0]));
+            role = kcServer.getRoleById(roleId)
+                    .orElseThrow(() -> new RuntimeException("Failed to find role " + roleId + ". alias=" + aliases[0]));
             this.aliases = Arrays.asList(aliases);
         }
     }

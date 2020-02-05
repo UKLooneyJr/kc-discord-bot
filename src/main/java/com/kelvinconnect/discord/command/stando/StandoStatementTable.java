@@ -22,11 +22,8 @@ public class StandoStatementTable extends Table {
 
     @Override
     public String createSql() {
-        return "CREATE TABLE IF NOT EXISTS " + tableName + " (\n"
-                + " id integer PRIMARY KEY,\n"
-                + " statement text,\n"
-                + " severity integer\n"
-                + ");";
+        return "CREATE TABLE IF NOT EXISTS " + tableName + " (\n" + " id integer PRIMARY KEY,\n" + " statement text,\n"
+                + " severity integer\n" + ");";
     }
 
     public void insert(StandoStatement statement) {
@@ -50,14 +47,12 @@ public class StandoStatementTable extends Table {
         List<StandoStatement> standoStatements = new ArrayList<>();
 
         db.connect().ifPresent(conn -> {
-            try (Statement stmt = conn.createStatement();
-                 ResultSet rs = stmt.executeQuery(sql)) {
+            try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
 
                 while (rs.next()) {
                     String statement = rs.getString("statement");
                     Integer severity = rs.getInt("severity");
-                    standoStatements.add(new StandoStatement(statement,
-                            StandoStatement.Severity.values()[severity]));
+                    standoStatements.add(new StandoStatement(statement, StandoStatement.Severity.values()[severity]));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

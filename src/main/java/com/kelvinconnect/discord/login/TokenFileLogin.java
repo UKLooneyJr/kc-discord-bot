@@ -24,8 +24,7 @@ public class TokenFileLogin implements Login {
     }
 
     public DiscordApi login() {
-        System.out.println("Working Directory = " +
-                System.getProperty("user.dir"));
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         String token;
         try {
             token = new String(Files.readAllBytes(Paths.get(filepath)));

@@ -12,8 +12,7 @@ public class InfoCommand implements CommandExecutor {
 
     @Command(aliases = "!info", description = "Shows some information about the bot.", usage = "!info")
     public String onInfoCommand(String[] args) {
-        return "- **Author:** Adam Docherty\n" +
-                "- **Language:** Java\n" +
-                "- **Source:** https://github.com/UKLooneyJr/kc-discord-bot/";
+        return "- **Author:** Adam Docherty\n" + "- **Language:** Java\n"
+                + "- **Source:** https://github.com/UKLooneyJr/kc-discord-bot/";
     }
 }

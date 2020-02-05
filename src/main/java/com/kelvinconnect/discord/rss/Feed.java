@@ -13,8 +13,7 @@ public class Feed {
     private final String language;
     private final String copyright;
 
-    public Feed(String title, String link, String description, String language,
-                String copyright) {
+    public Feed(String title, String link, String description, String language, String copyright) {
         this.title = title;
         this.link = link;
         this.description = description;
@@ -48,14 +47,8 @@ public class Feed {
 
     @Override
     public String toString() {
-        return "Feed{" +
-                "title='" + title + '\'' +
-                ", link='" + link + '\'' +
-                ", description='" + description + '\'' +
-                ", language='" + language + '\'' +
-                ", copyright='" + copyright + '\'' +
-                ", entries=" + entries +
-                '}';
+        return "Feed{" + "title='" + title + '\'' + ", link='" + link + '\'' + ", description='" + description + '\''
+                + ", language='" + language + '\'' + ", copyright='" + copyright + '\'' + ", entries=" + entries + '}';
     }
 
     public void sortMessages() {

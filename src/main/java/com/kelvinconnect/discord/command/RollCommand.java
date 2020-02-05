@@ -41,8 +41,9 @@ public class RollCommand implements CommandExecutor {
                 return roll(Integer.parseInt(num1), num2 != null ? Integer.parseInt(num2) : null, rollType);
             } catch (IllegalArgumentException e) {
                 if (logger.isErrorEnabled()) {
-                    logger.error("Failed to parse roll command; num1=" +
-                            num1 + ", num2=" + num2 + ", rollType=" + rollType, e);
+                    logger.error(
+                            "Failed to parse roll command; num1=" + num1 + ", num2=" + num2 + ", rollType=" + rollType,
+                            e);
                 }
                 return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
             }
@@ -74,7 +75,8 @@ public class RollCommand implements CommandExecutor {
     }
 
     private String rollRange(int num1, int num2) {
-        if (num1 == num2) return String.valueOf(num1);
+        if (num1 == num2)
+            return String.valueOf(num1);
         int min = Math.min(num1, num2);
         int max = Math.max(num1, num2);
         return String.valueOf(new Random().nextInt(max - min + 1) + min);

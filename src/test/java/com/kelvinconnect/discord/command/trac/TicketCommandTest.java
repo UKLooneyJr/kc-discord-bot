@@ -10,21 +10,21 @@ import static org.junit.Assert.*;
  */
 public class TicketCommandTest {
 
-    //@Test
-    //public void standardTicketNumber() {
-    //    TicketCommand command = new TicketCommand();
-    //    String input = "1234";
-    //    String output = command.onTicketCommand(new String[] { input });
-    //    assertEquals(output, "http://trac/KC/ticket/1234");
-    //}
+    // @Test
+    // public void standardTicketNumber() {
+    // TicketCommand command = new TicketCommand();
+    // String input = "1234";
+    // String output = command.onTicketCommand(new String[] { input });
+    // assertEquals(output, "http://trac/KC/ticket/1234");
+    // }
 
-    //@Test
-    //public void ticketNumberWithHash() {
-    //    TicketCommand command = new TicketCommand();
-    //    String input = "#1234";
-    //    String output = command.onTicketCommand(new String[] { input });
-    //    assertEquals(output, "http://trac/KC/ticket/1234");
-    //}
+    // @Test
+    // public void ticketNumberWithHash() {
+    // TicketCommand command = new TicketCommand();
+    // String input = "#1234";
+    // String output = command.onTicketCommand(new String[] { input });
+    // assertEquals(output, "http://trac/KC/ticket/1234");
+    // }
 
     @Test
     public void tooManyArguments() {

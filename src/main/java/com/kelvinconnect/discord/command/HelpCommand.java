@@ -17,7 +17,7 @@ public class HelpCommand implements CommandExecutor {
         this.commandHandler = commandHandler;
     }
 
-    @Command(aliases = {"!help", "!commands"}, description = "Shows this page.")
+    @Command(aliases = { "!help", "!commands" }, description = "Shows this page.")
     public String onHelpCommand(Message message) {
 
         StringBuilder builder = buildDescription();

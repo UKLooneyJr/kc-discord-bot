@@ -17,14 +17,11 @@ import java.util.Random;
  */
 public class PubCommand implements CommandExecutor {
 
-    private final static String[] choices = {"Brass Monkey", "Brewdog",
-            "The Islay", "Strip Joint", "Big Slope", "Three Judges", "Sparkle Horse",
-            "Brass Monkey", "Brass Monkey", "Brass Monkey", "Snaffle Bit", "The Park Bar",
-            "Grove Bar", "Lebowskis", "The Bon Accord", "O'Neill's", "The Pub",
-            "The Hengler's Circus", "Yates's", "Slouch", "Malones", "Bunker Bar",
-            "The Pot Still", "The Horseshoe Bar", "The Drum & Monkey", "The Counting House",
-            "Sloans", "Waxy O'Connors", "Blue Dog", "Gallus", "The Tap House"};
-
+    private final static String[] choices = { "Brass Monkey", "Brewdog", "The Islay", "Strip Joint", "Big Slope",
+            "Three Judges", "Sparkle Horse", "Brass Monkey", "Brass Monkey", "Brass Monkey", "Snaffle Bit",
+            "The Park Bar", "Grove Bar", "Lebowskis", "The Bon Accord", "O'Neill's", "The Pub", "The Hengler's Circus",
+            "Yates's", "Slouch", "Malones", "Bunker Bar", "The Pot Still", "The Horseshoe Bar", "The Drum & Monkey",
+            "The Counting House", "Sloans", "Waxy O'Connors", "Blue Dog", "Gallus", "The Tap House" };
 
     private final VotingBooth votingBooth;
 

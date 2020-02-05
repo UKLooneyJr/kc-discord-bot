@@ -119,41 +119,40 @@ public class TicketCommand implements CommandExecutor {
 
     private void setColourByStatus(EmbedBuilder embed, String tracStatus) {
         switch (tracStatus) {
-            case "closed":
-                embed.setColor(Color.GRAY);
-                break;
-            case "new":
-                embed.setColor(Color.WHITE);
-                break;
-            case "dev_ready":
-            case "assigned_dev":
-                embed.setColor(Color.BLUE);
-                break;
-            case "test_ready":
-            case "assigned_test":
-                embed.setColor(Color.GREEN);
-                break;
-            case "build_ready":
-                embed.setColor(Color.CYAN);
-                break;
-            case "review":
-            case "info_needed":
-                embed.setColor(Color.YELLOW);
-                break;
-            case "failed_test":
-                embed.setColor(Color.ORANGE);
-                break;
-            case "blocked":
-            case "core_needed":
-                embed.setColor(Color.RED);
-                break;
+        case "closed":
+            embed.setColor(Color.GRAY);
+            break;
+        case "new":
+            embed.setColor(Color.WHITE);
+            break;
+        case "dev_ready":
+        case "assigned_dev":
+            embed.setColor(Color.BLUE);
+            break;
+        case "test_ready":
+        case "assigned_test":
+            embed.setColor(Color.GREEN);
+            break;
+        case "build_ready":
+            embed.setColor(Color.CYAN);
+            break;
+        case "review":
+        case "info_needed":
+            embed.setColor(Color.YELLOW);
+            break;
+        case "failed_test":
+            embed.setColor(Color.ORANGE);
+            break;
+        case "blocked":
+        case "core_needed":
+            embed.setColor(Color.RED);
+            break;
         }
     }
 
     private boolean isAssigned(String tracStatus) {
-        return (tracStatus.equals("assigned_dev") ||
-                tracStatus.equals("assigned_test") ||
-                tracStatus.equals("info_needed"));
+        return (tracStatus.equals("assigned_dev") || tracStatus.equals("assigned_test")
+                || tracStatus.equals("info_needed"));
     }
 
     private Document getDocument(String url) throws IOException {

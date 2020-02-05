@@ -35,8 +35,8 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private static int getBeerCount(String[] args) {
-        final String[] beerEmojis = {"\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77",
-                "\uD83C\uDF78", "\uD83C\uDF79", "\uD83C\uDF7E", "\uD83C\uDF76"};
+        final String[] beerEmojis = { "\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77", "\uD83C\uDF78", "\uD83C\uDF79",
+                "\uD83C\uDF7E", "\uD83C\uDF76" };
         int beers = 0;
         for (String arg : args) {
             if (Arrays.asList(beerEmojis).contains(arg)) {
@@ -131,8 +131,8 @@ public class StandoCommand implements CommandExecutor {
 
     private boolean isLearnMessage(String[] args, String learnMessagePrefix) {
         String message = String.join(" ", args);
-        return message.toLowerCase().startsWith(learnMessagePrefix.toLowerCase()) &&
-                message.length() > learnMessagePrefix.length();
+        return message.toLowerCase().startsWith(learnMessagePrefix.toLowerCase())
+                && message.length() > learnMessagePrefix.length();
     }
 
     private String giveFunFact(String[] args, Message message) {

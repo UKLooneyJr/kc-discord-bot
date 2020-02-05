@@ -88,6 +88,7 @@ public class VotingBooth {
     private static class Candidate {
         final String name;
         int count;
+
         Candidate(String name) {
             this.name = name;
             this.count = 0;
@@ -97,6 +98,7 @@ public class VotingBooth {
     private static class Voter {
         final String id;
         Candidate candidate;
+
         Voter(String id) {
             this.id = id;
             this.candidate = null;

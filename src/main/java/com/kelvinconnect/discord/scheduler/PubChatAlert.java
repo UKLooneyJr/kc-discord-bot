@@ -24,8 +24,7 @@ public class PubChatAlert implements Runnable {
 
         // bottest = 291689291090886656
         // pubchat = 276318041443270657
-        api.getChannelById("276318041443270657")
-                .filter(c -> c instanceof TextChannel)
-                .ifPresent(c -> ((TextChannel) c).sendMessage(builder.toString()));
+        api.getChannelById("276318041443270657").filter(c -> c instanceof TextChannel)
+                .ifPresent(c -> builder.send((TextChannel) c));
     }
 }
