@@ -69,6 +69,7 @@ public class KCDiscordBot {
         handler.registerCommand(new PubCommand());
         handler.registerCommand(new RollCommand());
         handler.registerCommand(new JoinLeaveCommand(api));
+        handler.registerCommand(new StockCommand());
     }
 
     private static void startTasks(DiscordApi api) {
@@ -80,7 +81,7 @@ public class KCDiscordBot {
     }
 
     private static void initUI() {
-        BotUI f = new BotUI();
-        f.setVisible(true);
+        BotUI ui = new BotUI();
+        ui.show();
     }
 }

@@ -21,6 +21,7 @@ public class BangCommand implements CommandExecutor {
             message = "I hit the ground";
             break;
         case 2:
+        case 6:
             message = "That awful sound";
             break;
         case 3:
@@ -31,9 +32,6 @@ public class BangCommand implements CommandExecutor {
             break;
         case 5:
             message = "You hit the ground";
-            break;
-        case 6:
-            message = "That awful sound";
             break;
         case 7:
             message = "I used to shoot you down";

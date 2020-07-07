@@ -9,14 +9,14 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 
 public class UptimeCommand implements CommandExecutor {
-    private Temporal startTime;
+    private final Temporal startTime;
 
     public UptimeCommand(Temporal startTime) {
         this.startTime = startTime;
     }
 
     @Command(aliases = "!uptime", description = "Display how long the bot has been running for", usage = "!slack")
-    public String onSlackCommand(String[] args) {
+    public String onUptimeCommand(String[] args) {
         return timeSince(Instant.now());
     }
 

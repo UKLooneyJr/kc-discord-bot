@@ -88,20 +88,18 @@ public class TicketCommand implements CommandExecutor {
     }
 
     private String buildDescription(Document doc, String tracStatus) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Type: ");
-        builder.append(getTracPropertyByClass(doc, "trac-type"));
-        builder.append("\nStatus: ");
-        builder.append(tracStatus);
-        builder.append("\nReporter: ");
-        builder.append(getTracPropertyByHeaders(doc, "h_reporter"));
-        builder.append("\nMilestone: ");
-        builder.append(getTracPropertyByHeaders(doc, "h_milestone"));
-        builder.append("\nStory Points: ");
-        builder.append(getTracPropertyByHeaders(doc, "h_estimate"));
-        builder.append("\n\nDescription: ");
-        builder.append(getTracDescription(doc));
-        return builder.toString();
+        return "Type: " +
+                getTracPropertyByClass(doc, "trac-type") +
+                "\nStatus: " +
+                tracStatus +
+                "\nReporter: " +
+                getTracPropertyByHeaders(doc, "h_reporter") +
+                "\nMilestone: " +
+                getTracPropertyByHeaders(doc, "h_milestone") +
+                "\nStory Points: " +
+                getTracPropertyByHeaders(doc, "h_estimate") +
+                "\n\nDescription: " +
+                getTracDescription(doc);
     }
 
     private String getTracDescription(Document doc) {

@@ -100,7 +100,7 @@ public class ChangeSetCommand implements CommandExecutor {
         if (!changes.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             // ignore the first 'change' as that is just the legend
-            int filesToList = changes.size() < MAX_CHANGES_PER_MESSAGE ? changes.size() : MAX_CHANGES_PER_MESSAGE;
+            int filesToList = Math.min(changes.size(), MAX_CHANGES_PER_MESSAGE);
             for (int i = 1; i < filesToList; ++i) {
                 Element change = changes.get(i);
                 String fileName = change.nextElementSibling().text();

@@ -22,7 +22,7 @@ public class TaskScheduler {
 
     private static final int WEEK_PERIOD = 60 * 24 * 7; // every week
 
-    private final Map<String, ScheduledFuture> tasks;
+    private final Map<String, ScheduledFuture<?>> tasks;
 
     public TaskScheduler() {
         tasks = new HashMap<>();
@@ -40,7 +40,7 @@ public class TaskScheduler {
         }
 
         logger.info("Task '" + name + "' will next run in " + delayInMinutes + " minutes.");
-        ScheduledFuture future = scheduler.scheduleAtFixedRate(runnable, delayInMinutes, WEEK_PERIOD, TimeUnit.MINUTES);
+        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(runnable, delayInMinutes, WEEK_PERIOD, TimeUnit.MINUTES);
         tasks.put(name, future);
     }
 
@@ -48,12 +48,12 @@ public class TaskScheduler {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         logger.info("Task '" + name + "' will next run every minute.");
-        ScheduledFuture future = scheduler.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
+        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(runnable, 0, 1, TimeUnit.MINUTES);
         tasks.put(name, future);
     }
 
     public void cancel(String name) {
-        ScheduledFuture scheduled = tasks.get(name);
+        ScheduledFuture<?> scheduled = tasks.get(name);
         if (null == scheduled) {
             logger.debug("No tasks exists with the name '" + name + "'.");
             return;
@@ -62,9 +62,9 @@ public class TaskScheduler {
     }
 
     public void cancelAll() {
-        for (Map.Entry<String, ScheduledFuture> entry : tasks.entrySet()) {
+        for (Map.Entry<String, ScheduledFuture<?>> entry : tasks.entrySet()) {
             logger.info("Cancelling task '" + entry.getKey() + "'.");
-            ScheduledFuture scheduled = entry.getValue();
+            ScheduledFuture<?> scheduled = entry.getValue();
             scheduled.cancel(true);
         }
     }
