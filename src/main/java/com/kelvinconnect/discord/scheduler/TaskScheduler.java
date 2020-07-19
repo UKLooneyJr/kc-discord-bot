@@ -40,7 +40,8 @@ public class TaskScheduler {
         }
 
         logger.info("Task '" + name + "' will next run in " + delayInMinutes + " minutes.");
-        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(runnable, delayInMinutes, WEEK_PERIOD, TimeUnit.MINUTES);
+        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(runnable, delayInMinutes, WEEK_PERIOD,
+                TimeUnit.MINUTES);
         tasks.put(name, future);
     }
 

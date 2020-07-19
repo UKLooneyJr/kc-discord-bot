@@ -13,7 +13,7 @@ public class BotUI {
         dialog.setSize(150, 75);
         dialog.setLayout(null);
         dialog.setResizable(false);
-        
+
         JButton btnQuit = new JButton("Quit");
         btnQuit.setBounds(35, 10, 80, 25);
         btnQuit.addActionListener(e -> System.exit(0));
