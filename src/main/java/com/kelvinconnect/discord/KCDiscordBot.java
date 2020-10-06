@@ -60,8 +60,8 @@ public class KCDiscordBot {
         handler.registerCommand(new HelpCommand(handler));
         handler.registerCommand(new InfoCommand());
         handler.registerCommand(new UptimeCommand(Instant.now()));
-        handler.registerCommand(new TicketCommand());
-        handler.registerCommand(new ChangeSetCommand());
+//        handler.registerCommand(new TicketCommand());
+//        handler.registerCommand(new ChangeSetCommand());
         handler.registerCommand(new SlackCommand());
         handler.registerCommand(new BangCommand());
         handler.registerCommand(new RobertCommand());
@@ -77,7 +77,7 @@ public class KCDiscordBot {
         gameRandomiser.start(api);
         TaskScheduler scheduler = new TaskScheduler();
         scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
-        scheduler.runMinutely("timeline", new TracTimeline(api));
+//        scheduler.runMinutely("timeline", new TracTimeline(api));
     }
 
     private static void initUI() {
