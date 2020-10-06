@@ -47,22 +47,23 @@ public class JoinLeaveCommand implements CommandExecutor {
 
     private void initChannels() {
         pubchatChannel = new KCChannel(276318041443270657L, 403663671148150797L, "pubchat");
-        channels = Arrays.asList(pubchatChannel, new KCChannel(421223895513956352L, 421225268057735168L, "music"),
-                new KCChannel(421623339145232404L, 421623272434565130L, "games", "gaming"),
-                new KCChannel(365038764738871297L, 365039527607140353L, "niche"),
-                new KCChannel(365040110867054592L, 365039532829179904L, "pnc"),
-                new KCChannel(365040137974972428L, 365039576521244672L, "storm", "neilstorm"),
-                new KCChannel(365040187689926656L, 365039600210804738L, "nspis"),
-                new KCChannel(365040239867330572L, 365039626362290179L, "compass"),
-                new KCChannel(365040284398256139L, 365039651721052161L, "qas"),
-                new KCChannel(365040322176090126L, 365039660184895489L, "singlepoint"),
-                new KCChannel(365040358179995658L, 365039678212276224L, "connect"),
-                new KCChannel(365040398416084992L, 365039717017976835L, "unifi"),
-                new KCChannel(365040428598165516L, 365039737402294274L, "crash"),
-                new KCChannel(365040459027841024L, 365039767152492545L, "compact"),
-                new KCChannel(365040501339979776L, 365039790028226563L, "socrates"),
-                new KCChannel(425314799455436801L, 425314649458737163L, "anime"),
-                new KCChannel(408933031064371200L, 408933228037144577L, "roll", "roll-club", "rollclub"));
+        channels = Arrays.asList(pubchatChannel,
+                new KCChannel(689418031151054944L ,763085327270543381L, "corona", "covid"),
+                new KCChannel(550614902532997131L, 763085269435678791L, "spamdo"),
+                new KCChannel(421223895513956352L, 421225268057735168L, "music"),
+                new KCChannel(694117175392469032L, 763083545451167774L, "film", "tv"),
+                new KCChannel(408933031064371200L, 763083371193696267L, "roll", "role"),
+                new KCChannel(425314799455436801L, 425314649458737163L, "anime", "weeb"),
+                new KCChannel(763082945979744278L, 763082196985970709L, "pets"),
+                new KCChannel(763091730605408307L, 763091623386021888L, "programming"),
+                new KCChannel(763091960541478912L, 763091847559118868L, "botdev", "kcbot"),
+                new KCChannel(763083029794390017L, 763082257429692458L, "tech"),
+                new KCChannel(763083100594110524L, 763082324748533790L, "sport"),
+                new KCChannel(763086481560305704L, 763086365835395123L, "politics"),
+                new KCChannel(421623339145232404L, 421623272434565130L, "games"),
+                new KCChannel(753587144991178792L, 753586719999393872L, "lol"),
+                new KCChannel(763082784784515092L, 763082509952876546L, "wow"),
+                new KCChannel(763089542152323112L, 763089285632884756L, "tetris"));
     }
 
     @Command(aliases = "!join", description = "Joins a channel.", usage = "!join [<channel-name>]")
