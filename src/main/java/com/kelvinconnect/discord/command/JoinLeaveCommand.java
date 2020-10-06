@@ -46,7 +46,7 @@ public class JoinLeaveCommand implements CommandExecutor {
     }
 
     private void initChannels() {
-        pubchatChannel = new KCChannel(276318041443270657L, 403663671148150797L, "pubchat");
+        pubchatChannel = new KCChannel(276318041443270657L, 763082445524041761L, "pubchat");
         channels = Arrays.asList(pubchatChannel,
                 new KCChannel(689418031151054944L ,763085327270543381L, "corona", "covid"),
                 new KCChannel(550614902532997131L, 763085269435678791L, "spamdo"),
