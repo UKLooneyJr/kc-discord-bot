@@ -14,10 +14,7 @@ import org.javacord.api.entity.permission.Role;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JoinLeaveCommand implements CommandExecutor {
@@ -164,23 +161,37 @@ public class JoinLeaveCommand implements CommandExecutor {
     }
 
     /**
-     * Adds all users on the server to the pubchat channel. Can only be ran by the bot owner (Adamin)
+     * Adds all users on the server to the specified channel. Can only be ran by the bot owner (Adamin)
      */
-    @Command(aliases = "!partytime", showInHelpPage = false)
-    public void onPartyTimeCommand(Message message) {
+    @Command(aliases = "!giveall", showInHelpPage = false)
+    public void onGiveAllCommand(String args[], Message message) {
         User authorUser = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
         if (!authorUser.isBotOwner()) {
             message.getChannel().sendMessage("Only the party master can initiate party time.");
             return;
         }
+
+        if (args.length == 0) {
+            message.getChannel().sendMessage("Must provide a channel name.");
+            return;
+        }
+
+        Optional<KCChannel> channelOptional = getChannelFromAlias(args[0]);
+        if (!channelOptional.isPresent()) {
+            message.getChannel().sendMessage("Unable to find channel for alias " + args[0] + ".");
+            return;
+        }
+
+        KCChannel channel = channelOptional.get();
+
         Role everyone = authorUser.getRoles(kcServer).stream().filter(Role::isEveryoneRole).collect(Collectors.toList())
                 .get(0);
         for (User user : everyone.getUsers()) {
             // keep track of whether the roles are dirty to prevent hitting rate limits
             boolean dirty = false;
-            Collection<Role> roles = user.getRoles(kcServer);
-            if (!roles.contains(pubchatChannel.role)) {
-                roles.add(pubchatChannel.role);
+            Collection<Role> roles = new ArrayList<>(user.getRoles(kcServer));
+            if (!roles.contains(channel.role)) {
+                roles.add(channel.role);
                 dirty = true;
             }
             if (dirty) {
