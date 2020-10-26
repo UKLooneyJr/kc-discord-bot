@@ -52,6 +52,7 @@ public class JoinLeaveCommand implements CommandExecutor {
                 new KCChannel(408933031064371200L, 763083371193696267L, "roll", "role"),
                 new KCChannel(425314799455436801L, 425314649458737163L, "anime", "weeb"),
                 new KCChannel(763082945979744278L, 763082196985970709L, "pets"),
+                new KCChannel(770330765133086751L, 770330666411360299L, "food"),
                 new KCChannel(763091730605408307L, 763091623386021888L, "programming"),
                 new KCChannel(763091960541478912L, 763091847559118868L, "botdev", "kcbot"),
                 new KCChannel(763083029794390017L, 763082257429692458L, "tech"),
