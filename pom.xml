@@ -71,7 +71,7 @@
 
     <groupId>com.kelvinconnect.discord</groupId>
     <artifactId>kc-discord-bot</artifactId>
-    <version>1.2.3</version>
+    <version>1.3.0</version>
 
     <repositories>
         <repository>
