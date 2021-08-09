@@ -20,13 +20,10 @@ import java.util.stream.Collectors;
 public class JoinLeaveCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(JoinLeaveCommand.class);
 
-    private final static String INVALID_CHANNEL_NAME = "Invalid channel name, try '!channels' for a list of all channels.";
-    private final static String CANT_LEAVE_CHANNEL = "Sorry, you can't leave this channel.";
+    private static final String INVALID_CHANNEL_NAME = "Invalid channel name, try '!channels' for a list of all channels.";
+    private static final String CANT_LEAVE_CHANNEL = "Sorry, you can't leave this channel.";
     private final Server kcServer;
     private List<KCChannel> channels;
-    // keep references to pubchat and music channels as we will use them elsewhere
-    // (maybe want to group these under party channels? will do that if we end up having more similar channels)
-    private KCChannel pubchatChannel;
 
     public JoinLeaveCommand(DiscordApi api) {
         kcServer = api.getServerById(239013363387072514L)
@@ -37,15 +34,14 @@ public class JoinLeaveCommand implements CommandExecutor {
     private static void debugPrintChannels(Server server) {
         if (logger.isInfoEnabled()) {
             for (Role role : server.getRoles()) {
-                logger.info(role.getName() + " - " + role.getIdAsString());
+                logger.info(() -> String.format("%s - %s", role.getName(), role.getIdAsString()));
             }
         }
     }
 
     private void initChannels() {
-        pubchatChannel = new KCChannel(276318041443270657L, 763082445524041761L, "pubchat");
-        channels = Arrays.asList(pubchatChannel,
-                new KCChannel(689418031151054944L ,763085327270543381L, "corona", "covid"),
+        channels = Arrays.asList(new KCChannel(276318041443270657L, 763082445524041761L, "pubchat"),
+                new KCChannel(689418031151054944L, 763085327270543381L, "corona", "covid"),
                 new KCChannel(550614902532997131L, 763085269435678791L, "spamdo"),
                 new KCChannel(421223895513956352L, 421225268057735168L, "music"),
                 new KCChannel(694117175392469032L, 763083545451167774L, "film", "tv"),
@@ -59,13 +55,14 @@ public class JoinLeaveCommand implements CommandExecutor {
                 new KCChannel(763083100594110524L, 763082324748533790L, "sport"),
                 new KCChannel(763086481560305704L, 763086365835395123L, "politics"),
                 new KCChannel(421623339145232404L, 421623272434565130L, "games"),
+                new KCChannel(763089542152323112L, 763089285632884756L, "tetris"),
                 new KCChannel(753587144991178792L, 753586719999393872L, "lol"),
                 new KCChannel(763082784784515092L, 763082509952876546L, "wow"),
-                new KCChannel(763089542152323112L, 763089285632884756L, "tetris"));
+                new KCChannel(874359730540253204L, 874359350209151046L, "ffxiv", "ff14"));
     }
 
     @Command(aliases = "!join", description = "Joins a channel.", usage = "!join [<channel-name>]")
-    public void onJoinCommand(String args[], DiscordApi api, Message message) {
+    public void onJoinCommand(String[] args, DiscordApi api, Message message) {
         if (args.length == 0) {
             // Show the join help command I suppose
             onChannelsCommand(message);
@@ -73,40 +70,54 @@ public class JoinLeaveCommand implements CommandExecutor {
         } else if (args.length > 1) {
             message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
         }
-        getChannelFromAlias(args[0]).<Runnable> map(id -> () -> assignRole(id, message))
-                .orElse(() -> channelNotFound(message)).run();
+
+        if ("all".equals(args[0])) {
+            channels.forEach(channel -> assignRole(channel, message, false));
+        } else {
+            getChannelFromAlias(args[0]).<Runnable>map(id -> () -> assignRole(id, message, true))
+                    .orElse(() -> channelNotFound(message)).run();
+        }
+
     }
 
-    private void assignRole(KCChannel channel, Message message) {
-        User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
+    private void assignRole(KCChannel channel, Message message, boolean showWelcomeMessage) {
+        User user = getMessageAuthor(message);
 
         Collection<Role> roles = user.getRoles(kcServer);
 
         if (!roles.contains(channel.role)) {
-            kcServer.addRoleToUser(user, channel.role).thenRun(() -> ((TextChannel) channel.channel)
-                    .sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!"));
+            kcServer.addRoleToUser(user, channel.role).thenRun(() -> {
+                if (showWelcomeMessage) {
+                    ((TextChannel) channel.channel)
+                            .sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!");
+                }
+            });
         }
     }
 
+    private User getMessageAuthor(Message message) {
+        return message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
+    }
+
     @Command(aliases = "!leave", description = "Leaves a named channel. Leaves the current channel if none specified.", usage = "!leave [<channel-name>]")
-    public void onLeaveCommand(String args[], DiscordApi api, Message message) {
+    public void onLeaveCommand(String[] args, DiscordApi api, Message message) {
         switch (args.length) {
-        case 0:
-            getCurrentChannel(message).<Runnable> map(id -> () -> unassignRole(id, message))
-                    .orElse(() -> cantLeaveChannel(message)).run();
-            break;
-        case 1:
-            getChannelFromAlias(args[0]).<Runnable> map(id -> () -> unassignRole(id, message))
-                    .orElse(() -> channelNotFound(message)).run();
-            break;
-        default:
-            message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
-            break;
+            case 0:
+                getCurrentChannel(message).<Runnable>map(id -> () -> unassignRole(id, message))
+                        .orElse(() -> cantLeaveChannel(message)).run();
+                break;
+            case 1:
+                getChannelFromAlias(args[0]).<Runnable>map(id -> () -> unassignRole(id, message))
+                        .orElse(() -> channelNotFound(message)).run();
+                break;
+            default:
+                message.getChannel().sendMessage(DiscordUtils.INVALID_ARGUMENTS_MESSAGE);
+                break;
         }
     }
 
     private void unassignRole(KCChannel channel, Message message) {
-        User user = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
+        User user = getMessageAuthor(message);
 
         Collection<Role> roles = user.getRoles(kcServer);
 
@@ -151,13 +162,19 @@ public class JoinLeaveCommand implements CommandExecutor {
         message.getServer().ifPresent(JoinLeaveCommand::debugPrintChannels);
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("KC Discord Channels");
-        StringBuilder channelList = new StringBuilder();
+        StringBuilder description = new StringBuilder();
+        description.append("To join a channel use the command '!join <channel-name>' in any channel, or in a ");
+        description.append("direct message to KCBot.\n\n");
+        description.append("To leave a channel use the command '!leave <channel-name>' in any channel, or in a ");
+        description.append("direct message to KCBot; or simply use the command '!leave' in the channel you wish to leave.\n\n");
+        description.append("To join all available channels, use the command '!join all'.\n\n");
+        description.append("Channel list:\n");
         for (KCChannel c : channels) {
-            channelList.append("• ");
-            channelList.append(String.join(" | ", c.aliases));
-            channelList.append("\n");
+            description.append("• ");
+            description.append(String.join(" | ", c.aliases));
+            description.append("\n");
         }
-        embed.setDescription(channelList.toString());
+        embed.setDescription(description.toString());
         message.getChannel().sendMessage(embed);
     }
 
@@ -165,8 +182,8 @@ public class JoinLeaveCommand implements CommandExecutor {
      * Adds all users on the server to the specified channel. Can only be ran by the bot owner (Adamin)
      */
     @Command(aliases = "!giveall", showInHelpPage = false)
-    public void onGiveAllCommand(String args[], Message message) {
-        User authorUser = message.getUserAuthor().orElseThrow(() -> new RuntimeException("Failed to get User"));
+    public void onGiveAllCommand(String[] args, Message message) {
+        User authorUser = getMessageAuthor(message);
         if (!authorUser.isBotOwner()) {
             message.getChannel().sendMessage("Only the party master can initiate party time.");
             return;
