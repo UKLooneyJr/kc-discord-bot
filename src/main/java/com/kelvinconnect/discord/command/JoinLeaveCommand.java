@@ -41,7 +41,7 @@ public class JoinLeaveCommand implements CommandExecutor {
     private static final String ALIAS_NODE = "Name";
 
     private final Server kcServer;
-    private final List<KCChannel> channels = new ArrayList<>();
+    private List<KCChannel> channels = new ArrayList<>();
 
     public JoinLeaveCommand(DiscordApi api) {
         kcServer = api.getServerById(KC_SERVER_ID)
@@ -79,8 +79,8 @@ public class JoinLeaveCommand implements CommandExecutor {
     }
 
     private void loadFromXml(Node rootNode) {
+        channels = new ArrayList<>();
         //NodeList not iterable for some reason
-
         for (int i = 0; i < rootNode.getChildNodes().getLength(); i++) {
             Node thisNode = rootNode.getChildNodes().item(i);
             if (thisNode instanceof Element) {
@@ -228,6 +228,7 @@ public class JoinLeaveCommand implements CommandExecutor {
 
     @Command(aliases = "!channels", description = "Shows all channels that can be joined.", usage = "!channels")
     public void onChannelsCommand(Message message) {
+        initChannels();
         message.getServer().ifPresent(JoinLeaveCommand::debugPrintChannels);
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("KC Discord Channels");
