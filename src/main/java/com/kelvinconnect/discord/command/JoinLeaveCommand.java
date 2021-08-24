@@ -72,7 +72,7 @@ public class JoinLeaveCommand implements CommandExecutor {
                 loadFromDefaults();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error loading channel list from XML", e);
             loadFromDefaults();
         }
 
