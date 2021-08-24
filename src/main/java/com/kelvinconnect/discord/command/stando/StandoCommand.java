@@ -25,31 +25,29 @@ public class StandoCommand implements CommandExecutor {
     private static final String LEARN_MEDIUM = "The Times said ";
     private static final String LEARN_HIGH = "The Daily Mail said ";
 
+    private static final String QUERY_COUNT = "How much do you know?";
+    private static final String QUERY_DRINK = "What do you drink?";
+
+
+    private static final String[] DRINK_EMOJIS = {"\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77", "\uD83C\uDF78", "\uD83C\uDF79",
+            "\uD83C\uDF7E", "\uD83C\uDF76", "\uD83E\uDD42", "\uD83E\uDD43"};
+
     private List<StandoStatement> standoStatements;
-    private List<StandoFilter> inputFilters;
-    private List<StandoFilter> outputFilters;
+    private final List<StandoFilter> inputFilters = new ArrayList<>();
+    private final List<StandoFilter> outputFilters = new ArrayList<>();
 
     public StandoCommand() {
         loadFilters();
         loadStatements();
     }
 
-    private static int getBeerCount(String[] args) {
-        final String[] beerEmojis = { "\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77", "\uD83C\uDF78", "\uD83C\uDF79",
-                "\uD83C\uDF7E", "\uD83C\uDF76" };
-        int beers = 0;
-        for (String arg : args) {
-            if (Arrays.asList(beerEmojis).contains(arg)) {
-                beers++;
-            }
-        }
-        return beers;
+    private static int getDrinkCount(String[] args) {
+        return (int) Arrays.stream(args).filter(arg -> Arrays.asList(DRINK_EMOJIS).contains(arg)).count();
     }
 
     private void loadFilters() {
-        inputFilters = new ArrayList<>();
         inputFilters.add(new EveryoneFilter());
-        outputFilters = new ArrayList<>();
+
         outputFilters.add(new SlurFilter());
         outputFilters.add(new EveryoneFilter());
     }
@@ -104,6 +102,10 @@ public class StandoCommand implements CommandExecutor {
             response = learnFromMediumSource(fullFact, message);
         } else if (isLearnMessage(args, LEARN_HIGH)) {
             response = learnFromHighSource(fullFact, message);
+        } else if (isQueryMessage(args, QUERY_COUNT)) {
+            response = countStatements();
+        } else if (isQueryMessage(args, QUERY_DRINK)) {
+            response = listDrinks();
         } else {
             response = giveFunFact(args, message);
         }
@@ -129,19 +131,33 @@ public class StandoCommand implements CommandExecutor {
         return "Sounds plausible.";
     }
 
+    private String countStatements() {
+        int count = standoStatements.size();
+        return "I know " + count + " facts.";
+    }
+
+    private String listDrinks() {
+        return "I drink " + Arrays.toString(DRINK_EMOJIS);
+    }
+
     private boolean isLearnMessage(String[] args, String learnMessagePrefix) {
         String message = String.join(" ", args);
         return message.toLowerCase().startsWith(learnMessagePrefix.toLowerCase())
                 && message.length() > learnMessagePrefix.length();
     }
 
+    private boolean isQueryMessage(String[] args, String query) {
+        String message = String.join(" ", args);
+        return message.equalsIgnoreCase(query);
+    }
+
     private String giveFunFact(String[] args, Message message) {
-        int beers = getBeerCount(args);
+        int drinks = getDrinkCount(args);
 
         String fact;
-        if (beers >= 4) {
+        if (drinks >= 4) {
             fact = getRandomStandoStatement(StandoStatement.Severity.HIGH);
-        } else if (beers >= 2) {
+        } else if (drinks >= 2) {
             fact = getRandomStandoStatement(StandoStatement.Severity.MEDIUM);
         } else {
             fact = getRandomStandoStatement(LOW);
