@@ -29,8 +29,8 @@ public class StandoCommand implements CommandExecutor {
     private static final String QUERY_DRINK = "What do you drink?";
 
 
-    private static final String[] drinkEmojis = {"\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77", "\uD83C\uDF78", "\uD83C\uDF79",
-            "\uD83C\uDF7E", "\uD83C\uDF76"};
+    private static final String[] DRINK_EMOJIS = {"\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77", "\uD83C\uDF78", "\uD83C\uDF79",
+            "\uD83C\uDF7E", "\uD83C\uDF76", "\uD83E\uDD42", "\uD83E\uDD43"};
 
     private List<StandoStatement> standoStatements;
     private final List<StandoFilter> inputFilters = new ArrayList<>();
@@ -42,7 +42,7 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private static int getDrinkCount(String[] args) {
-        return (int) Arrays.stream(args).filter(arg -> Arrays.asList(drinkEmojis).contains(arg)).count();
+        return (int) Arrays.stream(args).filter(arg -> Arrays.asList(DRINK_EMOJIS).contains(arg)).count();
     }
 
     private void loadFilters() {
@@ -137,7 +137,7 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private String listDrinks() {
-        return "I drink " + Arrays.toString(drinkEmojis);
+        return "I drink " + Arrays.toString(DRINK_EMOJIS);
     }
 
     private boolean isLearnMessage(String[] args, String learnMessagePrefix) {
