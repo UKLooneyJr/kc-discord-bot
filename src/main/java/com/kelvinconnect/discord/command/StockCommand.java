@@ -128,9 +128,9 @@ public class StockCommand implements CommandExecutor {
         float currentPrice = stock.getQuote().getPrice().floatValue();
         float startPrice;
 
-        if(startDatePrices.get(startDate)!= null){
+        if (startDatePrices.get(startDate)!= null) {
             startPrice = startDatePrices.get(startDate);
-        }else{
+        } else {
             //fetch stock history only if we don't have this start date already
             List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate);
             HistoricalQuote first = stockHistory.get(0);
