@@ -18,6 +18,7 @@ public class Parameters {
 
     private String token;
     private String databasePath;
+    private String channelListLocation;
 
     private Parameters() {
 
@@ -31,6 +32,9 @@ public class Parameters {
 
         Option dbPath = new Option("d", "database", true, "Path to the database");
         options.addOption(dbPath);
+
+        Option channelListLocation = new Option("c", "channel-list", true, "Location of the channel list xml");
+        options.addOption(channelListLocation);
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -47,6 +51,7 @@ public class Parameters {
 
         this.token = cmd.getOptionValue("token");
         this.databasePath = cmd.getOptionValue("database");
+        this.channelListLocation = cmd.getOptionValue("channel-list");
     }
 
     public String getToken() {
@@ -56,4 +61,9 @@ public class Parameters {
     public String getDatabasePath() {
         return databasePath;
     }
+
+    public String getChannelListLocation() {
+        return channelListLocation;
+    }
+
 }

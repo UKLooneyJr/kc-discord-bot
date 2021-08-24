@@ -1,6 +1,7 @@
 package com.kelvinconnect.discord.command;
 
 import com.kelvinconnect.discord.DiscordUtils;
+import com.kelvinconnect.discord.Parameters;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +33,6 @@ public class JoinLeaveCommand implements CommandExecutor {
     private static final String CANT_LEAVE_CHANNEL = "Sorry, you can't leave this channel.";
     private static final long KC_SERVER_ID = 239013363387072514L;
 
-    private static final String KC_CHANNEL_LIST_URL = "https://raw.githubusercontent.com/UKLooneyJr/kc-discord-bot/master/resources/channels.xml";
     private static final String KC_CHANNEL_LIST_ELEMENT = "KCChannelList";
     private static final String KC_CHANNEL_ELEMENT = "KCChannel";
     private static final String CHANNEL_ID_NODE = "ChannelId";
@@ -41,9 +41,14 @@ public class JoinLeaveCommand implements CommandExecutor {
     private static final String ALIAS_NODE = "Name";
 
     private final Server kcServer;
+    private final String kcChannelListLocation;
+
     private List<KCChannel> channels = new ArrayList<>();
 
     public JoinLeaveCommand(DiscordApi api) {
+        Parameters parameters = Parameters.getInstance();
+        kcChannelListLocation = parameters.getChannelListLocation();
+
         kcServer = api.getServerById(KC_SERVER_ID)
                 .orElseThrow(() -> new RuntimeException("Failed to find KC server."));
         initChannels();
@@ -61,7 +66,7 @@ public class JoinLeaveCommand implements CommandExecutor {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-            URLConnection urlConnection = new URL(KC_CHANNEL_LIST_URL).openConnection();
+            URLConnection urlConnection = new URL(kcChannelListLocation).openConnection();
             urlConnection.addRequestProperty("Accept", "application/xml");
             Document channelListDocument = documentBuilder.parse(urlConnection.getInputStream());
             String root = channelListDocument.getDocumentElement().getNodeName();
