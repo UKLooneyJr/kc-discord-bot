@@ -17,16 +17,15 @@ import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.time.Month;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
 
 public class StockCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(StockCommand.class);
+    private final HashMap<Calendar, Float> startDatePrices = new HashMap<>();
     @Command(aliases = "!stock", description = "Display the current NYSE:MSI stock price", usage = "!stock")
     public String onStockCommand(Message message) {
         try {
@@ -81,7 +80,10 @@ public class StockCommand implements CommandExecutor {
         // MSI as of <current date>
         sb.append("**[");
         sb.append(stock.getSymbol());
-        sb.append("](https://www.google.com/finance/quote/MSI:NYSE)** as of ");
+        sb.append("](https://www.google.com/finance/quote/");
+        sb.append(stock.getSymbol()).append(":");
+        sb.append(stock.getStockExchange());
+        sb.append(")** as of ");
         sb.append(currentDate.format(DateTimeFormatter.RFC_1123_DATE_TIME));
         sb.append("\n\n");
 
@@ -105,7 +107,7 @@ public class StockCommand implements CommandExecutor {
     }
 
     private double getEsppPrice(Stock stock) throws IOException {
-        ZonedDateTime currentDate = ZonedDateTime.now();
+        ZonedDateTime currentDate = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS);
         boolean isLeapYear = currentDate.toLocalDate().isLeapYear();
 
         //2021-04-01 = 91st day of year
@@ -121,17 +123,24 @@ public class StockCommand implements CommandExecutor {
         }
 
         Calendar startDate = GregorianCalendar.from(isSummer ? summerStartDate : winterStartDate);
-        Calendar endDate = GregorianCalendar.from(currentDate);
+        Calendar endDate = (Calendar) startDate.clone();
+        endDate.add(Calendar.DAY_OF_YEAR, 1);
+        float currentPrice = stock.getQuote().getPrice().floatValue();
+        float startPrice;
 
-        List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate);
-        HistoricalQuote first = stockHistory.get(0);
-        HistoricalQuote last = stockHistory.get(stockHistory.size()-1);
+        if (startDatePrices.get(startDate)!= null) {
+            startPrice = startDatePrices.get(startDate);
+        } else {
+            //fetch stock history only if we don't have this start date already
+            List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate);
+            HistoricalQuote first = stockHistory.get(0);
+            startPrice = first.getClose().floatValue();
+            startDatePrices.put(startDate, startPrice);
+        }
 
         //ESPP purchase price is 15% off either the first day's closing price, or the last day's, whichever is lower.
         // We never know the last day's price until it's over, so we can guess with today's (or most recent).
-        float minClose = Math.min(first.getClose().floatValue(), last.getClose().floatValue());
-
-        return (minClose * 0.85);
+        return (0.85 * Math.min(startPrice, currentPrice));
     }
 
 }
