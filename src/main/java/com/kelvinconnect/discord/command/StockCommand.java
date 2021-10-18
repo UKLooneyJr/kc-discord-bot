@@ -9,6 +9,7 @@ import org.javacord.api.entity.message.embed.EmbedBuilder;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
+import yahoofinance.histquotes.Interval;
 import yahoofinance.quotes.fx.FxQuote;
 import yahoofinance.quotes.fx.FxSymbols;
 import yahoofinance.quotes.stock.StockQuote;
@@ -20,12 +21,13 @@ import java.text.NumberFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class StockCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(StockCommand.class);
     private final HashMap<Calendar, Float> startDatePrices = new HashMap<>();
+
     @Command(aliases = "!stock", description = "Display the current NYSE:MSI stock price", usage = "!stock")
     public String onStockCommand(Message message) {
         try {
@@ -111,30 +113,42 @@ public class StockCommand implements CommandExecutor {
         boolean isLeapYear = currentDate.toLocalDate().isLeapYear();
 
         //2021-04-01 = 91st day of year
-        ZonedDateTime summerStartDate = currentDate.withDayOfYear(isLeapYear? 92 :91);
+        ZonedDateTime summerStartDate = currentDate.withDayOfYear(isLeapYear ? 92 : 91);
         //2021-10-01 = 274th day of year
-        ZonedDateTime winterStartDate = currentDate.withDayOfYear(isLeapYear? 275 :274);
+        ZonedDateTime winterStartDate = currentDate.withDayOfYear(isLeapYear ? 275 : 274);
         boolean isSummer = (currentDate.isAfter(summerStartDate) && currentDate.isBefore(winterStartDate));
 
         ZonedDateTime firstDayOfYear = currentDate.withDayOfYear(1);
-        if(!isSummer && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))){
+        if (!isSummer && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))) {
             //Between January 1st and April 1st, we're interested in last year's October
             winterStartDate = winterStartDate.minusYears(1);
         }
 
         Calendar startDate = GregorianCalendar.from(isSummer ? summerStartDate : winterStartDate);
-        Calendar endDate = (Calendar) startDate.clone();
-        endDate.add(Calendar.DAY_OF_YEAR, 1);
+
         float currentPrice = stock.getQuote().getPrice().floatValue();
         float startPrice;
 
-        if (startDatePrices.get(startDate)!= null) {
+        if (startDatePrices.get(startDate) != null) {
             startPrice = startDatePrices.get(startDate);
         } else {
+            Calendar endDate = (Calendar) startDate.clone();
+            //we only really need one day's worth of history
+            endDate.add(Calendar.DAY_OF_YEAR, 1);
+
             //fetch stock history only if we don't have this start date already
-            List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate);
-            HistoricalQuote first = stockHistory.get(0);
-            startPrice = first.getClose().floatValue();
+            List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate, Interval.DAILY);
+
+            //Okay, so when we get this historical data, we actually don't necessarily know if the date we selected
+            //has any data, and if it doesn't, we can end up a weekend off.
+            //So here, we prefer to select a quote from the exact date, and if that doesn't exist, we just take
+            //the first one in the collection
+            Optional<HistoricalQuote> startDateQuote = stockHistory.stream()
+                    .filter(q -> q.getDate().toInstant().equals(startDate.toInstant())).findFirst();
+
+            startPrice = startDateQuote.isPresent() ? startDateQuote.get().getClose().floatValue() :
+                    stockHistory.get(0).getClose().floatValue();
+
             startDatePrices.put(startDate, startPrice);
         }
 
