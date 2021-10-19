@@ -26,7 +26,7 @@ import java.util.*;
 
 public class StockCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(StockCommand.class);
-    private final HashMap<Calendar, Float> startDatePrices = new HashMap<>();
+    private final HashMap<Calendar, BigDecimal> startDatePrices = new HashMap<>();
 
     @Command(aliases = "!stock", description = "Display the current NYSE:MSI stock price", usage = "!stock")
     public String onStockCommand(Message message) {
@@ -126,8 +126,8 @@ public class StockCommand implements CommandExecutor {
 
         Calendar startDate = GregorianCalendar.from(isSummer ? summerStartDate : winterStartDate);
 
-        float currentPrice = stock.getQuote().getPrice().floatValue();
-        float startPrice;
+        BigDecimal currentPrice = stock.getQuote().getPrice();
+        BigDecimal startPrice;
 
         if (startDatePrices.get(startDate) != null) {
             startPrice = startDatePrices.get(startDate);
@@ -146,15 +146,16 @@ public class StockCommand implements CommandExecutor {
             Optional<HistoricalQuote> startDateQuote = stockHistory.stream()
                     .filter(q -> q.getDate().toInstant().equals(startDate.toInstant())).findFirst();
 
-            startPrice = startDateQuote.isPresent() ? startDateQuote.get().getClose().floatValue() :
-                    stockHistory.get(0).getClose().floatValue();
+            startPrice = startDateQuote
+                    .map(HistoricalQuote::getClose)
+                    .orElseGet(() -> stockHistory.get(0).getClose());
 
             startDatePrices.put(startDate, startPrice);
         }
 
         //ESPP purchase price is 15% off either the first day's closing price, or the last day's, whichever is lower.
         // We never know the last day's price until it's over, so we can guess with today's (or most recent).
-        return (0.85 * Math.min(startPrice, currentPrice));
+        return (0.85 * startPrice.min(currentPrice).doubleValue());
     }
 
 }
