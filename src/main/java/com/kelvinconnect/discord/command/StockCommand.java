@@ -112,15 +112,15 @@ public class StockCommand implements CommandExecutor {
         ZonedDateTime currentDate = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS);
         boolean isLeapYear = currentDate.toLocalDate().isLeapYear();
 
-        //2021-04-01 = 91st day of year
+        // 2021-04-01 = 91st day of year
         ZonedDateTime summerStartDate = currentDate.withDayOfYear(isLeapYear ? 92 : 91);
-        //2021-10-01 = 274th day of year
+        // 2021-10-01 = 274th day of year
         ZonedDateTime winterStartDate = currentDate.withDayOfYear(isLeapYear ? 275 : 274);
         boolean isSummer = (currentDate.isAfter(summerStartDate) && currentDate.isBefore(winterStartDate));
 
         ZonedDateTime firstDayOfYear = currentDate.withDayOfYear(1);
         if (!isSummer && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))) {
-            //Between January 1st and April 1st, we're interested in last year's October
+            // Between January 1st and April 1st, we're interested in last year's October
             winterStartDate = winterStartDate.minusYears(1);
         }
 
@@ -133,27 +133,25 @@ public class StockCommand implements CommandExecutor {
             startPrice = startDatePrices.get(startDate);
         } else {
             Calendar endDate = (Calendar) startDate.clone();
-            //we only really need one day's worth of history
+            // we only really need one day's worth of history
             endDate.add(Calendar.DAY_OF_YEAR, 1);
 
-            //fetch stock history only if we don't have this start date already
+            // fetch stock history only if we don't have this start date already
             List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate, Interval.DAILY);
 
-            //Okay, so when we get this historical data, we actually don't necessarily know if the date we selected
-            //has any data, and if it doesn't, we can end up a weekend off.
-            //So here, we prefer to select a quote from the exact date, and if that doesn't exist, we just take
-            //the first one in the collection
+            // Okay, so when we get this historical data, we actually don't necessarily know if the date we selected
+            // has any data, and if it doesn't, we can end up a weekend off.
+            // So here, we prefer to select a quote from the exact date, and if that doesn't exist, we just take
+            // the first one in the collection
             Optional<HistoricalQuote> startDateQuote = stockHistory.stream()
                     .filter(q -> q.getDate().toInstant().equals(startDate.toInstant())).findFirst();
 
-            startPrice = startDateQuote
-                    .map(HistoricalQuote::getClose)
-                    .orElseGet(() -> stockHistory.get(0).getClose());
+            startPrice = startDateQuote.map(HistoricalQuote::getClose).orElseGet(() -> stockHistory.get(0).getClose());
 
             startDatePrices.put(startDate, startPrice);
         }
 
-        //ESPP purchase price is 15% off either the first day's closing price, or the last day's, whichever is lower.
+        // ESPP purchase price is 15% off either the first day's closing price, or the last day's, whichever is lower.
         // We never know the last day's price until it's over, so we can guess with today's (or most recent).
         return (0.85 * startPrice.min(currentPrice).doubleValue());
     }

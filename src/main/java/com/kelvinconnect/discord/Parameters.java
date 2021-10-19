@@ -4,8 +4,14 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Optional;
+
 public class Parameters {
     private static final Logger logger = LogManager.getLogger(Parameters.class);
+
+    private static final String TOKEN_OPTION = "token";
+    private static final String DATABASE_PATH_OPTION = "database";
+    private static final String CHANNEL_LIST_LOCATION_OPTION = "channel-list";
 
     private static Parameters instance;
 
@@ -27,14 +33,9 @@ public class Parameters {
     public void parseCommandLine(String[] args) {
         Options options = new Options();
 
-        Option token = new Option("t", "token", true, "Discord login token");
-        options.addOption(token);
-
-        Option dbPath = new Option("d", "database", true, "Path to the database");
-        options.addOption(dbPath);
-
-        Option channelListLocation = new Option("c", "channel-list", true, "Location of the channel list xml");
-        options.addOption(channelListLocation);
+        options.addOption(new Option("t", TOKEN_OPTION, true, "Discord login token"));
+        options.addOption(new Option("d", DATABASE_PATH_OPTION, true, "Path to the database"));
+        options.addOption(new Option("c", CHANNEL_LIST_LOCATION_OPTION, true, "Location of the channel list xml"));
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -49,21 +50,21 @@ public class Parameters {
             return;
         }
 
-        this.token = cmd.getOptionValue("token");
-        this.databasePath = cmd.getOptionValue("database");
-        this.channelListLocation = cmd.getOptionValue("channel-list");
+        this.token = cmd.getOptionValue(TOKEN_OPTION);
+        this.databasePath = cmd.getOptionValue(DATABASE_PATH_OPTION);
+        this.channelListLocation = cmd.getOptionValue(CHANNEL_LIST_LOCATION_OPTION);
     }
 
-    public String getToken() {
-        return token;
+    public Optional<String> getToken() {
+        return Optional.ofNullable(token);
     }
 
-    public String getDatabasePath() {
-        return databasePath;
+    public Optional<String> getDatabasePath() {
+        return Optional.ofNullable(databasePath);
     }
 
-    public String getChannelListLocation() {
-        return channelListLocation;
+    public Optional<String> getChannelListLocation() {
+        return Optional.ofNullable(channelListLocation);
     }
 
 }

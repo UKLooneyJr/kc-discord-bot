@@ -26,7 +26,7 @@ public class KCBotDatabase {
 
     public static KCBotDatabase getInstance() {
         if (instance == null) {
-            instance = new KCBotDatabase(DBUtil.databasePath());
+            instance = new KCBotDatabase(DBUtils.databasePath());
         }
         return instance;
     }
