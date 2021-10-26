@@ -5,6 +5,10 @@ import org.javacord.api.entity.message.MessageAuthor;
 
 public class DiscordUtils {
 
+    private DiscordUtils() {
+        throw new UnsupportedOperationException("do not instantiate");
+    }
+
     public static final String INVALID_ARGUMENTS_MESSAGE = "Invalid arguments, try '!help' to see instructions.";
     public static final int MAX_MESSAGE_LENGTH = 2000;
 

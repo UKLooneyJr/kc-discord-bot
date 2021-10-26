@@ -23,10 +23,10 @@ public class EveryoneFilter implements StandoFilter {
     }
 
     private String replaceEveryone(String input, String replace) {
-        return input.replaceAll("@everyone", replace);
+        return input.replace("@everyone", replace);
     }
 
     private String replaceHere(String input, String replace) {
-        return input.replaceAll("@here", replace);
+        return input.replace("@here", replace);
     }
 }
