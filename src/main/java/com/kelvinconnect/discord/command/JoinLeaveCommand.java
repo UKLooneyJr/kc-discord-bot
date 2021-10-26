@@ -35,7 +35,6 @@ public class JoinLeaveCommand implements CommandExecutor {
     private static final String INVALID_CHANNEL_NAME = "Invalid channel name, try '!channels' for a list of all channels.";
     private static final String CANT_LEAVE_CHANNEL = "Sorry, you can't leave this channel.";
     private static final String DEFAULT_CHANNEL_URL = "https://raw.githubusercontent.com/UKLooneyJr/kc-discord-bot/master/resources/channels.xml";
-    private static final long KC_SERVER_ID = 239013363387072514L;
 
     private static final String KC_CHANNEL_LIST_ELEMENT = "KCChannelList";
     private static final String KC_CHANNEL_ELEMENT = "KCChannel";
@@ -53,7 +52,8 @@ public class JoinLeaveCommand implements CommandExecutor {
         Parameters p = Parameters.getInstance();
         kcChannelListURL = p.getChannelListLocation().orElse(DEFAULT_CHANNEL_URL);
 
-        kcServer = api.getServerById(KC_SERVER_ID).orElseThrow(() -> new RuntimeException("Failed to find KC server."));
+        kcServer = api.getServerById(DiscordUtils.KC_SERVER_ID)
+                .orElseThrow(() -> new RuntimeException("Failed to find KC server."));
         initChannels();
     }
 
