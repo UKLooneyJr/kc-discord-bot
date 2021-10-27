@@ -17,12 +17,13 @@ import java.util.Random;
  */
 public class PubCommand implements CommandExecutor {
 
-    private final static String[] choices = { "Brass Monkey", "Brewdog", "The Islay", "Strip Joint", "Big Slope",
+    private static final String[] choices = { "Brass Monkey", "Brewdog", "The Islay", "Strip Joint", "Big Slope",
             "Three Judges", "Sparkle Horse", "Brass Monkey", "Brass Monkey", "Brass Monkey", "Snaffle Bit",
             "The Park Bar", "Grove Bar", "Lebowskis", "The Bon Accord", "O'Neill's", "The Pub", "The Hengler's Circus",
             "Yates's", "Slouch", "Malones", "Bunker Bar", "The Pot Still", "The Horseshoe Bar", "The Drum & Monkey",
             "The Counting House", "Sloans", "Waxy O'Connors", "Blue Dog", "Gallus", "The Tap House" };
 
+    private final Random random = new Random();
     private final VotingBooth votingBooth;
 
     public PubCommand() {
@@ -43,14 +44,12 @@ public class PubCommand implements CommandExecutor {
                 return voteResults();
             }
         }
-        if (args.length >= 2) {
-            if (args[0].equals("vote")) {
-                String[] nameArgs = Arrays.copyOfRange(args, 1, args.length);
-                return submitVote(nameArgs, message);
-            }
+        if (args.length >= 2 && args[0].equals("vote")) {
+            String[] nameArgs = Arrays.copyOfRange(args, 1, args.length);
+            return submitVote(nameArgs, message);
         }
 
-        String suggestion = choices[new Random().nextInt(choices.length)];
+        String suggestion = choices[random.nextInt(choices.length)];
         return "What about " + suggestion + "?";
     }
 

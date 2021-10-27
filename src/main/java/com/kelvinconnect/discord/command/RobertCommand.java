@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class RobertCommand implements CommandExecutor {
 
-    private final static String[] choices = { "...Terri?", "That's not the first time I've heard that",
+    private static final String[] choices = { "...Terri?", "That's not the first time I've heard that",
             "Happy with that?", "From my point of view", "Come and read this email", "You got a second?",
             "You got a minute?" };
 

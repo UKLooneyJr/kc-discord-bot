@@ -18,7 +18,6 @@ import org.javacord.api.entity.user.User;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -27,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
 public class JoinLeaveCommand implements CommandExecutor {
@@ -35,7 +35,6 @@ public class JoinLeaveCommand implements CommandExecutor {
     private static final String INVALID_CHANNEL_NAME = "Invalid channel name, try '!channels' for a list of all channels.";
     private static final String CANT_LEAVE_CHANNEL = "Sorry, you can't leave this channel.";
     private static final String DEFAULT_CHANNEL_URL = "https://raw.githubusercontent.com/UKLooneyJr/kc-discord-bot/master/resources/channels.xml";
-    private static final long KC_SERVER_ID = 239013363387072514L;
 
     private static final String KC_CHANNEL_LIST_ELEMENT = "KCChannelList";
     private static final String KC_CHANNEL_ELEMENT = "KCChannel";
@@ -53,7 +52,8 @@ public class JoinLeaveCommand implements CommandExecutor {
         Parameters p = Parameters.getInstance();
         kcChannelListURL = p.getChannelListLocation().orElse(DEFAULT_CHANNEL_URL);
 
-        kcServer = api.getServerById(KC_SERVER_ID).orElseThrow(() -> new RuntimeException("Failed to find KC server."));
+        kcServer = api.getServerById(DiscordUtils.KC_SERVER_ID)
+                .orElseThrow(() -> new RuntimeException("Failed to find KC server."));
         initChannels();
     }
 
@@ -69,8 +69,11 @@ public class JoinLeaveCommand implements CommandExecutor {
         try {
             channels = loadChannelsFromURL();
         } catch (Exception e) {
-            logger.error(String.format("Error loading channel list from URL %s", kcChannelListURL), e);
-            channels = getDefaultChannels();
+            logger.error(() -> String.format("Error loading channel list from URL %s", kcChannelListURL), e);
+            if (null == channels) {
+                logger.debug("Loading default channels");
+                channels = getDefaultChannels();
+            }
         }
     }
 
@@ -79,41 +82,33 @@ public class JoinLeaveCommand implements CommandExecutor {
         urlConnection.addRequestProperty("Accept", "application/xml");
 
         DocumentBuilder documentBuilder = DOMUtils.newDocumentBuilder();
+        Document doc = documentBuilder.parse(urlConnection.getInputStream());
+        Node rootNode = doc.getDocumentElement();
 
-        Document channelListDocument = documentBuilder.parse(urlConnection.getInputStream());
-        String root = channelListDocument.getDocumentElement().getNodeName();
-
-        if (root.equals(KC_CHANNEL_LIST_ELEMENT)) {
-            Node rootNode = channelListDocument.getDocumentElement();
-            return loadChannelsFromXml(rootNode);
-        } else {
-            throw new IllegalArgumentException(String.format("Invalid XML, expected root element <%s> but got <%s>",
-                    KC_CHANNEL_LIST_ELEMENT, root));
-        }
-
+        return loadChannelsFromXml(rootNode);
     }
 
     private List<KCChannel> loadChannelsFromXml(Node rootNode) {
-        return DOMUtils.toStream(rootNode.getChildNodes()).filter(Element.class::isInstance).map(Element.class::cast)
-                .filter(element -> element.getNodeName().equals(KC_CHANNEL_ELEMENT)).map(this::createChannelFromNode)
-                .filter(Objects::nonNull).collect(Collectors.toList());
+        if (KC_CHANNEL_LIST_ELEMENT.equals(rootNode.getNodeName())) {
+            return DOMUtils.toStream(rootNode.getChildNodes()).filter(Element.class::isInstance)
+                    .map(Element.class::cast).filter(element -> element.getNodeName().equals(KC_CHANNEL_ELEMENT))
+                    .map(this::createChannelFromNode).filter(Objects::nonNull).collect(Collectors.toList());
+        } else {
+            throw new IllegalArgumentException(String.format("Invalid XML, expected root element <%s> but got <%s>",
+                    KC_CHANNEL_LIST_ELEMENT, rootNode.getNodeName()));
+        }
     }
 
     private KCChannel createChannelFromNode(Element element) {
         try {
-            Element channelIdElement = (Element) element.getElementsByTagName(CHANNEL_ID_NODE).item(0);
-            long channelId = Long.parseLong(channelIdElement.getTextContent());
-            Element roleIdElement = (Element) element.getElementsByTagName(ROLE_ID_NODE).item(0);
-            long roleId = Long.parseLong(roleIdElement.getTextContent());
+            long channelId = Long.parseLong(element.getElementsByTagName(CHANNEL_ID_NODE).item(0).getTextContent());
+            long roleId = Long.parseLong(element.getElementsByTagName(ROLE_ID_NODE).item(0).getTextContent());
             Element aliasesElement = (Element) element.getElementsByTagName(ALIASES_NODE).item(0);
-            NodeList aliasList = aliasesElement.getElementsByTagName(ALIAS_NODE);
-            String[] aliases = new String[aliasList.getLength()];
-            for (int j = 0; j < aliasList.getLength(); j++) {
-                aliases[j] = (aliasList.item(j).getTextContent());
-            }
+            String[] aliases = DOMUtils.toStream(aliasesElement.getElementsByTagName(ALIAS_NODE))
+                    .map(Node::getTextContent).toArray(String[]::new);
             return new KCChannel(channelId, roleId, aliases);
         } catch (Exception e) {
-            logger.error(String.format("Error parsing channel from XML: %s", DOMUtils.toString(element)), e);
+            logger.error(() -> String.format("Error parsing channel from XML: %s", DOMUtils.toString(element)), e);
         }
 
         return null;
@@ -166,12 +161,11 @@ public class JoinLeaveCommand implements CommandExecutor {
         Collection<Role> roles = user.getRoles(kcServer);
 
         if (!roles.contains(channel.role)) {
-            kcServer.addRoleToUser(user, channel.role).thenRun(() -> {
-                if (showWelcomeMessage) {
-                    ((TextChannel) channel.channel)
-                            .sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!");
-                }
-            });
+            CompletionStage<Void> stage = kcServer.addRoleToUser(user, channel.role);
+            if (showWelcomeMessage) {
+                stage.thenRun(() -> ((TextChannel) channel.channel)
+                        .sendMessage("Welcome " + DiscordUtils.getAuthorShortUserName(message) + "!"));
+            }
         }
     }
 
@@ -216,25 +210,11 @@ public class JoinLeaveCommand implements CommandExecutor {
     }
 
     private Optional<KCChannel> getCurrentChannel(Message message) {
-        long currentChannelId = message.getChannel().getId();
-        for (KCChannel c : channels) {
-            if (c.channel.getId() == currentChannelId) {
-                return Optional.of(c);
-            }
-        }
-        return Optional.empty();
+        return channels.stream().filter(c -> c.channel.getId() == message.getChannel().getId()).findFirst();
     }
 
     private Optional<KCChannel> getChannelFromAlias(String alias) {
-        String lcAlias = alias.toLowerCase();
-        for (KCChannel c : channels) {
-            for (String channelAlias : c.aliases) {
-                if (channelAlias.equals(lcAlias)) {
-                    return Optional.of(c);
-                }
-            }
-        }
-        return Optional.empty();
+        return channels.stream().filter(c -> c.aliases.contains(alias.toLowerCase())).findFirst();
     }
 
     @Command(aliases = "!channels", description = "Shows all channels that can be joined.", usage = "!channels")

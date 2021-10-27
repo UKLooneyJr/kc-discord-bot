@@ -35,7 +35,7 @@ public class KCBotDatabase {
         try {
             return Optional.of(DriverManager.getConnection(url));
         } catch (SQLException e) {
-            logger.error("Failed to connect to database: url=" + url, e);
+            logger.error(() -> "Failed to connect to database: url=" + url, e);
             return Optional.empty();
         }
     }
@@ -58,7 +58,7 @@ public class KCBotDatabase {
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
-            logger.error("Failed to create table: " + table.getTableName(), e);
+            logger.error(() -> "Failed to create table: " + table.getTableName(), e);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.kelvinconnect.discord;
 
 import com.kelvinconnect.discord.command.*;
+import com.kelvinconnect.discord.command.music.MusicCommand;
 import com.kelvinconnect.discord.command.pub.PubCommand;
 import com.kelvinconnect.discord.command.stando.StandoCommand;
 import com.kelvinconnect.discord.login.Login;
@@ -9,6 +10,7 @@ import com.kelvinconnect.discord.login.TokenLogin;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
 import com.kelvinconnect.discord.ui.BotUI;
+import de.btobastian.sdcf4j.CommandExecutor;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
 import org.apache.logging.log4j.LogManager;
@@ -50,19 +52,26 @@ public class KCDiscordBot {
 
     private static void registerCommands(DiscordApi api) {
         CommandHandler handler = new JavacordHandler(api);
-        handler.registerCommand(new HelpCommand(handler));
-        handler.registerCommand(new InfoCommand());
-        handler.registerCommand(new UptimeCommand(Instant.now()));
-        // handler.registerCommand(new TicketCommand());
-        // handler.registerCommand(new ChangeSetCommand());
-        handler.registerCommand(new SlackCommand());
-        handler.registerCommand(new BangCommand());
-        handler.registerCommand(new RobertCommand());
-        handler.registerCommand(new StandoCommand());
-        handler.registerCommand(new PubCommand());
-        handler.registerCommand(new RollCommand());
-        handler.registerCommand(new JoinLeaveCommand(api));
-        handler.registerCommand(new StockCommand());
+        registerCommand(handler, new HelpCommand(handler));
+        registerCommand(handler, new InfoCommand());
+        registerCommand(handler, new UptimeCommand(Instant.now()));
+        registerCommand(handler, new SlackCommand());
+        registerCommand(handler, new BangCommand());
+        registerCommand(handler, new RobertCommand());
+        registerCommand(handler, new StandoCommand());
+        registerCommand(handler, new PubCommand());
+        registerCommand(handler, new RollCommand());
+        registerCommand(handler, new JoinLeaveCommand(api));
+        registerCommand(handler, new StockCommand());
+        registerCommand(handler, new MusicCommand(api));
+    }
+
+    private static void registerCommand(CommandHandler handler, CommandExecutor executor) {
+        try {
+            handler.registerCommand(executor);
+        } catch (Exception e) {
+            logger.error(() -> "Error registering command(s) for class " + executor.getClass().getSimpleName(), e);
+        }
     }
 
     private static void startTasks(DiscordApi api) {
@@ -70,7 +79,6 @@ public class KCDiscordBot {
         gameRandomiser.start(api);
         TaskScheduler scheduler = new TaskScheduler();
         scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
-        // scheduler.runMinutely("timeline", new TracTimeline(api));
     }
 
     private static void initUI() {

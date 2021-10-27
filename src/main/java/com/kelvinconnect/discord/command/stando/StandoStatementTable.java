@@ -34,7 +34,7 @@ public class StandoStatementTable extends Table {
                 pstmt.setString(1, statement.statement);
                 pstmt.setInt(2, statement.severity.ordinal());
                 pstmt.executeUpdate();
-                logger.debug("Inserted stando_statement: " + statement.statement + " into database.");
+                logger.debug(() -> "Inserted stando_statement: " + statement.statement + " into database.");
             } catch (SQLException e) {
                 logger.error("Failed to insert statement", e);
             }
@@ -51,7 +51,7 @@ public class StandoStatementTable extends Table {
 
                 while (rs.next()) {
                     String statement = rs.getString("statement");
-                    Integer severity = rs.getInt("severity");
+                    int severity = rs.getInt("severity");
                     standoStatements.add(new StandoStatement(statement, StandoStatement.Severity.values()[severity]));
                 }
             } catch (SQLException e) {

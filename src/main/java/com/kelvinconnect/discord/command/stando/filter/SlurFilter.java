@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class SlurFilter implements StandoFilter {
+    private final Random random = new Random();
     private final int hicOccurrence;
     private final int shOccurrence;
 
@@ -47,15 +48,14 @@ public class SlurFilter implements StandoFilter {
     }
 
     private String slur(String input) {
-        Random r = new Random();
         StringBuilder sb = new StringBuilder();
         for (char c : input.toCharArray()) {
             switch (c) {
             case ' ':
-                sb.append(r.nextInt(hicOccurrence) == 0 ? " ...hic! " : " ");
+                sb.append(random.nextInt(hicOccurrence) == 0 ? " ...hic! " : " ");
                 break;
             case 's':
-                sb.append(r.nextInt(shOccurrence) == 0 ? "sh" : "s");
+                sb.append(random.nextInt(shOccurrence) == 0 ? "sh" : "s");
                 break;
             default:
                 sb.append(c);

@@ -47,7 +47,7 @@ public class DOMUtils {
     }
 
     public static Stream<Node> toStream(final NodeList nodeList) {
-        return StreamSupport.stream(DOMUtils.iterable(nodeList).spliterator(), false);
+        return StreamSupport.stream(iterable(nodeList).spliterator(), false);
     }
 
     public static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {

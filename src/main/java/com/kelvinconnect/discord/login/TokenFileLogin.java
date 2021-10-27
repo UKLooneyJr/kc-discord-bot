@@ -24,12 +24,12 @@ public class TokenFileLogin implements Login {
     }
 
     public DiscordApi login() {
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        logger.info(() -> "Working Directory = " + System.getProperty("user.dir"));
         String token;
         try {
             token = new String(Files.readAllBytes(Paths.get(filepath)));
         } catch (IOException e) {
-            logger.error("Could not read file " + filepath, e);
+            logger.error(() -> "Could not read file " + filepath, e);
             return null; // TODO: Make this throw an appropriate exception rather than returning null
         }
         return new DiscordApiBuilder().setToken(token).login().join();
