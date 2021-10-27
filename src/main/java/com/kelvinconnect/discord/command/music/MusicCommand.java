@@ -12,7 +12,7 @@ import org.javacord.api.entity.server.Server;
 public class MusicCommand implements CommandExecutor {
 
     private static final long MUSIC_VOICE_CHANNEL_ID = 902665967258189906L;
-    private static final long MUSIC_TEXT_CHANNEL_ID = 902700344683921499L;
+    private static final long MUSIC_TEXT_CHANNEL_ID = 421223895513956352L;
 
     private final ServerVoiceChannel voiceChannel;
     private final MusicPlayer player;
