@@ -9,18 +9,20 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.audio.AudioConnection;
 import org.javacord.api.audio.AudioSource;
 import org.javacord.api.entity.channel.ServerTextChannel;
+import org.javacord.api.entity.message.MessageAuthor;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 public class MusicPlayer {
     private static final Logger logger = LogManager.getLogger(MusicPlayer.class);
@@ -28,13 +30,14 @@ public class MusicPlayer {
     private final AudioPlayerManager playerManager;
     private final AudioPlayer player;
     private final AudioSource source;
-    private final Queue<AudioTrack> songQueue;
+    private final Queue<TrackRequest> requestQueue;
     private final ServerTextChannel textChannel;
     private AudioConnection audioConnection;
+    private TrackRequest currentTrackRequest;
 
     public MusicPlayer(DiscordApi api, ServerTextChannel tc) {
         this.textChannel = tc;
-        songQueue = new LinkedBlockingQueue<>();
+        requestQueue = new LinkedBlockingQueue<>();
 
         playerManager = new DefaultAudioPlayerManager();
         playerManager.registerSourceManager(new YoutubeAudioSourceManager());
@@ -46,7 +49,6 @@ public class MusicPlayer {
             @Override
             protected void onTrackStart(TrackStartEvent event) {
                 logger.info("Now playing {}", event.track.getInfo().title);
-                textChannel.sendMessage("Now playing " + formatAudioTrack(event.track));
             }
 
             @Override
@@ -106,15 +108,16 @@ public class MusicPlayer {
             audioConnection.close();
             audioConnection = null;
         }
+
+        currentTrackRequest = null;
     }
 
-    public void addSong(String url) {
+    public void addRequest(String url, MessageAuthor user) {
         playerManager.loadItem(url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                songQueue.add(track);
+                requestQueue.add(new TrackRequest(track, user));
                 logger.info("Added '{}' to queue", track.getInfo().title);
-                textChannel.sendMessage("Added " + formatAudioTrack(track) + " to the queue");
             }
 
             @Override
@@ -132,8 +135,8 @@ public class MusicPlayer {
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                logger.warn(() -> "Failed to load song at url " + url, exception);
-                textChannel.sendMessage("Failed to load song at url `" + url + "`");
+                logger.warn(() -> "Failed to load track at url " + url, exception);
+                textChannel.sendMessage("Failed to load track at url `" + url + "`");
             }
         });
     }
@@ -142,23 +145,37 @@ public class MusicPlayer {
      * Plays the next track, if no tracks are left disconnects.
      */
     public void next() {
-        AudioTrack track = songQueue.poll();
+        currentTrackRequest = requestQueue.poll();
 
-        if (null == track) {
+        if (null == currentTrackRequest) {
             disconnect();
             return;
         }
 
-        player.playTrack(track);
+        textChannel.sendMessage("Now playing " + currentTrackRequest.getLabel());
+        player.playTrack(currentTrackRequest.getTrack());
     }
 
-    public Optional<String> getCurrentTrack() {
-        return Optional.ofNullable(player.getPlayingTrack()).map(MusicPlayer::formatAudioTrack);
+    /**
+     * Removes all requests from the queue.
+     */
+    public void clear() {
+        requestQueue.clear();
     }
 
-    private static String formatAudioTrack(AudioTrack track) {
-        AudioTrackInfo info = track.getInfo();
-        // TODO: include the duration here
-        return String.format("**%s**", info.title);
+    public Optional<String> getCurrentRequest() {
+        return Optional.ofNullable(currentTrackRequest).map(TrackRequest::getLabel);
+    }
+
+    public List<String> getNextRequests() {
+        return requestQueue.stream().map(TrackRequest::getLabel).collect(Collectors.toList());
+    }
+
+    public int getRemainingRequestCount() {
+        if (currentTrackRequest != null) {
+            return requestQueue.size() + 1;
+        } else {
+            return requestQueue.size();
+        }
     }
 }

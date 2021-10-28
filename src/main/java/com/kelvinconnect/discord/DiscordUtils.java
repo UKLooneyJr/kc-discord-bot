@@ -19,10 +19,6 @@ public class DiscordUtils {
     }
 
     private static String getShortUserName(MessageAuthor user) {
-        String name = user.getDisplayName();
-        if (name.contains(" ")) {
-            return name.substring(0, name.indexOf(" "));
-        }
-        return name;
+        return user.getDisplayName().split(" ")[0];
     }
 }
