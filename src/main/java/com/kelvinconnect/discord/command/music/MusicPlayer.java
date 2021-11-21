@@ -22,10 +22,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class MusicPlayer {
     private static final Logger logger = LogManager.getLogger(MusicPlayer.class);
+    // TODO: make this configurable
+    private static final boolean SEND_PLAYLIST_UPDATE_MESSAGES = false;
 
     private final AudioPlayerManager playerManager;
     private final AudioPlayer player;
@@ -74,13 +77,13 @@ public class MusicPlayer {
             @Override
             protected void onPlayerResume(PlayerResumeEvent event) {
                 logger.info("Resuming");
-                textChannel.sendMessage("Music resumed");
+                sendTextChannelMessage(() -> "Music resumed");
             }
 
             @Override
             protected void onPlayerPause(PlayerPauseEvent event) {
                 logger.info("Pausing");
-                textChannel.sendMessage("Music paused");
+                sendTextChannelMessage(() -> "Music paused");
             }
         });
     }
@@ -130,13 +133,13 @@ public class MusicPlayer {
             @Override
             public void noMatches() {
                 logger.warn("No matches found at url '{}'", url);
-                textChannel.sendMessage("No songs found at url `" + url + "`");
+                sendTextChannelMessage(() -> "No songs found at url `" + url + "`");
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
                 logger.warn(() -> "Failed to load track at url " + url, exception);
-                textChannel.sendMessage("Failed to load track at url `" + url + "`");
+                sendTextChannelMessage(() -> "Failed to load track at url `" + url + "`");
             }
         });
     }
@@ -152,7 +155,7 @@ public class MusicPlayer {
             return;
         }
 
-        textChannel.sendMessage("Now playing " + currentTrackRequest.getLabel());
+        sendTextChannelMessage(() -> "Now playing " + currentTrackRequest.getLabel());
         player.playTrack(currentTrackRequest.getTrack());
     }
 
@@ -176,6 +179,12 @@ public class MusicPlayer {
             return requestQueue.size() + 1;
         } else {
             return requestQueue.size();
+        }
+    }
+
+    private void sendTextChannelMessage(Supplier<String> message) {
+        if (SEND_PLAYLIST_UPDATE_MESSAGES) {
+            textChannel.sendMessage(message.get());
         }
     }
 }
