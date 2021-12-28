@@ -1,12 +1,13 @@
 package com.kelvinconnect.discord.scheduler;
 
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for the calculateDelay method(s) of the TaskScheduler class
