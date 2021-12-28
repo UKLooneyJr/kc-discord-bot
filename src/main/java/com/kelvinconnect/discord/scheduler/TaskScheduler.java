@@ -1,8 +1,5 @@
 package com.kelvinconnect.discord.scheduler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,11 +8,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Schedules "tasks" (i.e. Runnables) to be run at a set time weekly.
- * <p>
- * Created by Adam on 22/03/2017.
+ *
+ * <p>Created by Adam on 22/03/2017.
  */
 public class TaskScheduler {
     private static final Logger logger = LogManager.getLogger(TaskScheduler.class);
@@ -40,8 +39,9 @@ public class TaskScheduler {
         }
 
         logger.info(() -> "Task '" + name + "' will next run in " + delayInMinutes + " minutes.");
-        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(runnable, delayInMinutes, WEEK_PERIOD,
-                TimeUnit.MINUTES);
+        ScheduledFuture<?> future =
+                scheduler.scheduleAtFixedRate(
+                        runnable, delayInMinutes, WEEK_PERIOD, TimeUnit.MINUTES);
         tasks.put(name, future);
     }
 
@@ -89,7 +89,8 @@ public class TaskScheduler {
         int delay = 0;
 
         int currentMinute = calendar.get(Calendar.MINUTE);
-        int delayInMinutes = currentMinute <= minute ? minute - currentMinute : 60 - (currentMinute - minute);
+        int delayInMinutes =
+                currentMinute <= minute ? minute - currentMinute : 60 - (currentMinute - minute);
         delay += delayInMinutes;
         calendar.add(Calendar.MINUTE, delayInMinutes);
 

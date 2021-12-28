@@ -3,7 +3,6 @@ package com.kelvinconnect.discord.chess.piece;
 import com.kelvinconnect.discord.chess.ChessBoard;
 import com.kelvinconnect.discord.chess.ChessTeam;
 import com.kelvinconnect.discord.chess.Vector2D;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;

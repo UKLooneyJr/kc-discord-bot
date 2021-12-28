@@ -6,8 +6,8 @@ import org.javacord.api.entity.message.MessageBuilder;
 
 /**
  * Sends an alert to the pub chat channel every friday at 4.
- * <p>
- * Created by Adam on 22/03/2017.
+ *
+ * <p>Created by Adam on 22/03/2017.
  */
 public class PubChatAlert implements Runnable {
 
@@ -24,7 +24,8 @@ public class PubChatAlert implements Runnable {
 
         // bottest = 291689291090886656
         // pubchat = 276318041443270657
-        api.getChannelById("276318041443270657").filter(TextChannel.class::isInstance)
+        api.getChannelById("276318041443270657")
+                .filter(TextChannel.class::isInstance)
                 .ifPresent(c -> builder.send((TextChannel) c));
     }
 }

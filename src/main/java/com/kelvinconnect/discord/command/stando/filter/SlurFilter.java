@@ -1,9 +1,8 @@
 package com.kelvinconnect.discord.command.stando.filter;
 
-import org.javacord.api.entity.message.Message;
-
 import java.util.Arrays;
 import java.util.Random;
+import org.javacord.api.entity.message.Message;
 
 public class SlurFilter implements StandoFilter {
     private final Random random = new Random();
@@ -21,8 +20,15 @@ public class SlurFilter implements StandoFilter {
     }
 
     private static int getBeerCount(String message) {
-        final String[] beerEmojis = { "\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77", "\uD83C\uDF78", "\uD83C\uDF79",
-                "\uD83C\uDF7E", "\uD83C\uDF76" };
+        final String[] beerEmojis = {
+            "\uD83C\uDF7A",
+            "\uD83C\uDF7B",
+            "\uD83C\uDF77",
+            "\uD83C\uDF78",
+            "\uD83C\uDF79",
+            "\uD83C\uDF7E",
+            "\uD83C\uDF76"
+        };
         final String[] words = message.split("\\s");
         int beers = 0;
         for (String word : words) {
@@ -51,15 +57,15 @@ public class SlurFilter implements StandoFilter {
         StringBuilder sb = new StringBuilder();
         for (char c : input.toCharArray()) {
             switch (c) {
-            case ' ':
-                sb.append(random.nextInt(hicOccurrence) == 0 ? " ...hic! " : " ");
-                break;
-            case 's':
-                sb.append(random.nextInt(shOccurrence) == 0 ? "sh" : "s");
-                break;
-            default:
-                sb.append(c);
-                break;
+                case ' ':
+                    sb.append(random.nextInt(hicOccurrence) == 0 ? " ...hic! " : " ");
+                    break;
+                case 's':
+                    sb.append(random.nextInt(shOccurrence) == 0 ? "sh" : "s");
+                    break;
+                default:
+                    sb.append(c);
+                    break;
             }
         }
         return sb.toString();

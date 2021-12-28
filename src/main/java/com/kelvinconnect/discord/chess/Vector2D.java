@@ -1,6 +1,5 @@
 package com.kelvinconnect.discord.chess;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -41,10 +40,8 @@ public class Vector2D {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Vector2D position = (Vector2D) o;
         return x == position.x && y == position.y;
     }

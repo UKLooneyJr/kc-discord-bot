@@ -2,6 +2,15 @@ package com.kelvinconnect.discord.command;
 
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import java.awt.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.message.Message;
@@ -14,21 +23,14 @@ import yahoofinance.quotes.fx.FxQuote;
 import yahoofinance.quotes.fx.FxSymbols;
 import yahoofinance.quotes.stock.StockQuote;
 
-import java.awt.*;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.*;
-
 public class StockCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(StockCommand.class);
     private final HashMap<Calendar, BigDecimal> startDatePrices = new HashMap<>();
 
-    @Command(aliases = "!stock", description = "Display the current NYSE:MSI stock price", usage = "!stock")
+    @Command(
+            aliases = "!stock",
+            description = "Display the current NYSE:MSI stock price",
+            usage = "!stock")
     public String onStockCommand(Message message) {
         try {
             EmbedBuilder embed = new EmbedBuilder();
@@ -116,10 +118,12 @@ public class StockCommand implements CommandExecutor {
         ZonedDateTime summerStartDate = currentDate.withDayOfYear(isLeapYear ? 92 : 91);
         // 2021-10-01 = 274th day of year
         ZonedDateTime winterStartDate = currentDate.withDayOfYear(isLeapYear ? 275 : 274);
-        boolean isSummer = (currentDate.isAfter(summerStartDate) && currentDate.isBefore(winterStartDate));
+        boolean isSummer =
+                (currentDate.isAfter(summerStartDate) && currentDate.isBefore(winterStartDate));
 
         ZonedDateTime firstDayOfYear = currentDate.withDayOfYear(1);
-        if (!isSummer && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))) {
+        if (!isSummer
+                && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))) {
             // Between January 1st and April 1st, we're interested in last year's October
             winterStartDate = winterStartDate.minusYears(1);
         }
@@ -137,23 +141,32 @@ public class StockCommand implements CommandExecutor {
             endDate.add(Calendar.DAY_OF_YEAR, 1);
 
             // fetch stock history only if we don't have this start date already
-            List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate, Interval.DAILY);
+            List<HistoricalQuote> stockHistory =
+                    stock.getHistory(startDate, endDate, Interval.DAILY);
 
-            // Okay, so when we get this historical data, we actually don't necessarily know if the date we selected
+            // Okay, so when we get this historical data, we actually don't necessarily know if the
+            // date we selected
             // has any data, and if it doesn't, we can end up a weekend off.
-            // So here, we prefer to select a quote from the exact date, and if that doesn't exist, we just take
+            // So here, we prefer to select a quote from the exact date, and if that doesn't exist,
+            // we just take
             // the first one in the collection
-            Optional<HistoricalQuote> startDateQuote = stockHistory.stream()
-                    .filter(q -> q.getDate().toInstant().equals(startDate.toInstant())).findFirst();
+            Optional<HistoricalQuote> startDateQuote =
+                    stockHistory.stream()
+                            .filter(q -> q.getDate().toInstant().equals(startDate.toInstant()))
+                            .findFirst();
 
-            startPrice = startDateQuote.map(HistoricalQuote::getClose).orElseGet(() -> stockHistory.get(0).getClose());
+            startPrice =
+                    startDateQuote
+                            .map(HistoricalQuote::getClose)
+                            .orElseGet(() -> stockHistory.get(0).getClose());
 
             startDatePrices.put(startDate, startPrice);
         }
 
-        // ESPP purchase price is 15% off either the first day's closing price, or the last day's, whichever is lower.
-        // We never know the last day's price until it's over, so we can guess with today's (or most recent).
+        // ESPP purchase price is 15% off either the first day's closing price, or the last day's,
+        // whichever is lower.
+        // We never know the last day's price until it's over, so we can guess with today's (or most
+        // recent).
         return (0.85 * startPrice.min(currentPrice).doubleValue());
     }
-
 }

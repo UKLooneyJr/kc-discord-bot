@@ -1,8 +1,7 @@
 package com.kelvinconnect.discord.chess.parser;
 
 public class ChessParserException extends Exception {
-    public ChessParserException() {
-    }
+    public ChessParserException() {}
 
     public ChessParserException(String message) {
         super(message);

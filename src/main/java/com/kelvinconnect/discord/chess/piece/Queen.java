@@ -3,7 +3,6 @@ package com.kelvinconnect.discord.chess.piece;
 import com.kelvinconnect.discord.chess.ChessBoard;
 import com.kelvinconnect.discord.chess.ChessTeam;
 import com.kelvinconnect.discord.chess.Vector2D;
-
 import java.awt.*;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -28,9 +27,16 @@ public class Queen extends AbstractChessPiece {
 
     @Override
     public List<Vector2D> getAvailableMoves() {
-        List<Vector2D> directions = Arrays.asList(new Vector2D(1, 0), new Vector2D(0, 1), new Vector2D(-1, 0),
-                new Vector2D(0, -1), new Vector2D(1, -1), new Vector2D(1, 1), new Vector2D(-1, -1),
-                new Vector2D(-1, 1));
+        List<Vector2D> directions =
+                Arrays.asList(
+                        new Vector2D(1, 0),
+                        new Vector2D(0, 1),
+                        new Vector2D(-1, 0),
+                        new Vector2D(0, -1),
+                        new Vector2D(1, -1),
+                        new Vector2D(1, 1),
+                        new Vector2D(-1, -1),
+                        new Vector2D(-1, 1));
 
         return getMovesForDirections(directions);
     }

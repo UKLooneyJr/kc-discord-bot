@@ -3,11 +3,9 @@ package com.kelvinconnect.discord.chess.piece;
 import com.kelvinconnect.discord.chess.ChessBoard;
 import com.kelvinconnect.discord.chess.ChessTeam;
 import com.kelvinconnect.discord.chess.Vector2D;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public abstract class AbstractChessPiece implements ChessPiece {
     private final ChessTeam team;
@@ -61,7 +59,6 @@ public abstract class AbstractChessPiece implements ChessPiece {
         }
         Optional<ChessPiece> targetPiece = board.getPieceAt(target);
         return targetPiece.map(piece -> piece.getTeam() != team).orElse(true);
-
     }
 
     protected boolean isBlocked(Vector2D target) {

@@ -1,10 +1,9 @@
 package com.kelvinconnect.discord;
 
+import java.util.Optional;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Optional;
 
 public class Parameters {
     private static final Logger logger = LogManager.getLogger(Parameters.class);
@@ -26,16 +25,19 @@ public class Parameters {
     private String databasePath;
     private String channelListLocation;
 
-    private Parameters() {
-
-    }
+    private Parameters() {}
 
     public void parseCommandLine(String[] args) {
         Options options = new Options();
 
         options.addOption(new Option("t", TOKEN_OPTION, true, "Discord login token"));
         options.addOption(new Option("d", DATABASE_PATH_OPTION, true, "Path to the database"));
-        options.addOption(new Option("c", CHANNEL_LIST_LOCATION_OPTION, true, "Location of the channel list xml"));
+        options.addOption(
+                new Option(
+                        "c",
+                        CHANNEL_LIST_LOCATION_OPTION,
+                        true,
+                        "Location of the channel list xml"));
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -66,5 +68,4 @@ public class Parameters {
     public Optional<String> getChannelListLocation() {
         return Optional.ofNullable(channelListLocation);
     }
-
 }

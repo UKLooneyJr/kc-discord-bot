@@ -1,8 +1,8 @@
 package com.kelvinconnect.discord.chess;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 public class Vector2DTest {
 
@@ -26,5 +26,4 @@ public class Vector2DTest {
             }
         }
     }
-
 }

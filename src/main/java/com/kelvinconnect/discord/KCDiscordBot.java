@@ -14,17 +14,16 @@ import com.kelvinconnect.discord.ui.BotUI;
 import de.btobastian.sdcf4j.CommandExecutor;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
+import java.time.Instant;
+import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 
-import java.time.Instant;
-import java.util.function.Function;
-
 /**
  * Entry point for KC Discord Bot
- * <p>
- * Created by Adam on 14/03/2017.
+ *
+ * <p>Created by Adam on 14/03/2017.
  */
 public class KCDiscordBot {
     private static final Logger logger = LogManager.getLogger(KCDiscordBot.class);
@@ -46,8 +45,11 @@ public class KCDiscordBot {
     }
 
     private static DiscordApi login(Parameters parameters) {
-        Login l = parameters.getToken().map((Function<String, Login>) TokenLogin::new)
-                .orElse(new TokenFileLogin("resources/loginToken.txt"));
+        Login l =
+                parameters
+                        .getToken()
+                        .map((Function<String, Login>) TokenLogin::new)
+                        .orElse(new TokenFileLogin("resources/loginToken.txt"));
         return l.login();
     }
 
@@ -72,7 +74,11 @@ public class KCDiscordBot {
         try {
             handler.registerCommand(executor);
         } catch (Exception e) {
-            logger.error(() -> "Error registering command(s) for class " + executor.getClass().getSimpleName(), e);
+            logger.error(
+                    () ->
+                            "Error registering command(s) for class "
+                                    + executor.getClass().getSimpleName(),
+                    e);
         }
     }
 

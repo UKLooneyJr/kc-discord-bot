@@ -2,10 +2,6 @@ package com.kelvinconnect.discord.chess;
 
 import com.kelvinconnect.discord.chess.parser.ChessParserException;
 import com.kelvinconnect.discord.chess.piece.*;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,6 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import javax.imageio.ImageIO;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class ChessBoardTest {
 

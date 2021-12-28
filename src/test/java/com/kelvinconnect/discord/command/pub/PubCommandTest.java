@@ -1,14 +1,14 @@
 package com.kelvinconnect.discord.command.pub;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAuthor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PubCommandTest {
@@ -51,5 +51,4 @@ public class PubCommandTest {
         String resultResponse = invokePub(command, "results");
         assertEquals("The results are in!\n\nBrass Monkey has 1 vote\n", resultResponse);
     }
-
 }

@@ -3,7 +3,6 @@ package com.kelvinconnect.discord.chess.piece;
 import com.kelvinconnect.discord.chess.ChessBoard;
 import com.kelvinconnect.discord.chess.ChessTeam;
 import com.kelvinconnect.discord.chess.Vector2D;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -42,8 +41,14 @@ public class Pawn extends AbstractChessPiece {
 
         List<Vector2D> moves = new ArrayList<>();
 
-        getBoard().getPieceAt(fwdLeft).filter(p -> p.getTeam() != team).ifPresent(piece -> moves.add(fwdLeft));
-        getBoard().getPieceAt(fwdRight).filter(p -> p.getTeam() != team).ifPresent(piece -> moves.add(fwdRight));
+        getBoard()
+                .getPieceAt(fwdLeft)
+                .filter(p -> p.getTeam() != team)
+                .ifPresent(piece -> moves.add(fwdLeft));
+        getBoard()
+                .getPieceAt(fwdRight)
+                .filter(p -> p.getTeam() != team)
+                .ifPresent(piece -> moves.add(fwdRight));
 
         if (moves.isEmpty()) {
             moves.add(fwd1);

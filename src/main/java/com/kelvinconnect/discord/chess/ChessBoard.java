@@ -2,13 +2,12 @@ package com.kelvinconnect.discord.chess;
 
 import com.kelvinconnect.discord.chess.parser.ChessParserException;
 import com.kelvinconnect.discord.chess.piece.*;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 
 public class ChessBoard {

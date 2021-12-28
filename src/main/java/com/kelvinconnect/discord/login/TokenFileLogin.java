@@ -1,18 +1,17 @@
 package com.kelvinconnect.discord.login;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 /**
  * Logs in with a Token read from a file
- * <p>
- * Created by Adam on 14/03/2017.
+ *
+ * <p>Created by Adam on 14/03/2017.
  */
 public class TokenFileLogin implements Login {
     private static final Logger logger = LogManager.getLogger(TokenFileLogin.class);
@@ -30,7 +29,8 @@ public class TokenFileLogin implements Login {
             token = new String(Files.readAllBytes(Paths.get(filepath)));
         } catch (IOException e) {
             logger.error(() -> "Could not read file " + filepath, e);
-            return null; // TODO: Make this throw an appropriate exception rather than returning null
+            return null; // TODO: Make this throw an appropriate exception rather than returning
+            // null
         }
         return new DiscordApiBuilder().setToken(token).login().join();
     }

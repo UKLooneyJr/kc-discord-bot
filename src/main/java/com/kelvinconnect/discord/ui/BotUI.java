@@ -1,8 +1,8 @@
 package com.kelvinconnect.discord.ui;
 
-import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.*;
 
 public class BotUI {
     private final JDialog dialog;
@@ -19,12 +19,13 @@ public class BotUI {
         btnQuit.addActionListener(e -> System.exit(0));
         dialog.add(btnQuit);
 
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
+        dialog.addWindowListener(
+                new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
     }
 
     public void show() {

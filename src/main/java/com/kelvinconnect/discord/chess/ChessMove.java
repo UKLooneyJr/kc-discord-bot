@@ -1,7 +1,6 @@
 package com.kelvinconnect.discord.chess;
 
 import com.kelvinconnect.discord.chess.piece.ChessPiece;
-
 import java.util.Objects;
 import java.util.Optional;
 

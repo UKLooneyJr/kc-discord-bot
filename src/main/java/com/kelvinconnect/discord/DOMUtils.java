@@ -1,10 +1,10 @@
 package com.kelvinconnect.discord;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,11 +14,10 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class DOMUtils {
     private static final Logger logger = LogManager.getLogger(DOMUtils.class);
@@ -28,22 +27,22 @@ public class DOMUtils {
     }
 
     public static Iterable<Node> iterable(final NodeList nodeList) {
-        return () -> new Iterator<Node>() {
+        return () ->
+                new Iterator<Node>() {
 
-            private int index = 0;
+                    private int index = 0;
 
-            @Override
-            public boolean hasNext() {
-                return index < nodeList.getLength();
-            }
+                    @Override
+                    public boolean hasNext() {
+                        return index < nodeList.getLength();
+                    }
 
-            @Override
-            public Node next() {
-                if (!hasNext())
-                    throw new NoSuchElementException();
-                return nodeList.item(index++);
-            }
-        };
+                    @Override
+                    public Node next() {
+                        if (!hasNext()) throw new NoSuchElementException();
+                        return nodeList.item(index++);
+                    }
+                };
     }
 
     public static Stream<Node> toStream(final NodeList nodeList) {

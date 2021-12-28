@@ -1,17 +1,16 @@
 package com.kelvinconnect.discord.chess;
 
+import static com.kelvinconnect.discord.DiscordUtils.listStartsWith;
+
 import com.kelvinconnect.discord.DiscordUtils;
 import com.kelvinconnect.discord.chess.piece.ChessImageLoader;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import java.awt.image.BufferedImage;
+import java.util.List;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
-
-import java.awt.image.BufferedImage;
-import java.util.List;
-
-import static com.kelvinconnect.discord.DiscordUtils.listStartsWith;
 
 public class ChessCommand implements CommandExecutor {
 
@@ -23,7 +22,9 @@ public class ChessCommand implements CommandExecutor {
         board = new ChessBoard();
     }
 
-    @Command(aliases = { "!chess" }, description = "Chess.")
+    @Command(
+            aliases = {"!chess"},
+            description = "Chess.")
     public void onChessCommand(Message message) {
         List<String> args = DiscordUtils.parseArgsFromMessage(message);
 

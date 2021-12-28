@@ -2,10 +2,9 @@ package com.kelvinconnect.discord.chess.piece;
 
 import com.kelvinconnect.discord.DiscordUtils;
 import com.kelvinconnect.discord.chess.ChessTeam;
-import org.javacord.api.entity.server.Server;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import org.javacord.api.entity.server.Server;
 
 public class ChessImageLoader {
 
@@ -69,39 +68,98 @@ public class ChessImageLoader {
     public static void loadImages(Server server) {
         // pawn
         DiscordUtils.getEmojiImage(server, "colin")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Pawn.setImageForTeam(ChessTeam.WHITE, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Pawn.setImageForTeam(
+                                                        ChessTeam.WHITE, bufferedImage)));
         DiscordUtils.getEmojiImage(server, "baffo")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Pawn.setImageForTeam(ChessTeam.BLACK, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Pawn.setImageForTeam(
+                                                        ChessTeam.BLACK, bufferedImage)));
 
         // bishop
         DiscordUtils.getEmojiImage(server, "minto")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Bishop.setImageForTeam(ChessTeam.WHITE, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Bishop.setImageForTeam(
+                                                        ChessTeam.WHITE, bufferedImage)));
         DiscordUtils.getEmojiImage(server, "pokerface")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Bishop.setImageForTeam(ChessTeam.BLACK, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Bishop.setImageForTeam(
+                                                        ChessTeam.BLACK, bufferedImage)));
 
         // knight
         DiscordUtils.getEmojiImage(server, "tizzle")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Knight.setImageForTeam(ChessTeam.WHITE, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Knight.setImageForTeam(
+                                                        ChessTeam.WHITE, bufferedImage)));
         DiscordUtils.getEmojiImage(server, "gregg")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Knight.setImageForTeam(ChessTeam.BLACK, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Knight.setImageForTeam(
+                                                        ChessTeam.BLACK, bufferedImage)));
 
         // rook
         DiscordUtils.getEmojiImage(server, "sam")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Rook.setImageForTeam(ChessTeam.WHITE, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Rook.setImageForTeam(
+                                                        ChessTeam.WHITE, bufferedImage)));
         DiscordUtils.getEmojiImage(server, "samrage")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Rook.setImageForTeam(ChessTeam.BLACK, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Rook.setImageForTeam(
+                                                        ChessTeam.BLACK, bufferedImage)));
 
         // queen
         DiscordUtils.getEmojiImage(server, "mainMan")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Queen.setImageForTeam(ChessTeam.WHITE, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Queen.setImageForTeam(
+                                                        ChessTeam.WHITE, bufferedImage)));
         DiscordUtils.getEmojiImage(server, "bobbett")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> Queen.setImageForTeam(ChessTeam.BLACK, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                Queen.setImageForTeam(
+                                                        ChessTeam.BLACK, bufferedImage)));
 
         // king
         DiscordUtils.getEmojiImage(server, "party_adam")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> King.setImageForTeam(ChessTeam.WHITE, bufferedImage)));
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                King.setImageForTeam(
+                                                        ChessTeam.WHITE, bufferedImage)));
         DiscordUtils.getEmojiImage(server, "pilotfraser")
-                .ifPresent(f -> f.thenAccept(bufferedImage -> King.setImageForTeam(ChessTeam.BLACK, bufferedImage)));
-
+                .ifPresent(
+                        f ->
+                                f.thenAccept(
+                                        bufferedImage ->
+                                                King.setImageForTeam(
+                                                        ChessTeam.BLACK, bufferedImage)));
     }
 }
