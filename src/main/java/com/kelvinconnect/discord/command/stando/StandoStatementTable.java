@@ -2,15 +2,14 @@ package com.kelvinconnect.discord.command.stando;
 
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import com.kelvinconnect.discord.persistence.Table;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class StandoStatementTable extends Table {
     public static final String TABLE_NAME = "stando_statements";
@@ -22,23 +21,34 @@ public class StandoStatementTable extends Table {
 
     @Override
     public String createSql() {
-        return "CREATE TABLE IF NOT EXISTS " + tableName + " (\n" + " id integer PRIMARY KEY,\n" + " statement text,\n"
-                + " severity integer\n" + ");";
+        return "CREATE TABLE IF NOT EXISTS "
+                + tableName
+                + " (\n"
+                + " id integer PRIMARY KEY,\n"
+                + " statement text,\n"
+                + " severity integer\n"
+                + ");";
     }
 
     public void insert(StandoStatement statement) {
         String sql = "INSERT INTO " + tableName + "(statement,severity) VALUES(?,?)";
 
-        db.connect().ifPresent(conn -> {
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, statement.statement);
-                pstmt.setInt(2, statement.severity.ordinal());
-                pstmt.executeUpdate();
-                logger.debug(() -> "Inserted stando_statement: " + statement.statement + " into database.");
-            } catch (SQLException e) {
-                logger.error("Failed to insert statement", e);
-            }
-        });
+        db.connect()
+                .ifPresent(
+                        conn -> {
+                            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                                pstmt.setString(1, statement.statement);
+                                pstmt.setInt(2, statement.severity.ordinal());
+                                pstmt.executeUpdate();
+                                logger.debug(
+                                        () ->
+                                                "Inserted stando_statement: "
+                                                        + statement.statement
+                                                        + " into database.");
+                            } catch (SQLException e) {
+                                logger.error("Failed to insert statement", e);
+                            }
+                        });
     }
 
     public List<StandoStatement> selectAll() {
@@ -46,18 +56,24 @@ public class StandoStatementTable extends Table {
 
         List<StandoStatement> standoStatements = new ArrayList<>();
 
-        db.connect().ifPresent(conn -> {
-            try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        db.connect()
+                .ifPresent(
+                        conn -> {
+                            try (Statement stmt = conn.createStatement();
+                                    ResultSet rs = stmt.executeQuery(sql)) {
 
-                while (rs.next()) {
-                    String statement = rs.getString("statement");
-                    int severity = rs.getInt("severity");
-                    standoStatements.add(new StandoStatement(statement, StandoStatement.Severity.values()[severity]));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+                                while (rs.next()) {
+                                    String statement = rs.getString("statement");
+                                    int severity = rs.getInt("severity");
+                                    standoStatements.add(
+                                            new StandoStatement(
+                                                    statement,
+                                                    StandoStatement.Severity.values()[severity]));
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        });
 
         return standoStatements;
     }

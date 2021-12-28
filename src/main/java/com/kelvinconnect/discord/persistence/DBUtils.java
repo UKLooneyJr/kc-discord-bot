@@ -13,5 +13,4 @@ public class DBUtils {
         String dir = p.getDatabasePath().orElse(System.getenv("APPDATA") + "/KCBot");
         return "jdbc:sqlite:" + dir + "/kcbot.db";
     }
-
 }

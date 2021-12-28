@@ -1,13 +1,10 @@
 package com.kelvinconnect.discord.command.trac;
 
-import com.kelvinconnect.discord.command.trac.TicketCommand;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-/**
- * Created by Adam on 15/03/2017.
- */
+import org.junit.Test;
+
+/** Created by Adam on 15/03/2017. */
 public class TicketCommandTest {
 
     // @Test
@@ -31,7 +28,7 @@ public class TicketCommandTest {
         TicketCommand command = new TicketCommand();
         String input1 = "1234";
         String input2 = "5678";
-        String output = command.onTicketCommand(new String[] { input1, input2 }, null);
+        String output = command.onTicketCommand(new String[] {input1, input2}, null);
         assertEquals(output, "Incorrect number of arguments!");
     }
 
@@ -46,7 +43,7 @@ public class TicketCommandTest {
     public void invalidArgument() {
         TicketCommand command = new TicketCommand();
         String input = "one,two,three,four";
-        String output = command.onTicketCommand(new String[] { input }, null);
+        String output = command.onTicketCommand(new String[] {input}, null);
         assertEquals(output, input + " is not a valid ticket number.");
     }
 }
