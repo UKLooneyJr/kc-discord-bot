@@ -2,8 +2,17 @@ package com.kelvinconnect.discord;
 
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageAuthor;
+import org.javacord.api.entity.server.Server;
+
+import java.awt.image.BufferedImage;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DiscordUtils {
+
+    public static final Pattern SPLIT_STRING_WITH_QUOTES_PATTERN = Pattern.compile("([^\"]\\S*|\".+?\")\\s*");
 
     private DiscordUtils() {
         throw new UnsupportedOperationException("do not instantiate");
@@ -20,5 +29,43 @@ public class DiscordUtils {
 
     private static String getShortUserName(MessageAuthor user) {
         return user.getDisplayName().split(" ")[0];
+    }
+
+    public static Optional<CompletableFuture<BufferedImage>> getEmojiImage(Server server, String emojiName) {
+        return server.getCustomEmojisByName(emojiName).stream().findFirst().map(e -> e.getImage().asBufferedImage());
+    }
+
+    public static List<String> parseArgsFromMessage(Message message) {
+        return parseArgsFromMessage(message, true);
+    }
+
+    public static List<String> parseArgsFromMessage(Message message, boolean removeFirstArg) {
+        String str = message.getContent();
+        if (null == str || str.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> list = new ArrayList<>();
+        Matcher m = SPLIT_STRING_WITH_QUOTES_PATTERN.matcher(str);
+        while (m.find())
+            list.add(m.group(1).replace("\"", ""));
+        if (removeFirstArg) {
+            list.remove(0);
+        }
+        return list;
+    }
+
+    @SafeVarargs
+    public static <E> boolean listStartsWith(List<E> list, E... args) {
+        if (list.size() < args.length) {
+            return false;
+        }
+
+        for (int i = 0; i < args.length; ++i) {
+            if (!Objects.equals(list.get(i), args[i])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

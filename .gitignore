@@ -1,3 +1,6 @@
+# Test results directory
+testresults/
+
 ### Eclipse ###
 .metadata
 bin/

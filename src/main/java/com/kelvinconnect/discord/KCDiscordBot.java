@@ -1,5 +1,6 @@
 package com.kelvinconnect.discord;
 
+import com.kelvinconnect.discord.chess.ChessCommand;
 import com.kelvinconnect.discord.command.*;
 import com.kelvinconnect.discord.command.music.MusicCommand;
 import com.kelvinconnect.discord.command.pub.PubCommand;
@@ -64,6 +65,7 @@ public class KCDiscordBot {
         registerCommand(handler, new JoinLeaveCommand(api));
         registerCommand(handler, new StockCommand());
         registerCommand(handler, new MusicCommand(api));
+        registerCommand(handler, new ChessCommand(api));
     }
 
     private static void registerCommand(CommandHandler handler, CommandExecutor executor) {
