@@ -1,7 +1,7 @@
 package com.kelvinconnect.discord.command;
 
-import com.kelvinconnect.discord.DOMUtils;
-import com.kelvinconnect.discord.DiscordUtils;
+import com.kelvinconnect.discord.utils.DOMUtils;
+import com.kelvinconnect.discord.utils.DiscordUtils;
 import com.kelvinconnect.discord.Parameters;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;

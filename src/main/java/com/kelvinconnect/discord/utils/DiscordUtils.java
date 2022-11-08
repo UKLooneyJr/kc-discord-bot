@@ -1,4 +1,4 @@
-package com.kelvinconnect.discord;
+package com.kelvinconnect.discord.utils;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -55,20 +55,5 @@ public class DiscordUtils {
             list.remove(0);
         }
         return list;
-    }
-
-    @SafeVarargs
-    public static <E> boolean listStartsWith(List<E> list, E... args) {
-        if (list.size() < args.length) {
-            return false;
-        }
-
-        for (int i = 0; i < args.length; ++i) {
-            if (!Objects.equals(list.get(i), args[i])) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

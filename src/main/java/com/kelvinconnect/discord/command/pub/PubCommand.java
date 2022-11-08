@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord.command.pub;
 
-import com.kelvinconnect.discord.DiscordUtils;
+import com.kelvinconnect.discord.utils.DiscordUtils;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 import java.time.DayOfWeek;

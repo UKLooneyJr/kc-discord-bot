@@ -1,4 +1,4 @@
-package com.kelvinconnect.discord;
+package com.kelvinconnect.discord.utils;
 
 import java.io.StringWriter;
 import java.util.Iterator;

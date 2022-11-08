@@ -1,8 +1,6 @@
 package com.kelvinconnect.discord.chess;
 
-import static com.kelvinconnect.discord.DiscordUtils.listStartsWith;
-
-import com.kelvinconnect.discord.DiscordUtils;
+import com.kelvinconnect.discord.utils.DiscordUtils;
 import com.kelvinconnect.discord.chess.piece.ChessImageLoader;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
@@ -12,12 +10,14 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.MessageBuilder;
 
+import static com.kelvinconnect.discord.utils.CollectionUtils.listStartsWith;
+
 public class ChessCommand implements CommandExecutor {
 
     private ChessBoard board;
 
     public ChessCommand(DiscordApi api) {
-        api.getServerById(DiscordUtils.KC_SERVER_ID).ifPresent(ChessImageLoader::loadImages);
+        api.getServerById(DiscordUtils.KC_SERVER_ID).ifPresent(ChessImageLoader::serverEmojiImages);
 
         board = new ChessBoard();
     }

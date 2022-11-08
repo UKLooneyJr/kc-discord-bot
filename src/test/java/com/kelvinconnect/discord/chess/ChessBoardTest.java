@@ -2,7 +2,7 @@ package com.kelvinconnect.discord.chess;
 
 import com.kelvinconnect.discord.chess.parser.ChessParserException;
 import com.kelvinconnect.discord.chess.piece.*;
-import java.awt.*;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class ChessBoardTest {
     }
 
     @Test
-    public void test() throws ChessParserException, IOException {
+    public void draw_allHighlights() throws ChessParserException, IOException {
         ChessBoard board =
                 new ChessBoard(
                         "rnbqkbnr",
@@ -58,18 +58,19 @@ public class ChessBoardTest {
         }
     }
 
-    private void drawBoard(ChessBoard board, String name) throws IOException {
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    private static void drawBoard(ChessBoard board, String name) throws IOException {
         BufferedImage img = board.draw();
         if (WRITE_TEST_IMAGES) {
-            // get test method name from the stack trace
-            File file =
+            String testClassName = ChessBoardTest.class.getName();
+            String testMethodName =
                     Arrays.stream(Thread.currentThread().getStackTrace())
-                            .filter(x -> ChessBoardTest.class.getName().equals(x.getClassName()))
+                            .filter(x -> testClassName.equals(x.getClassName()))
                             .reduce((a, b) -> b)
-                            .map(ste -> ste.getMethodName() + "_" + name + ".gif")
-                            .map(path -> imageDir.resolve(path))
-                            .orElse(imageDir.resolve(name + ".gif"))
-                            .toFile();
+                            .map(StackTraceElement::getMethodName)
+                            .get();
+            String filename = testMethodName + "_" + name + ".gif";
+            File file = imageDir.resolve(filename).toFile();
             ImageIO.write(img, "gif", file);
         }
     }
