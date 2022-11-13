@@ -1,19 +1,22 @@
 package com.kelvinconnect.discord.command.stando;
 
-import static com.kelvinconnect.discord.command.stando.StandoStatement.Severity.*;
-
+import com.kelvinconnect.discord.DiscordUtils;
 import com.kelvinconnect.discord.command.stando.filter.EveryoneFilter;
 import com.kelvinconnect.discord.command.stando.filter.SlurFilter;
 import com.kelvinconnect.discord.command.stando.filter.StandoFilter;
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import org.javacord.api.entity.message.Message;
+import org.javacord.api.entity.user.User;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import org.javacord.api.entity.message.Message;
+
+import static com.kelvinconnect.discord.command.stando.StandoStatement.Severity.*;
 
 /** Created by Captain Steve Rodger on 21/04/2017. */
 public class StandoCommand implements CommandExecutor {
@@ -24,6 +27,7 @@ public class StandoCommand implements CommandExecutor {
 
     private static final String QUERY_COUNT = "How much do you know?";
     private static final String QUERY_DRINK = "What do you drink?";
+    private static final String DELETE = "Forget that";
 
     private static final String[] DRINK_EMOJIS = {
         "\uD83C\uDF7A",
@@ -37,9 +41,11 @@ public class StandoCommand implements CommandExecutor {
         "\uD83E\uDD43"
     };
 
+    private final Random random = new Random();
     private List<StandoStatement> standoStatements;
     private final List<StandoFilter> inputFilters = new ArrayList<>();
     private final List<StandoFilter> outputFilters = new ArrayList<>();
+    private StandoStatement recentStatement;
 
     public StandoCommand() {
         loadFilters();
@@ -102,9 +108,25 @@ public class StandoCommand implements CommandExecutor {
                             ? filter.filterWithMessage(statement, message)
                             : filter.filter(statement);
         }
-        StandoStatement s = new StandoStatement(statement, severity);
+        String author =
+                null != message
+                        ? message.getAuthor().asUser().map(User::getMentionTag).orElse(null)
+                        : null; // todo: make default author the bot
+        StandoStatement s = new StandoStatement(statement, severity, author);
         standoStatements.add(s);
         getDatabaseTable().insert(s);
+    }
+
+    private String deleteMostRecentStatement() {
+        if (null == recentStatement) {
+            return "I don't remember";
+        }
+
+        recentStatement.setDeleted(true);
+        String response = recentStatement.getStatement();
+        getDatabaseTable().delete(recentStatement);
+        recentStatement = null;
+        return "I have forgotten " + response;
     }
 
     @Command(
@@ -122,10 +144,16 @@ public class StandoCommand implements CommandExecutor {
             response = learnFromMediumSource(fullFact, message);
         } else if (isLearnMessage(args, LEARN_HIGH)) {
             response = learnFromHighSource(fullFact, message);
-        } else if (isQueryMessage(args, QUERY_COUNT)) {
+        } else if (isExactMessage(args, QUERY_COUNT)) {
             response = countStatements();
-        } else if (isQueryMessage(args, QUERY_DRINK)) {
+        } else if (isExactMessage(args, QUERY_DRINK)) {
             response = listDrinks();
+        } else if (isExactMessage(args, DELETE)) {
+            if (DiscordUtils.isMod(message.getAuthor())) {
+                response = deleteMostRecentStatement();
+            } else {
+                response = "You don't have permission to do that.";
+            }
         } else {
             response = giveFunFact(args, message);
         }
@@ -166,9 +194,9 @@ public class StandoCommand implements CommandExecutor {
                 && message.length() > learnMessagePrefix.length();
     }
 
-    private boolean isQueryMessage(String[] args, String query) {
+    private boolean isExactMessage(String[] args, String m) {
         String message = String.join(" ", args);
-        return message.equalsIgnoreCase(query);
+        return message.equalsIgnoreCase(m);
     }
 
     private String giveFunFact(String[] args, Message message) {
@@ -198,8 +226,12 @@ public class StandoCommand implements CommandExecutor {
     private String getRandomStandoStatement(StandoStatement.Severity maxSeverity) {
         List<StandoStatement> possibleStatements =
                 standoStatements.stream()
-                        .filter(s -> s.severity.ordinal() <= maxSeverity.ordinal())
+                        .filter(s -> !s.isDeleted())
+                        .filter(s -> s.getSeverity().ordinal() <= maxSeverity.ordinal())
                         .collect(Collectors.toList());
-        return possibleStatements.get(new Random().nextInt(possibleStatements.size())).statement;
+        StandoStatement statement =
+                possibleStatements.get(random.nextInt(possibleStatements.size()));
+        recentStatement = statement;
+        return statement.getStatement();
     }
 }

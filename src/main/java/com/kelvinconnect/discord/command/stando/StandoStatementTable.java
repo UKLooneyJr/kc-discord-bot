@@ -2,14 +2,16 @@ package com.kelvinconnect.discord.command.stando;
 
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import com.kelvinconnect.discord.persistence.Table;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class StandoStatementTable extends Table {
     public static final String TABLE_NAME = "stando_statements";
@@ -26,24 +28,35 @@ public class StandoStatementTable extends Table {
                 + " (\n"
                 + " id integer PRIMARY KEY,\n"
                 + " statement text,\n"
-                + " severity integer\n"
+                + " severity integer,\n"
+                + " author text,\n"
+                + " time_added timestamp DEFAULT CURRENT_TIMESTAMP,\n"
+                + " deleted bool DEFAULT FALSE\n"
                 + ");";
     }
 
     public void insert(StandoStatement statement) {
-        String sql = "INSERT INTO " + tableName + "(statement,severity) VALUES(?,?)";
+        // time_added and deleted will be set automatically with their default values
+        String sql = "INSERT INTO " + tableName + "(statement,severity,author) VALUES(?,?,?)";
 
         db.connect()
                 .ifPresent(
                         conn -> {
                             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                                pstmt.setString(1, statement.statement);
-                                pstmt.setInt(2, statement.severity.ordinal());
+                                pstmt.setString(1, statement.getStatement());
+                                pstmt.setInt(2, statement.getSeverity().ordinal());
+                                pstmt.setString(3, statement.getAuthor());
                                 pstmt.executeUpdate();
+
+                                ResultSet rs = pstmt.getGeneratedKeys();
+                                if (rs.next()) {
+                                    int id = rs.getInt(1);
+                                    statement.setId(id);
+                                }
                                 logger.debug(
                                         () ->
                                                 "Inserted stando_statement: "
-                                                        + statement.statement
+                                                        + statement
                                                         + " into database.");
                             } catch (SQLException e) {
                                 logger.error("Failed to insert statement", e);
@@ -52,7 +65,7 @@ public class StandoStatementTable extends Table {
     }
 
     public List<StandoStatement> selectAll() {
-        String sql = "SELECT statement, severity FROM " + tableName;
+        String sql = "SELECT * FROM " + tableName;
 
         List<StandoStatement> standoStatements = new ArrayList<>();
 
@@ -63,12 +76,22 @@ public class StandoStatementTable extends Table {
                                     ResultSet rs = stmt.executeQuery(sql)) {
 
                                 while (rs.next()) {
+                                    int id = rs.getInt("id");
                                     String statement = rs.getString("statement");
                                     int severity = rs.getInt("severity");
+                                    String author = rs.getString("author");
+                                    Instant timeAdded =
+                                            Instant.ofEpochMilli(
+                                                    rs.getDate("time_added").getTime());
+                                    boolean deleted = rs.getBoolean("deleted");
                                     standoStatements.add(
                                             new StandoStatement(
+                                                    id,
                                                     statement,
-                                                    StandoStatement.Severity.values()[severity]));
+                                                    StandoStatement.Severity.values()[severity],
+                                                    author,
+                                                    timeAdded,
+                                                    deleted));
                                 }
                             } catch (SQLException e) {
                                 e.printStackTrace();
@@ -76,5 +99,23 @@ public class StandoStatementTable extends Table {
                         });
 
         return standoStatements;
+    }
+
+    public void delete(StandoStatement statement) {
+        String sql = "UPDATE " + tableName + " SET deleted=? WHERE id=?";
+
+        db.connect()
+                .ifPresent(
+                        conn -> {
+                            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                                pstmt.setBoolean(1, true);
+                                pstmt.setInt(2, statement.getId());
+                                pstmt.executeUpdate();
+
+                                logger.debug(() -> "Deleted stando_statement: " + statement);
+                            } catch (SQLException e) {
+                                logger.error("Failed to delete statement", e);
+                            }
+                        });
     }
 }
