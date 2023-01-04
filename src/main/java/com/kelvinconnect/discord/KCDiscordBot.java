@@ -39,7 +39,7 @@ public class KCDiscordBot {
             return;
         }
 
-        registerCommands(api);
+        registerCommands(api, parameters);
         startTasks(api);
         initUI();
     }
@@ -50,12 +50,12 @@ public class KCDiscordBot {
         return l.login();
     }
 
-    private static void registerCommands(DiscordApi api) {
+    private static void registerCommands(DiscordApi api, Parameters parameters) {
         CommandHandler handler = new JavacordHandler(api);
         registerCommand(handler, new HelpCommand(handler));
         registerCommand(handler, new InfoCommand());
         registerCommand(handler, new UptimeCommand(Instant.now()));
-        registerCommand(handler, new SlackCommand());
+        parameters.getSlackUrl().ifPresent(url -> registerCommand(handler, new SlackCommand(url)));
         registerCommand(handler, new BangCommand());
         registerCommand(handler, new RobertCommand());
         registerCommand(handler, new StandoCommand());
