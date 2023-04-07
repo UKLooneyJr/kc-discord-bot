@@ -32,6 +32,6 @@ public class TokenFileLogin implements Login {
             logger.error(() -> "Could not read file " + filepath, e);
             return null; // TODO: Make this throw an appropriate exception rather than returning null
         }
-        return new DiscordApiBuilder().setToken(token).login().join();
+        return new DiscordApiBuilder().setToken(token).setAllIntents().login().join();
     }
 }

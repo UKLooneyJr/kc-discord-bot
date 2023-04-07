@@ -9,8 +9,5 @@
         <module name="kc-discord-bot" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="kc-discord-bot" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

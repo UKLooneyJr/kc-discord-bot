@@ -12,6 +12,6 @@ public class TokenLogin implements Login {
     }
 
     public DiscordApi login() {
-        return new DiscordApiBuilder().setToken(token).login().join();
+        return new DiscordApiBuilder().setToken(token).setAllIntents().login().join();
     }
 }
