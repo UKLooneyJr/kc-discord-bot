@@ -8,10 +8,7 @@ import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 import org.javacord.api.entity.message.Message;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
@@ -30,13 +27,14 @@ public class StandoCommand implements CommandExecutor {
 
     private static final String QUERY_COUNT = "How much do you know?";
     private static final String QUERY_DRINK = "What do you drink?";
+    private static final String DELETE_LAST = "That's been debunked";
 
     private static final String[] DRINK_EMOJIS = { "\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77", "\uD83C\uDF78",
             "\uD83C\uDF79", "\uD83C\uDF7E", "\uD83C\uDF76", "\uD83E\uDD42", "\uD83E\uDD43" };
 
-    private List<StandoStatement> standoStatements;
     private final List<StandoFilter> inputFilters = new ArrayList<>();
     private final List<StandoFilter> outputFilters = new ArrayList<>();
+    private int lastStamentSaidId = -1;
 
     public StandoCommand() {
         loadFilters();
@@ -55,8 +53,7 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private void loadStatements() {
-        standoStatements = getDatabaseTable().selectAll();
-        if (standoStatements.isEmpty()) {
+        if (getDatabaseTable().count() == 0) {
             populateWithDefaultStandoStatements();
         }
     }
@@ -88,7 +85,6 @@ public class StandoCommand implements CommandExecutor {
             statement = message != null ? filter.filterWithMessage(statement, message) : filter.filter(statement);
         }
         StandoStatement s = new StandoStatement(statement, severity);
-        standoStatements.add(s);
         getDatabaseTable().insert(s);
     }
 
@@ -108,6 +104,8 @@ public class StandoCommand implements CommandExecutor {
             response = countStatements();
         } else if (isQueryMessage(args, QUERY_DRINK)) {
             response = listDrinks();
+        } else if (isQueryMessage(args, DELETE_LAST)) {
+            response = deleteLastStatement();
         } else {
             response = giveFunFact(args, message);
         }
@@ -134,7 +132,7 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private String countStatements() {
-        int count = standoStatements.size();
+        int count = getDatabaseTable().count();
         return "I know " + count + " facts.";
     }
 
@@ -178,8 +176,27 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private String getRandomStandoStatement(StandoStatement.Severity maxSeverity) {
-        List<StandoStatement> possibleStatements = standoStatements.stream()
-                .filter(s -> s.severity.ordinal() <= maxSeverity.ordinal()).collect(Collectors.toList());
-        return possibleStatements.get(new Random().nextInt(possibleStatements.size())).statement;
+        Optional<StandoStatement> statement = getDatabaseTable().getRandomStatement(maxSeverity);
+        if (statement.isPresent()) {
+            StandoStatement s = statement.get();
+            lastStamentSaidId = s.id;
+            return s.statement;
+        } else {
+            lastStamentSaidId = -1;
+            return "Error getting stando statement";
+        }
+    }
+
+    private String deleteLastStatement() {
+        if (lastStamentSaidId < 0) {
+            return "What has?";
+        }
+
+        boolean result = getDatabaseTable().delete(lastStamentSaidId);
+        if (result) {
+            return "I'll update my notepad then";
+        } else {
+            return "Do you have a source?";
+        }
     }
 }
