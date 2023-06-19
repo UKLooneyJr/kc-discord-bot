@@ -45,7 +45,19 @@ public class StandoStatementTable extends Table {
     }
 
     public int count() {
-        return 0;
+        String sql = "SELECT COUNT(id) as count FROM " + tableName;
+        AtomicInteger count = new AtomicInteger(-1);
+        db.connect().ifPresent(conn -> {
+            try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+                while (rs.next()) {
+                    count.set(rs.getInt("count"));
+                }
+            } catch (SQLException e) {
+                logger.error("Error running SQL " + sql, e);
+            }
+        });
+
+        return count.get();
     }
 
     public Optional<StandoStatement> getRandomStatement(StandoStatement.Severity maxSeverity) {
