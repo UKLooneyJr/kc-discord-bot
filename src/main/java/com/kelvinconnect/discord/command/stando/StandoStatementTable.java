@@ -44,27 +44,6 @@ public class StandoStatementTable extends Table {
         });
     }
 
-    public List<StandoStatement> selectAll() {
-        String sql = "SELECT statement, severity FROM " + tableName;
-
-        List<StandoStatement> standoStatements = new ArrayList<>();
-
-        db.connect().ifPresent(conn -> {
-            try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-
-                while (rs.next()) {
-                    String statement = rs.getString("statement");
-                    int severity = rs.getInt("severity");
-                    standoStatements.add(new StandoStatement(statement, StandoStatement.Severity.values()[severity]));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-
-        return standoStatements;
-    }
-
     public int count() {
         return 0;
     }
