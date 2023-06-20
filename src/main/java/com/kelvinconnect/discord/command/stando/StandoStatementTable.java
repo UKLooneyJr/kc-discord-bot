@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class StandoStatementTable extends Table {
     public static final String TABLE_NAME = "stando_statements";

@@ -214,6 +214,7 @@ public class StandoCommand implements CommandExecutor {
 
         boolean result = getDatabaseTable().delete(lastStamentSaidId);
         if (result) {
+            lastStamentSaidId = -1;
             return "I'll update my notepad then";
         } else {
             return "Do you have a source?";

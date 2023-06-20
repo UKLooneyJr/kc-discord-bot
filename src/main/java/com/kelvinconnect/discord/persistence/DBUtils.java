@@ -1,6 +1,10 @@
 package com.kelvinconnect.discord.persistence;
 
 import com.kelvinconnect.discord.Parameters;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class DBUtils {
 
@@ -8,9 +12,21 @@ public class DBUtils {
         throw new UnsupportedOperationException("do not instantiate");
     }
 
+    public static void createDatabaseDir() throws IOException {
+        String dir = databaseDir();
+        Path path = Paths.get(dir);
+        if (Files.notExists(path)) {
+            Files.createDirectory(path);
+        }
+    }
+
     public static String databasePath() {
-        Parameters p = Parameters.getInstance();
-        String dir = p.getDatabasePath().orElse(System.getenv("APPDATA") + "/KCBot");
+        String dir = databaseDir();
         return "jdbc:sqlite:" + dir + "/kcbot.db";
+    }
+
+    private static String databaseDir() {
+        Parameters p = Parameters.getInstance();
+        return p.getDatabasePath().orElse(System.getenv("APPDATA") + "/KCBot");
     }
 }

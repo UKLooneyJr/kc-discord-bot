@@ -7,12 +7,14 @@ import com.kelvinconnect.discord.command.stando.StandoCommand;
 import com.kelvinconnect.discord.login.Login;
 import com.kelvinconnect.discord.login.TokenFileLogin;
 import com.kelvinconnect.discord.login.TokenLogin;
+import com.kelvinconnect.discord.persistence.DBUtils;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
 import com.kelvinconnect.discord.ui.BotUI;
 import de.btobastian.sdcf4j.CommandExecutor;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +32,12 @@ public class KCDiscordBot {
     public static void main(String[] args) {
         Parameters parameters = Parameters.getInstance();
         parameters.parseCommandLine(args);
+
+        try {
+            DBUtils.createDatabaseDir();
+        } catch (IOException e) {
+            logger.error("Error creating database directory", e);
+        }
 
         DiscordApi api = login(parameters);
 
