@@ -8,11 +8,7 @@ import com.kelvinconnect.discord.command.stando.filter.StandoFilter;
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.*;
 import org.javacord.api.entity.message.Message;
 
 /** Created by Captain Steve Rodger on 21/04/2017. */
@@ -24,6 +20,7 @@ public class StandoCommand implements CommandExecutor {
 
     private static final String QUERY_COUNT = "How much do you know?";
     private static final String QUERY_DRINK = "What do you drink?";
+    private static final String DELETE_LAST = "That's been debunked";
 
     private static final String[] DRINK_EMOJIS = {
         "\uD83C\uDF7A",
@@ -37,9 +34,9 @@ public class StandoCommand implements CommandExecutor {
         "\uD83E\uDD43"
     };
 
-    private List<StandoStatement> standoStatements;
     private final List<StandoFilter> inputFilters = new ArrayList<>();
     private final List<StandoFilter> outputFilters = new ArrayList<>();
+    private int lastStamentSaidId = -1;
 
     public StandoCommand() {
         loadFilters();
@@ -61,8 +58,7 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private void loadStatements() {
-        standoStatements = getDatabaseTable().selectAll();
-        if (standoStatements.isEmpty()) {
+        if (getDatabaseTable().count() == 0) {
             populateWithDefaultStandoStatements();
         }
     }
@@ -103,7 +99,6 @@ public class StandoCommand implements CommandExecutor {
                             : filter.filter(statement);
         }
         StandoStatement s = new StandoStatement(statement, severity);
-        standoStatements.add(s);
         getDatabaseTable().insert(s);
     }
 
@@ -126,6 +121,8 @@ public class StandoCommand implements CommandExecutor {
             response = countStatements();
         } else if (isQueryMessage(args, QUERY_DRINK)) {
             response = listDrinks();
+        } else if (isQueryMessage(args, DELETE_LAST)) {
+            response = deleteLastStatement();
         } else {
             response = giveFunFact(args, message);
         }
@@ -152,7 +149,7 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private String countStatements() {
-        int count = standoStatements.size();
+        int count = getDatabaseTable().count();
         return "I know " + count + " facts.";
     }
 
@@ -196,10 +193,26 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private String getRandomStandoStatement(StandoStatement.Severity maxSeverity) {
-        List<StandoStatement> possibleStatements =
-                standoStatements.stream()
-                        .filter(s -> s.severity.ordinal() <= maxSeverity.ordinal())
-                        .collect(Collectors.toList());
-        return possibleStatements.get(new Random().nextInt(possibleStatements.size())).statement;
+        List<StandoStatement> possibleStatements = getDatabaseTable().selectAll(maxSeverity);
+        if (possibleStatements.isEmpty()) {
+            return "I know nothing";
+        }
+        StandoStatement s = possibleStatements.get(new Random().nextInt(possibleStatements.size()));
+        lastStamentSaidId = s.id;
+        return s.statement;
+    }
+
+    private String deleteLastStatement() {
+        if (lastStamentSaidId < 0) {
+            return "What has?";
+        }
+
+        boolean result = getDatabaseTable().delete(lastStamentSaidId);
+        if (result) {
+            lastStamentSaidId = -1;
+            return "Oh it has? I'll make a note of that";
+        } else {
+            return "Do you have a source?";
+        }
     }
 }
