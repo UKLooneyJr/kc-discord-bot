@@ -60,10 +60,12 @@ public class PubCommand implements CommandExecutor {
 
     private String timeUntilPub() {
         LocalDate date = LocalDate.now();
-        if (DayOfWeek.FRIDAY != date.getDayOfWeek()) {
-            return "It's not Friday, no pub.";
+        LocalTime pubTime;
+        if (DayOfWeek.FRIDAY == date.getDayOfWeek()) {
+            pubTime = LocalTime.parse("16:00:00");
+        } else {
+            pubTime = LocalTime.parse("17:00:00");
         }
-        LocalTime pubTime = LocalTime.parse("16:00:00");
         LocalTime now = LocalTime.now();
         return (now.until(pubTime, ChronoUnit.MINUTES) + 1) + " minute(s) until the pub!";
     }
