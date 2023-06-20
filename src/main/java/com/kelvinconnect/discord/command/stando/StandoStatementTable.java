@@ -6,9 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,15 +71,14 @@ public class StandoStatementTable extends Table {
         return count.get();
     }
 
-    public Optional<StandoStatement> getRandomStatement(StandoStatement.Severity maxSeverity) {
+    public List<StandoStatement> selectAll(StandoStatement.Severity maxSeverity) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT id, statement, severity FROM ").append(tableName);
         if (maxSeverity != null) {
             sql.append(" WHERE severity <= ").append(maxSeverity.ordinal());
         }
-        sql.append(" ORDER BY RANDOM() LIMIT 1");
 
-        AtomicReference<StandoStatement> standoStatement = new AtomicReference<>();
+        List<StandoStatement> standoStatements = new ArrayList<>();
         db.connect()
                 .ifPresent(
                         conn -> {
@@ -89,7 +88,7 @@ public class StandoStatementTable extends Table {
                                     int id = rs.getInt("id");
                                     String statement = rs.getString("statement");
                                     int severity = rs.getInt("severity");
-                                    standoStatement.set(
+                                    standoStatements.add(
                                             new StandoStatement(
                                                     id,
                                                     statement,
@@ -100,7 +99,7 @@ public class StandoStatementTable extends Table {
                             }
                         });
 
-        return Optional.ofNullable(standoStatement.get());
+        return standoStatements;
     }
 
     public boolean delete(int id) {

@@ -8,10 +8,7 @@ import com.kelvinconnect.discord.command.stando.filter.StandoFilter;
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.javacord.api.entity.message.Message;
 
 /** Created by Captain Steve Rodger on 21/04/2017. */
@@ -196,15 +193,13 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private String getRandomStandoStatement(StandoStatement.Severity maxSeverity) {
-        Optional<StandoStatement> statement = getDatabaseTable().getRandomStatement(maxSeverity);
-        if (statement.isPresent()) {
-            StandoStatement s = statement.get();
-            lastStamentSaidId = s.id;
-            return s.statement;
-        } else {
-            lastStamentSaidId = -1;
-            return "Error getting stando statement";
+        List<StandoStatement> possibleStatements = getDatabaseTable().selectAll(maxSeverity);
+        if (possibleStatements.isEmpty()) {
+            return "I know nothing";
         }
+        StandoStatement s = possibleStatements.get(new Random().nextInt(possibleStatements.size()));
+        lastStamentSaidId = s.id;
+        return s.statement;
     }
 
     private String deleteLastStatement() {
