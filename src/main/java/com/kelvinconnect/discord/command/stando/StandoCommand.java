@@ -210,7 +210,7 @@ public class StandoCommand implements CommandExecutor {
         boolean result = getDatabaseTable().delete(lastStamentSaidId);
         if (result) {
             lastStamentSaidId = -1;
-            return "I'll update my notepad then";
+            return "Oh it has? I'll make a note of that";
         } else {
             return "Do you have a source?";
         }
