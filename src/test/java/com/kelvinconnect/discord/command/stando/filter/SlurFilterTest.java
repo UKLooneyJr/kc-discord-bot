@@ -1,20 +1,19 @@
 package com.kelvinconnect.discord.command.stando.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.javacord.api.entity.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
 public class SlurFilterTest {
 
     private static final String BEER_EMOJI = "\uD83C\uDF7A ";
 
-    @Mock
-    private Message message;
+    @Mock private Message message;
     private StandoFilter slurFilter;
 
     private static String repeat(String s, int n) {
@@ -55,7 +54,8 @@ public class SlurFilterTest {
     @Test
     public void sSlurAfter7() {
         setMessage(repeat(BEER_EMOJI, 6));
-        String result = slurFilter.filterWithMessage("she_sells_seashells_by_the_seashore", message);
+        String result =
+                slurFilter.filterWithMessage("she_sells_seashells_by_the_seashore", message);
         assertEquals("she_sells_seashells_by_the_seashore", result);
     }
 }

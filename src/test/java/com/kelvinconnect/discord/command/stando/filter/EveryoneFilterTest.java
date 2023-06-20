@@ -1,14 +1,14 @@
 package com.kelvinconnect.discord.command.stando.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.javacord.api.entity.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class EveryoneFilterTest {
 
@@ -17,6 +17,7 @@ public class EveryoneFilterTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Message message;
+
     private StandoFilter everyoneFilter;
 
     @Before
@@ -40,13 +41,15 @@ public class EveryoneFilterTest {
 
     @Test
     public void testUser() {
-        String result = everyoneFilter.filterWithMessage("prefix <@098765432112345678> suffix", message);
+        String result =
+                everyoneFilter.filterWithMessage("prefix <@098765432112345678> suffix", message);
         assertEquals("prefix " + MOCK_ID_WRAPPED + " suffix", result);
     }
 
     @Test
     public void testUserWithNick() {
-        String result = everyoneFilter.filterWithMessage("prefix <@!098765432112345678> suffix", message);
+        String result =
+                everyoneFilter.filterWithMessage("prefix <@!098765432112345678> suffix", message);
         assertEquals("prefix " + MOCK_ID_WRAPPED + " suffix", result);
     }
 
@@ -58,9 +61,18 @@ public class EveryoneFilterTest {
 
     @Test
     public void testMulti() {
-        String result = everyoneFilter.filterWithMessage("prefix @here @everyone <@!098765432112345678> suffix",
-                message);
-        assertEquals("prefix " + MOCK_ID_WRAPPED + " " + MOCK_ID_WRAPPED + " " + MOCK_ID_WRAPPED + " suffix", result);
+        String result =
+                everyoneFilter.filterWithMessage(
+                        "prefix @here @everyone <@!098765432112345678> suffix", message);
+        assertEquals(
+                "prefix "
+                        + MOCK_ID_WRAPPED
+                        + " "
+                        + MOCK_ID_WRAPPED
+                        + " "
+                        + MOCK_ID_WRAPPED
+                        + " suffix",
+                result);
     }
 
     @Test
@@ -74,5 +86,4 @@ public class EveryoneFilterTest {
         String result = everyoneFilter.filter("prefix @everyone suffix");
         assertEquals("prefix everyone suffix", result);
     }
-
 }

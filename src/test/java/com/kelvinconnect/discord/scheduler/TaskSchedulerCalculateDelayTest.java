@@ -1,24 +1,23 @@
 package com.kelvinconnect.discord.scheduler;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.Timestamp;
 import java.util.Date;
-
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 /**
  * Unit tests for the calculateDelay method(s) of the TaskScheduler class
  *
- * Created by Adam on 22/03/2017.
+ * <p>Created by Adam on 22/03/2017.
  */
 public class TaskSchedulerCalculateDelayTest {
 
     private static class TaskSchedulerFixedDate extends TaskScheduler {
 
-        final private Date date;
+        private final Date date;
 
         TaskSchedulerFixedDate(Date date) {
             this.date = date;
@@ -33,7 +32,9 @@ public class TaskSchedulerCalculateDelayTest {
     private TaskScheduler scheduler;
 
     public void defaultScheduler() {
-        scheduler = new TaskSchedulerFixedDate(new Date(Timestamp.valueOf("2017-03-22 17:00:00").getTime()));
+        scheduler =
+                new TaskSchedulerFixedDate(
+                        new Date(Timestamp.valueOf("2017-03-22 17:00:00").getTime()));
     }
 
     @Test
@@ -97,8 +98,15 @@ public class TaskSchedulerCalculateDelayTest {
                 for (int minute = 0; minute <= 60; ++minute) {
                     int delay = scheduler.calculateDelay(day, hour, minute);
                     assertThat(
-                            "delay should not be less than 0 {day=" + day + ",hour=" + hour + ",minute=" + minute + "}",
-                            delay, greaterThanOrEqualTo(0));
+                            "delay should not be less than 0 {day="
+                                    + day
+                                    + ",hour="
+                                    + hour
+                                    + ",minute="
+                                    + minute
+                                    + "}",
+                            delay,
+                            greaterThanOrEqualTo(0));
                 }
             }
         }
@@ -106,7 +114,9 @@ public class TaskSchedulerCalculateDelayTest {
 
     @Test
     public void halfAnHourFromHalf() {
-        scheduler = new TaskSchedulerFixedDate(new Date(Timestamp.valueOf("2017-03-22 16:30:00").getTime()));
+        scheduler =
+                new TaskSchedulerFixedDate(
+                        new Date(Timestamp.valueOf("2017-03-22 16:30:00").getTime()));
         int delayInMinutes = scheduler.calculateDelay(4, 17, 0);
         assertEquals(30, delayInMinutes);
     }

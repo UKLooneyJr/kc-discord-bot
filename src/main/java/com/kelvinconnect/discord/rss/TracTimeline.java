@@ -1,12 +1,11 @@
 package com.kelvinconnect.discord.rss;
 
-import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.channel.TextChannel;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
-
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
+import org.javacord.api.DiscordApi;
+import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.message.embed.EmbedBuilder;
 
 public class TracTimeline implements Runnable {
 
@@ -32,7 +31,8 @@ public class TracTimeline implements Runnable {
     private void printTimeline(DiscordApi api) {
         Feed feed = getFeed();
 
-        api.getTextChannelById(416596650497277962L).ifPresent((channel -> writeFeedToChannel(feed, channel)));
+        api.getTextChannelById(416596650497277962L)
+                .ifPresent((channel -> writeFeedToChannel(feed, channel)));
     }
 
     private void writeFeedToChannel(Feed feed, TextChannel channel) {

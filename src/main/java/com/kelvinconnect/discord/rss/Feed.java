@@ -47,8 +47,25 @@ public class Feed {
 
     @Override
     public String toString() {
-        return "Feed{" + "title='" + title + '\'' + ", link='" + link + '\'' + ", description='" + description + '\''
-                + ", language='" + language + '\'' + ", copyright='" + copyright + '\'' + ", entries=" + entries + '}';
+        return "Feed{"
+                + "title='"
+                + title
+                + '\''
+                + ", link='"
+                + link
+                + '\''
+                + ", description='"
+                + description
+                + '\''
+                + ", language='"
+                + language
+                + '\''
+                + ", copyright='"
+                + copyright
+                + '\''
+                + ", entries="
+                + entries
+                + '}';
     }
 
     public void sortMessages() {

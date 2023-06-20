@@ -14,5 +14,4 @@ public abstract class Table {
     }
 
     public abstract String createSql();
-
 }

@@ -14,9 +14,7 @@ public class VotingBooth {
         voters = new ArrayList<>();
     }
 
-    /**
-     * @return False if this is the voter's first vote. True if they have changed vote.
-     */
+    /** @return False if this is the voter's first vote. True if they have changed vote. */
     public boolean vote(String name, String voterId) {
         Candidate candidate = getCandidate(name);
         Voter voter = getVoter(voterId);
@@ -111,5 +109,4 @@ public class VotingBooth {
             return Integer.compare(o2.count, o1.count);
         }
     }
-
 }
