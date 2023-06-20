@@ -10,8 +10,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Displays info about the bot
  *
- * <p>
- * Created by Adam on 14/03/2017.
+ * <p>Created by Adam on 14/03/2017.
  */
 public class InfoCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(InfoCommand.class);
@@ -35,9 +34,16 @@ public class InfoCommand implements CommandExecutor {
         return projectVersion;
     }
 
-    @Command(aliases = "!info", description = "Shows some information about the bot.", usage = "!info")
+    @Command(
+            aliases = "!info",
+            description = "Shows some information about the bot.",
+            usage = "!info")
     public String onInfoCommand(String[] args) {
-        return "- **Version:** " + getProjectVersion() + "\n" + "- **Author:** Adam Docherty\n"
-                + "- **Language:** Java\n" + "- **Source:** https://github.com/UKLooneyJr/kc-discord-bot/";
+        return "- **Version:** "
+                + getProjectVersion()
+                + "\n"
+                + "- **Author:** Adam Docherty\n"
+                + "- **Language:** Java\n"
+                + "- **Source:** https://github.com/UKLooneyJr/kc-discord-bot/";
     }
 }

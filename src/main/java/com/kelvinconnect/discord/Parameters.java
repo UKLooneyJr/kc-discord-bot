@@ -27,15 +27,19 @@ public class Parameters {
     private String channelListLocation;
     private String slackUrl;
 
-    private Parameters() {
-    }
+    private Parameters() {}
 
     public void parseCommandLine(String[] args) {
         Options options = new Options();
 
         options.addOption(new Option("t", TOKEN_OPTION, true, "Discord login token"));
         options.addOption(new Option("d", DATABASE_PATH_OPTION, true, "Path to the database"));
-        options.addOption(new Option("c", CHANNEL_LIST_LOCATION_OPTION, true, "Location of the channel list xml"));
+        options.addOption(
+                new Option(
+                        "c",
+                        CHANNEL_LIST_LOCATION_OPTION,
+                        true,
+                        "Location of the channel list xml"));
         options.addOption(new Option(null, SLACK_URL_OPTION, true, "URL for MSI Slack instance"));
 
         CommandLineParser parser = new DefaultParser();
@@ -72,5 +76,4 @@ public class Parameters {
     public Optional<String> getSlackUrl() {
         return Optional.ofNullable(slackUrl);
     }
-
 }

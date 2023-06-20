@@ -27,7 +27,10 @@ public class StockCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(StockCommand.class);
     private final HashMap<Calendar, BigDecimal> startDatePrices = new HashMap<>();
 
-    @Command(aliases = "!stock", description = "Display the current NYSE:MSI stock price", usage = "!stock")
+    @Command(
+            aliases = "!stock",
+            description = "Display the current NYSE:MSI stock price",
+            usage = "!stock")
     public String onStockCommand(Message message) {
         try {
             EmbedBuilder embed = new EmbedBuilder();
@@ -115,10 +118,12 @@ public class StockCommand implements CommandExecutor {
         ZonedDateTime summerStartDate = currentDate.withDayOfYear(isLeapYear ? 92 : 91);
         // 2021-10-01 = 274th day of year
         ZonedDateTime winterStartDate = currentDate.withDayOfYear(isLeapYear ? 275 : 274);
-        boolean isSummer = (currentDate.isAfter(summerStartDate) && currentDate.isBefore(winterStartDate));
+        boolean isSummer =
+                (currentDate.isAfter(summerStartDate) && currentDate.isBefore(winterStartDate));
 
         ZonedDateTime firstDayOfYear = currentDate.withDayOfYear(1);
-        if (!isSummer && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))) {
+        if (!isSummer
+                && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))) {
             // Between January 1st and April 1st, we're interested in last year's October
             winterStartDate = winterStartDate.minusYears(1);
         }
@@ -136,7 +141,8 @@ public class StockCommand implements CommandExecutor {
             endDate.add(Calendar.DAY_OF_YEAR, 3);
 
             // fetch stock history only if we don't have this start date already
-            List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate, Interval.DAILY);
+            List<HistoricalQuote> stockHistory =
+                    stock.getHistory(startDate, endDate, Interval.DAILY);
 
             // Okay, so when we get this historical data, we actually don't necessarily know if the
             // date we selected
@@ -144,10 +150,15 @@ public class StockCommand implements CommandExecutor {
             // So here, we prefer to select a quote from the exact date, and if that doesn't exist,
             // we just take
             // the first one in the collection
-            Optional<HistoricalQuote> startDateQuote = stockHistory.stream()
-                    .filter(q -> q.getDate().toInstant().equals(startDate.toInstant())).findFirst();
+            Optional<HistoricalQuote> startDateQuote =
+                    stockHistory.stream()
+                            .filter(q -> q.getDate().toInstant().equals(startDate.toInstant()))
+                            .findFirst();
 
-            startPrice = startDateQuote.map(HistoricalQuote::getClose).orElseGet(() -> stockHistory.get(0).getClose());
+            startPrice =
+                    startDateQuote
+                            .map(HistoricalQuote::getClose)
+                            .orElseGet(() -> stockHistory.get(0).getClose());
 
             startDatePrices.put(startDate, startPrice);
         }

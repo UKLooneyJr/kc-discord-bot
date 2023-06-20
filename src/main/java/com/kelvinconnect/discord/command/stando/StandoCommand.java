@@ -8,13 +8,10 @@ import com.kelvinconnect.discord.command.stando.filter.StandoFilter;
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
-import org.javacord.api.entity.message.Message;
-
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.javacord.api.entity.message.Message;
 
 /** Created by Captain Steve Rodger on 21/04/2017. */
@@ -28,8 +25,17 @@ public class StandoCommand implements CommandExecutor {
     private static final String QUERY_DRINK = "What do you drink?";
     private static final String DELETE_LAST = "That's been debunked";
 
-    private static final String[] DRINK_EMOJIS = { "\uD83C\uDF7A", "\uD83C\uDF7B", "\uD83C\uDF77", "\uD83C\uDF78",
-            "\uD83C\uDF79", "\uD83C\uDF7E", "\uD83C\uDF76", "\uD83E\uDD42", "\uD83E\uDD43" };
+    private static final String[] DRINK_EMOJIS = {
+        "\uD83C\uDF7A",
+        "\uD83C\uDF7B",
+        "\uD83C\uDF77",
+        "\uD83C\uDF78",
+        "\uD83C\uDF79",
+        "\uD83C\uDF7E",
+        "\uD83C\uDF76",
+        "\uD83E\uDD42",
+        "\uD83E\uDD43"
+    };
 
     private final List<StandoFilter> inputFilters = new ArrayList<>();
     private final List<StandoFilter> outputFilters = new ArrayList<>();
@@ -41,7 +47,10 @@ public class StandoCommand implements CommandExecutor {
     }
 
     private static int getDrinkCount(String[] args) {
-        return (int) Arrays.stream(args).filter(arg -> Arrays.asList(DRINK_EMOJIS).contains(arg)).count();
+        return (int)
+                Arrays.stream(args)
+                        .filter(arg -> Arrays.asList(DRINK_EMOJIS).contains(arg))
+                        .count();
     }
 
     private void loadFilters() {
@@ -59,13 +68,18 @@ public class StandoCommand implements CommandExecutor {
 
     private StandoStatementTable getDatabaseTable() {
         KCBotDatabase db = KCBotDatabase.getInstance();
-        return (StandoStatementTable) db.getTable(StandoStatementTable.TABLE_NAME)
-                .orElseThrow(() -> new IllegalStateException("Could not find StandoStatementTable in database"));
+        return (StandoStatementTable)
+                db.getTable(StandoStatementTable.TABLE_NAME)
+                        .orElseThrow(
+                                () ->
+                                        new IllegalStateException(
+                                                "Could not find StandoStatementTable in database"));
     }
 
     private void populateWithDefaultStandoStatements() {
         addStatement("That's what she said.", LOW);
-        addStatement("I have ate four of Mr Kiplings cakes. He does make exceedingly good cakes.", LOW);
+        addStatement(
+                "I have ate four of Mr Kiplings cakes. He does make exceedingly good cakes.", LOW);
         addStatement("I chucked it in the Clyde.", LOW);
         addStatement("I thew half away.", LOW);
         addStatement("The world is flat.", MEDIUM);
@@ -79,15 +93,22 @@ public class StandoCommand implements CommandExecutor {
         addStatement(statement, severity, null);
     }
 
-    private void addStatement(String statement, StandoStatement.Severity severity, Message message) {
+    private void addStatement(
+            String statement, StandoStatement.Severity severity, Message message) {
         for (StandoFilter filter : inputFilters) {
-            statement = message != null ? filter.filterWithMessage(statement, message) : filter.filter(statement);
+            statement =
+                    message != null
+                            ? filter.filterWithMessage(statement, message)
+                            : filter.filter(statement);
         }
         StandoStatement s = new StandoStatement(statement, severity);
         getDatabaseTable().insert(s);
     }
 
-    @Command(aliases = "!stando", description = "Have a chat with Stando. Get him a beer or two for some fun facts.", usage = "!stando [<beverages>]")
+    @Command(
+            aliases = "!stando",
+            description = "Have a chat with Stando. Get him a beer or two for some fun facts.",
+            usage = "!stando [<beverages>]")
     public String onStandoCommand(String[] args, Message message) {
 
         String fullFact = String.join(" ", args);

@@ -19,12 +19,13 @@ public class BotUI {
         btnQuit.addActionListener(e -> System.exit(0));
         dialog.add(btnQuit);
 
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
+        dialog.addWindowListener(
+                new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
     }
 
     public void show() {

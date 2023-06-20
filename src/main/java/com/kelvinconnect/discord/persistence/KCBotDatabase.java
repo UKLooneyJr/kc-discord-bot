@@ -49,7 +49,9 @@ public class KCBotDatabase {
     }
 
     private void createDatabase() {
-        connect().ifPresent((Connection c) -> tables.forEach((Table table) -> createTable(c, table)));
+        connect()
+                .ifPresent(
+                        (Connection c) -> tables.forEach((Table table) -> createTable(c, table)));
     }
 
     private void createTable(Connection conn, Table table) {

@@ -11,8 +11,7 @@ import org.javacord.api.DiscordApiBuilder;
 /**
  * Logs in with a Token read from a file
  *
- * <p>
- * Created by Adam on 14/03/2017.
+ * <p>Created by Adam on 14/03/2017.
  */
 public class TokenFileLogin implements Login {
     private static final Logger logger = LogManager.getLogger(TokenFileLogin.class);

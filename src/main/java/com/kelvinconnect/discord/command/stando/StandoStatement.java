@@ -16,6 +16,8 @@ public class StandoStatement {
     }
 
     public enum Severity {
-        LOW, MEDIUM, HIGH
+        LOW,
+        MEDIUM,
+        HIGH
     }
 }

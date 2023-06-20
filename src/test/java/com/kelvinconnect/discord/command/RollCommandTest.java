@@ -1,6 +1,7 @@
 package com.kelvinconnect.discord.command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -27,10 +28,9 @@ public class RollCommandTest {
         // that we are making use of the argument provided to the roll command
         boolean resultAboveSix = false;
         for (int i = 0; i < TEST_REPETITIONS; ++i) {
-            String result = cmd.onRollCommand(new String[] { "1000" });
+            String result = cmd.onRollCommand(new String[] {"1000"});
             int intResult = Integer.parseInt(result);
-            if (intResult > 6)
-                resultAboveSix = true;
+            if (intResult > 6) resultAboveSix = true;
             assertTrue(intResult > 0 && intResult <= 1000);
         }
         assertTrue(resultAboveSix);
@@ -40,7 +40,7 @@ public class RollCommandTest {
     public void rollRange() {
         RollCommand cmd = new RollCommand();
         for (int i = 0; i < TEST_REPETITIONS; ++i) {
-            String result = cmd.onRollCommand(new String[] { "10-20" });
+            String result = cmd.onRollCommand(new String[] {"10-20"});
             int intResult = Integer.parseInt(result);
             assertTrue(intResult >= 10 && intResult <= 20);
         }
@@ -50,7 +50,7 @@ public class RollCommandTest {
     public void rollMultiple() {
         RollCommand cmd = new RollCommand();
         for (int i = 0; i < TEST_REPETITIONS; ++i) {
-            String result = cmd.onRollCommand(new String[] { "10d20" });
+            String result = cmd.onRollCommand(new String[] {"10d20"});
             int intResult = Integer.parseInt(result.substring(0, result.indexOf(' ')));
             assertTrue(intResult >= 20 && intResult <= 10 * 20);
             // (10 - 1) commas means there are 10 comma separated values listed

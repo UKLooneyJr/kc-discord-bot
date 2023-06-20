@@ -17,14 +17,16 @@ import org.jsoup.select.Elements;
 /**
  * Creates a embeded link
  *
- * <p>
- * Created by Adam on 15/03/2017.
+ * <p>Created by Adam on 15/03/2017.
  */
 public class TicketCommand implements CommandExecutor {
 
     private static final String TICKET_FORMAT = "^(\\d|#)\\d*$";
 
-    @Command(aliases = "!ticket", description = "Creates a trac link to the mentioned ticket.", usage = "!ticket <ticket-number>")
+    @Command(
+            aliases = "!ticket",
+            description = "Creates a trac link to the mentioned ticket.",
+            usage = "!ticket <ticket-number>")
     public String onTicketCommand(String[] args, Message message) {
         if (args.length != 1) { // more than 1 argument
             return "Incorrect number of arguments!";
@@ -88,10 +90,18 @@ public class TicketCommand implements CommandExecutor {
     }
 
     private String buildDescription(Document doc, String tracStatus) {
-        return "Type: " + getTracPropertyByClass(doc, "trac-type") + "\nStatus: " + tracStatus + "\nReporter: "
-                + getTracPropertyByHeaders(doc, "h_reporter") + "\nMilestone: "
-                + getTracPropertyByHeaders(doc, "h_milestone") + "\nStory Points: "
-                + getTracPropertyByHeaders(doc, "h_estimate") + "\n\nDescription: " + getTracDescription(doc);
+        return "Type: "
+                + getTracPropertyByClass(doc, "trac-type")
+                + "\nStatus: "
+                + tracStatus
+                + "\nReporter: "
+                + getTracPropertyByHeaders(doc, "h_reporter")
+                + "\nMilestone: "
+                + getTracPropertyByHeaders(doc, "h_milestone")
+                + "\nStory Points: "
+                + getTracPropertyByHeaders(doc, "h_estimate")
+                + "\n\nDescription: "
+                + getTracDescription(doc);
     }
 
     private String getTracDescription(Document doc) {
@@ -109,39 +119,40 @@ public class TicketCommand implements CommandExecutor {
 
     private void setColourByStatus(EmbedBuilder embed, String tracStatus) {
         switch (tracStatus) {
-        case "closed":
-            embed.setColor(Color.GRAY);
-            break;
-        case "new":
-            embed.setColor(Color.WHITE);
-            break;
-        case "dev_ready":
-        case "assigned_dev":
-            embed.setColor(Color.BLUE);
-            break;
-        case "test_ready":
-        case "assigned_test":
-            embed.setColor(Color.GREEN);
-            break;
-        case "build_ready":
-            embed.setColor(Color.CYAN);
-            break;
-        case "review":
-        case "info_needed":
-            embed.setColor(Color.YELLOW);
-            break;
-        case "failed_test":
-            embed.setColor(Color.ORANGE);
-            break;
-        case "blocked":
-        case "core_needed":
-            embed.setColor(Color.RED);
-            break;
+            case "closed":
+                embed.setColor(Color.GRAY);
+                break;
+            case "new":
+                embed.setColor(Color.WHITE);
+                break;
+            case "dev_ready":
+            case "assigned_dev":
+                embed.setColor(Color.BLUE);
+                break;
+            case "test_ready":
+            case "assigned_test":
+                embed.setColor(Color.GREEN);
+                break;
+            case "build_ready":
+                embed.setColor(Color.CYAN);
+                break;
+            case "review":
+            case "info_needed":
+                embed.setColor(Color.YELLOW);
+                break;
+            case "failed_test":
+                embed.setColor(Color.ORANGE);
+                break;
+            case "blocked":
+            case "core_needed":
+                embed.setColor(Color.RED);
+                break;
         }
     }
 
     private boolean isAssigned(String tracStatus) {
-        return (tracStatus.equals("assigned_dev") || tracStatus.equals("assigned_test")
+        return (tracStatus.equals("assigned_dev")
+                || tracStatus.equals("assigned_test")
                 || tracStatus.equals("info_needed"));
     }
 

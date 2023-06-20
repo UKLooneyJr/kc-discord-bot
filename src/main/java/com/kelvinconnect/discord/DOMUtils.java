@@ -27,22 +27,22 @@ public class DOMUtils {
     }
 
     public static Iterable<Node> iterable(final NodeList nodeList) {
-        return () -> new Iterator<Node>() {
+        return () ->
+                new Iterator<Node>() {
 
-            private int index = 0;
+                    private int index = 0;
 
-            @Override
-            public boolean hasNext() {
-                return index < nodeList.getLength();
-            }
+                    @Override
+                    public boolean hasNext() {
+                        return index < nodeList.getLength();
+                    }
 
-            @Override
-            public Node next() {
-                if (!hasNext())
-                    throw new NoSuchElementException();
-                return nodeList.item(index++);
-            }
-        };
+                    @Override
+                    public Node next() {
+                        if (!hasNext()) throw new NoSuchElementException();
+                        return nodeList.item(index++);
+                    }
+                };
     }
 
     public static Stream<Node> toStream(final NodeList nodeList) {

@@ -14,11 +14,39 @@ import org.javacord.api.entity.message.Message;
 /** Created by Adam on 21/04/2017. */
 public class PubCommand implements CommandExecutor {
 
-    private static final String[] choices = { "Brass Monkey", "Brewdog", "The Islay", "Strip Joint", "Big Slope",
-            "Three Judges", "Sparkle Horse", "Brass Monkey", "Brass Monkey", "Brass Monkey", "Snaffle Bit",
-            "The Park Bar", "Grove Bar", "Lebowskis", "The Bon Accord", "O'Neill's", "The Pub", "The Hengler's Circus",
-            "Yates's", "Slouch", "Malones", "Bunker Bar", "The Pot Still", "The Horseshoe Bar", "The Drum & Monkey",
-            "The Counting House", "Sloans", "Waxy O'Connors", "Blue Dog", "Gallus", "The Tap House" };
+    private static final String[] choices = {
+        "Brass Monkey",
+        "Brewdog",
+        "The Islay",
+        "Strip Joint",
+        "Big Slope",
+        "Three Judges",
+        "Sparkle Horse",
+        "Brass Monkey",
+        "Brass Monkey",
+        "Brass Monkey",
+        "Snaffle Bit",
+        "The Park Bar",
+        "Grove Bar",
+        "Lebowskis",
+        "The Bon Accord",
+        "O'Neill's",
+        "The Pub",
+        "The Hengler's Circus",
+        "Yates's",
+        "Slouch",
+        "Malones",
+        "Bunker Bar",
+        "The Pot Still",
+        "The Horseshoe Bar",
+        "The Drum & Monkey",
+        "The Counting House",
+        "Sloans",
+        "Waxy O'Connors",
+        "Blue Dog",
+        "Gallus",
+        "The Tap House"
+    };
 
     private final Random random = new Random();
     private final VotingBooth votingBooth;
@@ -27,7 +55,10 @@ public class PubCommand implements CommandExecutor {
         this.votingBooth = new VotingBooth();
     }
 
-    @Command(aliases = "!pub", description = "Ask for some random pub. Or get the results of the pub election.", usage = "!pub [results | reset | time | vote]")
+    @Command(
+            aliases = "!pub",
+            description = "Ask for some random pub. Or get the results of the pub election.",
+            usage = "!pub [results | reset | time | vote]")
     public String onPubCommand(String[] args, Message message) {
 
         if (args.length == 1) {
@@ -50,7 +81,10 @@ public class PubCommand implements CommandExecutor {
         return "What about " + suggestion + "?";
     }
 
-    @Command(aliases = "!vote", description = "Vote for what pub you want to go to.", usage = "!vote [name]")
+    @Command(
+            aliases = "!vote",
+            description = "Vote for what pub you want to go to.",
+            usage = "!vote [name]")
     public String onVoteCommand(String[] args, Message message) {
         return submitVote(args, message);
     }

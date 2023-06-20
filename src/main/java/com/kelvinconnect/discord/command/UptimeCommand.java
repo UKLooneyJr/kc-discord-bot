@@ -14,7 +14,10 @@ public class UptimeCommand implements CommandExecutor {
         this.startTime = startTime;
     }
 
-    @Command(aliases = "!uptime", description = "Display how long the bot has been running for", usage = "!slack")
+    @Command(
+            aliases = "!uptime",
+            description = "Display how long the bot has been running for",
+            usage = "!slack")
     public String onUptimeCommand(String[] args) {
         return timeSince(Instant.now());
     }
@@ -30,7 +33,8 @@ public class UptimeCommand implements CommandExecutor {
         return sb.toString();
     }
 
-    private Duration writeDuration(Duration uptime, StringBuilder sb, long duration, ChronoUnit unit) {
+    private Duration writeDuration(
+            Duration uptime, StringBuilder sb, long duration, ChronoUnit unit) {
         if (duration > 0) {
             if (sb.length() > 0) {
                 sb.append(", ");

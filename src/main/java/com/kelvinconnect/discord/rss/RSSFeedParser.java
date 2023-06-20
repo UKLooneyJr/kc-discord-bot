@@ -54,37 +54,37 @@ public class RSSFeedParser {
                 if (event.isStartElement()) {
                     String localPart = event.asStartElement().getName().getLocalPart();
                     switch (localPart) {
-                    case ITEM:
-                        if (isFeedHeader) {
-                            isFeedHeader = false;
-                            feed = new Feed(title, link, description, language, copyright);
-                        }
-                        // event = eventReader.nextEvent();
-                        break;
-                    case TITLE:
-                        title = getCharacterData(eventReader);
-                        break;
-                    case DESCRIPTION:
-                        description = getCharacterData(eventReader);
-                        break;
-                    case LINK:
-                        link = getCharacterData(eventReader);
-                        break;
-                    case GUID:
-                        guid = getCharacterData(eventReader);
-                        break;
-                    case LANGUAGE:
-                        language = getCharacterData(eventReader);
-                        break;
-                    case AUTHOR:
-                        author = getCharacterData(eventReader);
-                        break;
-                    case PUB_DATE:
-                        pubdate = getCharacterData(eventReader);
-                        break;
-                    case COPYRIGHT:
-                        copyright = getCharacterData(eventReader);
-                        break;
+                        case ITEM:
+                            if (isFeedHeader) {
+                                isFeedHeader = false;
+                                feed = new Feed(title, link, description, language, copyright);
+                            }
+                            // event = eventReader.nextEvent();
+                            break;
+                        case TITLE:
+                            title = getCharacterData(eventReader);
+                            break;
+                        case DESCRIPTION:
+                            description = getCharacterData(eventReader);
+                            break;
+                        case LINK:
+                            link = getCharacterData(eventReader);
+                            break;
+                        case GUID:
+                            guid = getCharacterData(eventReader);
+                            break;
+                        case LANGUAGE:
+                            language = getCharacterData(eventReader);
+                            break;
+                        case AUTHOR:
+                            author = getCharacterData(eventReader);
+                            break;
+                        case PUB_DATE:
+                            pubdate = getCharacterData(eventReader);
+                            break;
+                        case COPYRIGHT:
+                            copyright = getCharacterData(eventReader);
+                            break;
                     }
                 } else if (event.isEndElement()) {
                     if (event.asEndElement().getName().getLocalPart().equals(ITEM)) {

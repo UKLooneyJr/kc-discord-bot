@@ -47,44 +47,47 @@ public class MusicPlayer {
 
         source = new LavaplayerAudioSource(api, player);
 
-        player.addListener(new AudioEventHandler() {
-            @Override
-            protected void onTrackStart(TrackStartEvent event) {
-                logger.info("Now playing {}", event.track.getInfo().title);
-            }
+        player.addListener(
+                new AudioEventHandler() {
+                    @Override
+                    protected void onTrackStart(TrackStartEvent event) {
+                        logger.info("Now playing {}", event.track.getInfo().title);
+                    }
 
-            @Override
-            protected void onTrackEnd(TrackEndEvent event) {
-                logger.info("Finished playing {}", event.track.getInfo().title);
-                if (event.endReason.mayStartNext) {
-                    next();
-                }
-            }
+                    @Override
+                    protected void onTrackEnd(TrackEndEvent event) {
+                        logger.info("Finished playing {}", event.track.getInfo().title);
+                        if (event.endReason.mayStartNext) {
+                            next();
+                        }
+                    }
 
-            @Override
-            protected void onTrackStuck(TrackStuckEvent event) {
-                logger.warn("Track stuck {}", event.track.getInfo().title);
-                next();
-            }
+                    @Override
+                    protected void onTrackStuck(TrackStuckEvent event) {
+                        logger.warn("Track stuck {}", event.track.getInfo().title);
+                        next();
+                    }
 
-            @Override
-            protected void onTrackException(TrackExceptionEvent event) {
-                logger.warn(() -> "Error playing track" + event.track.getInfo().title, event.exception);
-                next();
-            }
+                    @Override
+                    protected void onTrackException(TrackExceptionEvent event) {
+                        logger.warn(
+                                () -> "Error playing track" + event.track.getInfo().title,
+                                event.exception);
+                        next();
+                    }
 
-            @Override
-            protected void onPlayerResume(PlayerResumeEvent event) {
-                logger.info("Resuming");
-                sendTextChannelMessage(() -> "Music resumed");
-            }
+                    @Override
+                    protected void onPlayerResume(PlayerResumeEvent event) {
+                        logger.info("Resuming");
+                        sendTextChannelMessage(() -> "Music resumed");
+                    }
 
-            @Override
-            protected void onPlayerPause(PlayerPauseEvent event) {
-                logger.info("Pausing");
-                sendTextChannelMessage(() -> "Music paused");
-            }
-        });
+                    @Override
+                    protected void onPlayerPause(PlayerPauseEvent event) {
+                        logger.info("Pausing");
+                        sendTextChannelMessage(() -> "Music paused");
+                    }
+                });
     }
 
     public boolean isConnected() {
@@ -115,32 +118,34 @@ public class MusicPlayer {
     }
 
     public void addRequest(String url, MessageAuthor user) {
-        playerManager.loadItem(url, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                requestQueue.add(new TrackRequest(track, user));
-                logger.info("Added '{}' to queue", track.getInfo().title);
-            }
+        playerManager.loadItem(
+                url,
+                new AudioLoadResultHandler() {
+                    @Override
+                    public void trackLoaded(AudioTrack track) {
+                        requestQueue.add(new TrackRequest(track, user));
+                        logger.info("Added '{}' to queue", track.getInfo().title);
+                    }
 
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                for (AudioTrack track : playlist.getTracks()) {
-                    trackLoaded(track);
-                }
-            }
+                    @Override
+                    public void playlistLoaded(AudioPlaylist playlist) {
+                        for (AudioTrack track : playlist.getTracks()) {
+                            trackLoaded(track);
+                        }
+                    }
 
-            @Override
-            public void noMatches() {
-                logger.warn("No matches found at url '{}'", url);
-                sendTextChannelMessage(() -> "No songs found at url `" + url + "`");
-            }
+                    @Override
+                    public void noMatches() {
+                        logger.warn("No matches found at url '{}'", url);
+                        sendTextChannelMessage(() -> "No songs found at url `" + url + "`");
+                    }
 
-            @Override
-            public void loadFailed(FriendlyException exception) {
-                logger.warn(() -> "Failed to load track at url " + url, exception);
-                sendTextChannelMessage(() -> "Failed to load track at url `" + url + "`");
-            }
-        });
+                    @Override
+                    public void loadFailed(FriendlyException exception) {
+                        logger.warn(() -> "Failed to load track at url " + url, exception);
+                        sendTextChannelMessage(() -> "Failed to load track at url `" + url + "`");
+                    }
+                });
     }
 
     /** Plays the next track, if no tracks are left disconnects. */

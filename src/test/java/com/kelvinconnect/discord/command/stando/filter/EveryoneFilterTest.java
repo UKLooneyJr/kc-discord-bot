@@ -41,13 +41,15 @@ public class EveryoneFilterTest {
 
     @Test
     public void testUser() {
-        String result = everyoneFilter.filterWithMessage("prefix <@098765432112345678> suffix", message);
+        String result =
+                everyoneFilter.filterWithMessage("prefix <@098765432112345678> suffix", message);
         assertEquals("prefix " + MOCK_ID_WRAPPED + " suffix", result);
     }
 
     @Test
     public void testUserWithNick() {
-        String result = everyoneFilter.filterWithMessage("prefix <@!098765432112345678> suffix", message);
+        String result =
+                everyoneFilter.filterWithMessage("prefix <@!098765432112345678> suffix", message);
         assertEquals("prefix " + MOCK_ID_WRAPPED + " suffix", result);
     }
 
@@ -59,9 +61,18 @@ public class EveryoneFilterTest {
 
     @Test
     public void testMulti() {
-        String result = everyoneFilter.filterWithMessage("prefix @here @everyone <@!098765432112345678> suffix",
-                message);
-        assertEquals("prefix " + MOCK_ID_WRAPPED + " " + MOCK_ID_WRAPPED + " " + MOCK_ID_WRAPPED + " suffix", result);
+        String result =
+                everyoneFilter.filterWithMessage(
+                        "prefix @here @everyone <@!098765432112345678> suffix", message);
+        assertEquals(
+                "prefix "
+                        + MOCK_ID_WRAPPED
+                        + " "
+                        + MOCK_ID_WRAPPED
+                        + " "
+                        + MOCK_ID_WRAPPED
+                        + " suffix",
+                result);
     }
 
     @Test

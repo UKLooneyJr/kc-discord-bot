@@ -31,7 +31,8 @@ public class TracTimeline implements Runnable {
     private void printTimeline(DiscordApi api) {
         Feed feed = getFeed();
 
-        api.getTextChannelById(416596650497277962L).ifPresent((channel -> writeFeedToChannel(feed, channel)));
+        api.getTextChannelById(416596650497277962L)
+                .ifPresent((channel -> writeFeedToChannel(feed, channel)));
     }
 
     private void writeFeedToChannel(Feed feed, TextChannel channel) {

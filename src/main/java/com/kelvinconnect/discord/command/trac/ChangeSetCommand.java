@@ -21,8 +21,7 @@ import org.jsoup.select.Elements;
 /**
  * Creates a embeded link
  *
- * <p>
- * Created by Adam on 15/03/2017.
+ * <p>Created by Adam on 15/03/2017.
  */
 public class ChangeSetCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(ChangeSetCommand.class);
@@ -30,7 +29,10 @@ public class ChangeSetCommand implements CommandExecutor {
     private static final String REVISION_NUMBER_FORMAT = "^[1-9]\\d*$";
     private static final int MAX_CHANGES_PER_MESSAGE = 25;
 
-    @Command(aliases = "!changeset", description = "Creates a link to the mentioned changeset.", usage = "!changeset <revision-number>")
+    @Command(
+            aliases = "!changeset",
+            description = "Creates a link to the mentioned changeset.",
+            usage = "!changeset <revision-number>")
     public String onChangeSetCommand(String[] args, Message message) {
         if (args.length != 1) {
             return "Incorrect number of arguments!";
@@ -72,7 +74,8 @@ public class ChangeSetCommand implements CommandExecutor {
         Element files = doc.body().getElementsByClass("files").get(1);
         sendEmbedForChangeType(files, "add", Color.GREEN, "Files added:").ifPresent(embeds::add);
         sendEmbedForChangeType(files, "rem", Color.RED, "Files removed:").ifPresent(embeds::add);
-        sendEmbedForChangeType(files, "mod", Color.ORANGE, "Files modified:").ifPresent(embeds::add);
+        sendEmbedForChangeType(files, "mod", Color.ORANGE, "Files modified:")
+                .ifPresent(embeds::add);
         sendEmbedForChangeType(files, "cp", Color.BLUE, "Files copied:").ifPresent(embeds::add);
         sendEmbedForChangeType(files, "mv", Color.GRAY, "Files moved:").ifPresent(embeds::add);
 
@@ -95,7 +98,8 @@ public class ChangeSetCommand implements CommandExecutor {
         return embed;
     }
 
-    private Optional<EmbedBuilder> sendEmbedForChangeType(Element files, String type, Color colour, String title) {
+    private Optional<EmbedBuilder> sendEmbedForChangeType(
+            Element files, String type, Color colour, String title) {
         Elements changes = files.getElementsByClass(type);
         if (!changes.isEmpty()) {
             StringBuilder sb = new StringBuilder();

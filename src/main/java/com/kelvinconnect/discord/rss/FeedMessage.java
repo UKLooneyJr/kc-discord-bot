@@ -76,8 +76,25 @@ public class FeedMessage implements Comparable<FeedMessage> {
 
     @Override
     public String toString() {
-        return "FeedMessage{" + "title='" + title + '\'' + ", description='" + description + '\'' + ", link='" + link
-                + '\'' + ", author='" + author + '\'' + ", guid='" + guid + '\'' + ", pubDate=" + pubDate + '}';
+        return "FeedMessage{"
+                + "title='"
+                + title
+                + '\''
+                + ", description='"
+                + description
+                + '\''
+                + ", link='"
+                + link
+                + '\''
+                + ", author='"
+                + author
+                + '\''
+                + ", guid='"
+                + guid
+                + '\''
+                + ", pubDate="
+                + pubDate
+                + '}';
     }
 
     @Override
