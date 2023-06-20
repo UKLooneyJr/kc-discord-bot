@@ -1,14 +1,14 @@
 package com.kelvinconnect.discord.command.stando.filter;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.javacord.api.entity.message.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class EveryoneFilterTest {
 
@@ -17,6 +17,7 @@ public class EveryoneFilterTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Message message;
+
     private StandoFilter everyoneFilter;
 
     @Before
@@ -74,5 +75,4 @@ public class EveryoneFilterTest {
         String result = everyoneFilter.filter("prefix @everyone suffix");
         assertEquals("prefix everyone suffix", result);
     }
-
 }

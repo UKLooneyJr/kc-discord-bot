@@ -1,11 +1,10 @@
 package com.kelvinconnect.discord.rss;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FeedMessage implements Comparable<FeedMessage> {
     private static final Logger logger = LogManager.getLogger(FeedMessage.class);

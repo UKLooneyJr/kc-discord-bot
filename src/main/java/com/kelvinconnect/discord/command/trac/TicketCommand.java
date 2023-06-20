@@ -2,6 +2,11 @@ package com.kelvinconnect.discord.command.trac;
 
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import java.awt.*;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.jsoup.Jsoup;
@@ -9,14 +14,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.awt.*;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Creates a embeded link
+ *
  * <p>
  * Created by Adam on 15/03/2017.
  */

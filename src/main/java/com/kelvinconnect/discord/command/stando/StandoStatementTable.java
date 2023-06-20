@@ -2,9 +2,6 @@ package com.kelvinconnect.discord.command.stando;
 
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
 import com.kelvinconnect.discord.persistence.Table;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,8 +1,8 @@
 package com.kelvinconnect.discord.ui;
 
-import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.*;
 
 public class BotUI {
     private final JDialog dialog;

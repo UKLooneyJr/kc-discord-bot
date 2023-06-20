@@ -2,6 +2,15 @@ package com.kelvinconnect.discord.command;
 
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import java.awt.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.entity.message.Message;
@@ -13,16 +22,6 @@ import yahoofinance.histquotes.Interval;
 import yahoofinance.quotes.fx.FxQuote;
 import yahoofinance.quotes.fx.FxSymbols;
 import yahoofinance.quotes.stock.StockQuote;
-
-import java.awt.*;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.*;
 
 public class StockCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(StockCommand.class);
@@ -110,11 +109,16 @@ public class StockCommand implements CommandExecutor {
 
     private double getEsppPrice(Stock stock) throws IOException {
         ZonedDateTime currentDate = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS);
-        ZonedDateTime summerStartDate = currentDate.withMonth(4).withDayOfMonth(1);
-        ZonedDateTime winterStartDate = currentDate.withMonth(10).withDayOfMonth(1);
+        boolean isLeapYear = currentDate.toLocalDate().isLeapYear();
+
+        // 2021-04-01 = 91st day of year
+        ZonedDateTime summerStartDate = currentDate.withDayOfYear(isLeapYear ? 92 : 91);
+        // 2021-10-01 = 274th day of year
+        ZonedDateTime winterStartDate = currentDate.withDayOfYear(isLeapYear ? 275 : 274);
         boolean isSummer = (currentDate.isAfter(summerStartDate) && currentDate.isBefore(winterStartDate));
 
-        if (!isSummer && (currentDate.isBefore(summerStartDate))) {
+        ZonedDateTime firstDayOfYear = currentDate.withDayOfYear(1);
+        if (!isSummer && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))) {
             // Between January 1st and April 1st, we're interested in last year's October
             winterStartDate = winterStartDate.minusYears(1);
         }
@@ -131,23 +135,27 @@ public class StockCommand implements CommandExecutor {
             // Three days of history to cover weekends
             endDate.add(Calendar.DAY_OF_YEAR, 3);
 
-            // Fetch stock history only if we don't have this start date already
+            // fetch stock history only if we don't have this start date already
             List<HistoricalQuote> stockHistory = stock.getHistory(startDate, endDate, Interval.DAILY);
 
-            // If the designated date is on a weekend,we need the first closing price *after* that date
+            // Okay, so when we get this historical data, we actually don't necessarily know if the
+            // date we selected
+            // has any data, and if it doesn't, we can end up a weekend off.
+            // So here, we prefer to select a quote from the exact date, and if that doesn't exist,
+            // we just take
+            // the first one in the collection
             Optional<HistoricalQuote> startDateQuote = stockHistory.stream()
-                    .filter(q -> q.getDate().toInstant().isAfter(startDate.toInstant())).findFirst();
+                    .filter(q -> q.getDate().toInstant().equals(startDate.toInstant())).findFirst();
 
-            // I don't think this should happen, but if we can't get the price for a day after the designated date,
-            // we just get the price on the first day returned from the history.
             startPrice = startDateQuote.map(HistoricalQuote::getClose).orElseGet(() -> stockHistory.get(0).getClose());
 
             startDatePrices.put(startDate, startPrice);
         }
 
-        // ESPP purchase price is 15% off either the first day's closing price, or the last day's, whichever is lower.
-        // We never know the last day's price until it's over, so we can guess with today's (or most recent).
+        // ESPP purchase price is 15% off either the first day's closing price, or the last day's,
+        // whichever is lower.
+        // We never know the last day's price until it's over, so we can guess with today's (or most
+        // recent).
         return (0.85 * startPrice.min(currentPrice).doubleValue());
     }
-
 }

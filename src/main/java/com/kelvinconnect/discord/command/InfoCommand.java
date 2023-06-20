@@ -2,14 +2,14 @@ package com.kelvinconnect.discord.command;
 
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import java.io.IOException;
+import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.util.Properties;
-
 /**
  * Displays info about the bot
+ *
  * <p>
  * Created by Adam on 14/03/2017.
  */

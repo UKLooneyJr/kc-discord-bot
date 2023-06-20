@@ -1,13 +1,10 @@
 package com.kelvinconnect.discord.command.trac;
 
-import com.kelvinconnect.discord.command.trac.TicketCommand;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-/**
- * Created by Adam on 15/03/2017.
- */
+import org.junit.Test;
+
+/** Created by Adam on 15/03/2017. */
 public class TicketCommandTest {
 
     // @Test

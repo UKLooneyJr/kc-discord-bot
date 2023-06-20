@@ -1,8 +1,8 @@
 package com.kelvinconnect.discord.command;
 
-import org.junit.Test;
-
 import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 public class RollCommandTest {
 
@@ -21,7 +21,8 @@ public class RollCommandTest {
     @Test
     public void rollSingleSpecified() {
         RollCommand cmd = new RollCommand();
-        // We're pretty much guaranteed to have at least one result be above 6, knowing this we can assume as best we
+        // We're pretty much guaranteed to have at least one result be above 6, knowing this we can
+        // assume as best we
         // can
         // that we are making use of the argument provided to the roll command
         boolean resultAboveSix = false;
@@ -56,5 +57,4 @@ public class RollCommandTest {
             assertEquals(result.length() - result.replace(",", "").length(), 10 - 1);
         }
     }
-
 }

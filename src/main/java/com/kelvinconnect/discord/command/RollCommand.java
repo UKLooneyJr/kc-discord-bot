@@ -3,14 +3,13 @@ package com.kelvinconnect.discord.command;
 import com.kelvinconnect.discord.DiscordUtils;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RollCommand implements CommandExecutor {
     private static final Logger logger = LogManager.getLogger(RollCommand.class);

@@ -1,8 +1,5 @@
 package com.kelvinconnect.discord.scheduler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,9 +8,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Schedules "tasks" (i.e. Runnables) to be run at a set time weekly.
+ *
  * <p>
  * Created by Adam on 22/03/2017.
  */

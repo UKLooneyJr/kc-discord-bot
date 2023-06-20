@@ -1,12 +1,11 @@
 package com.kelvinconnect.discord.command;
 
-import org.junit.Test;
+import static java.time.temporal.ChronoUnit.*;
+import static org.junit.Assert.*;
 
 import java.time.Instant;
 import java.time.temporal.Temporal;
-
-import static org.junit.Assert.*;
-import static java.time.temporal.ChronoUnit.*;
+import org.junit.Test;
 
 public class UptimeCommandTest {
 
@@ -79,5 +78,4 @@ public class UptimeCommandTest {
         assertEquals("2 days, 2 hours, 2 minutes, 2 seconds",
                 uptimeCommand.timeSince(startTime.plus(2L, SECONDS).plus(2L, MINUTES).plus(2L, HOURS).plus(2L, DAYS)));
     }
-
 }

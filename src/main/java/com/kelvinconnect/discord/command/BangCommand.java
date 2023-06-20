@@ -3,9 +3,7 @@ package com.kelvinconnect.discord.command;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
 
-/**
- * Created by Adam on 31/03/2017.
- */
+/** Created by Adam on 31/03/2017. */
 public class BangCommand implements CommandExecutor {
 
     private int line = 0;

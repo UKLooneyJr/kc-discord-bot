@@ -3,17 +3,16 @@ package com.kelvinconnect.discord.command.music;
 import com.kelvinconnect.discord.DiscordUtils;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
+import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.channel.ServerVoiceChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.javacord.api.entity.server.Server;
-
-import java.awt.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 
 public class MusicCommand implements CommandExecutor {
 

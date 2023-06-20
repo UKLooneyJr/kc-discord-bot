@@ -6,9 +6,7 @@ import de.btobastian.sdcf4j.CommandHandler;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
 
-/**
- * Created by Adam on 15/03/2017.
- */
+/** Created by Adam on 15/03/2017. */
 public class HelpCommand implements CommandExecutor {
 
     private final CommandHandler commandHandler;

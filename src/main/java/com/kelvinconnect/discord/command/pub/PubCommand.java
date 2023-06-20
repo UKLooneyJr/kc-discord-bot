@@ -3,18 +3,15 @@ package com.kelvinconnect.discord.command.pub;
 import com.kelvinconnect.discord.DiscordUtils;
 import de.btobastian.sdcf4j.Command;
 import de.btobastian.sdcf4j.CommandExecutor;
-import org.javacord.api.entity.message.Message;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Random;
+import org.javacord.api.entity.message.Message;
 
-/**
- * Created by Adam on 21/04/2017.
- */
+/** Created by Adam on 21/04/2017. */
 public class PubCommand implements CommandExecutor {
 
     private static final String[] choices = { "Brass Monkey", "Brewdog", "The Islay", "Strip Joint", "Big Slope",
@@ -95,5 +92,4 @@ public class PubCommand implements CommandExecutor {
             return "Thanks for voting " + voterName + ".";
         }
     }
-
 }

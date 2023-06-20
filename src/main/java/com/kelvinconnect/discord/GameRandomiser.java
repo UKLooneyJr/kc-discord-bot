@@ -1,13 +1,13 @@
 package com.kelvinconnect.discord;
 
-import org.javacord.api.DiscordApi;
-
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.javacord.api.DiscordApi;
 
 /**
  * Randomises the game the bot is playing every two minutes
+ *
  * <p>
  * Created by Adam on 15/03/2017.
  */

@@ -5,20 +5,21 @@ import org.junit.Test;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for the calculateDelay method(s) of the TaskScheduler class
  *
+ * <p>
  * Created by Adam on 22/03/2017.
  */
 public class TaskSchedulerCalculateDelayTest {
 
     private static class TaskSchedulerFixedDate extends TaskScheduler {
 
-        final private Date date;
+        private final Date date;
 
         TaskSchedulerFixedDate(Date date) {
             this.date = date;

@@ -1,10 +1,9 @@
 package com.kelvinconnect.discord;
 
+import java.util.Optional;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Optional;
 
 public class Parameters {
     private static final Logger logger = LogManager.getLogger(Parameters.class);
@@ -29,7 +28,6 @@ public class Parameters {
     private String slackUrl;
 
     private Parameters() {
-
     }
 
     public void parseCommandLine(String[] args) {

@@ -6,6 +6,7 @@ import org.javacord.api.entity.message.MessageBuilder;
 
 /**
  * Sends an alert to the pub chat channel every friday at 4.
+ *
  * <p>
  * Created by Adam on 22/03/2017.
  */

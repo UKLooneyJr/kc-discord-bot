@@ -1,5 +1,7 @@
 package com.kelvinconnect.discord.command.stando;
 
+import static com.kelvinconnect.discord.command.stando.StandoStatement.Severity.*;
+
 import com.kelvinconnect.discord.command.stando.filter.EveryoneFilter;
 import com.kelvinconnect.discord.command.stando.filter.SlurFilter;
 import com.kelvinconnect.discord.command.stando.filter.StandoFilter;
@@ -13,12 +15,9 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import org.javacord.api.entity.message.Message;
 
-import static com.kelvinconnect.discord.command.stando.StandoStatement.Severity.*;
-
-/**
- * Created by Captain Steve Rodger on 21/04/2017.
- */
+/** Created by Captain Steve Rodger on 21/04/2017. */
 public class StandoCommand implements CommandExecutor {
 
     private static final String LEARN_LOW = "New Scientist said ";

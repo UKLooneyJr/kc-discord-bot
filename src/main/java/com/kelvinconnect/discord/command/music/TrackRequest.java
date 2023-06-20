@@ -2,9 +2,8 @@ package com.kelvinconnect.discord.command.music;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import org.javacord.api.entity.message.MessageAuthor;
-
 import java.util.Objects;
+import org.javacord.api.entity.message.MessageAuthor;
 
 public class TrackRequest {
     private final AudioTrack track;
