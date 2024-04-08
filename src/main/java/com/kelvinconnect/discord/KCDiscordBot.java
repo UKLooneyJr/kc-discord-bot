@@ -4,6 +4,7 @@ import com.kelvinconnect.discord.command.*;
 import com.kelvinconnect.discord.command.music.MusicCommand;
 import com.kelvinconnect.discord.command.pub.PubCommand;
 import com.kelvinconnect.discord.command.stando.StandoCommand;
+import com.kelvinconnect.discord.command.stock.StockCommand;
 import com.kelvinconnect.discord.login.Login;
 import com.kelvinconnect.discord.login.TokenFileLogin;
 import com.kelvinconnect.discord.login.TokenLogin;
@@ -14,12 +15,13 @@ import com.kelvinconnect.discord.ui.BotUI;
 import de.btobastian.sdcf4j.CommandExecutor;
 import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javacord.api.DiscordApi;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.util.function.Function;
 
 /**
  * Entry point for KC Discord Bot
@@ -66,13 +68,13 @@ public class KCDiscordBot {
         registerCommand(handler, new InfoCommand());
         registerCommand(handler, new UptimeCommand(Instant.now()));
         parameters.getSlackUrl().ifPresent(url -> registerCommand(handler, new SlackCommand(url)));
+        parameters.getPolygonApiKey().ifPresent(apiKey -> registerCommand(handler, new StockCommand(apiKey)));
         registerCommand(handler, new BangCommand());
         registerCommand(handler, new RobertCommand());
         registerCommand(handler, new StandoCommand());
         registerCommand(handler, new PubCommand());
         registerCommand(handler, new RollCommand());
         registerCommand(handler, new JoinLeaveCommand(api));
-        registerCommand(handler, new StockCommand());
         registerCommand(handler, new MusicCommand(api));
     }
 

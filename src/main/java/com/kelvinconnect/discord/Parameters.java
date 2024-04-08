@@ -1,9 +1,10 @@
 package com.kelvinconnect.discord;
 
-import java.util.Optional;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Optional;
 
 public class Parameters {
     private static final Logger logger = LogManager.getLogger(Parameters.class);
@@ -12,6 +13,9 @@ public class Parameters {
     private static final String DATABASE_PATH_OPTION = "database";
     private static final String CHANNEL_LIST_LOCATION_OPTION = "channel-list";
     private static final String SLACK_URL_OPTION = "slack-url";
+
+    private static final String POLYGON_API_KEY = "polygon-api-key";
+
 
     private static Parameters instance;
 
@@ -27,7 +31,11 @@ public class Parameters {
     private String channelListLocation;
     private String slackUrl;
 
-    private Parameters() {}
+    private String polygonApiKey;
+
+
+    private Parameters() {
+    }
 
     public void parseCommandLine(String[] args) {
         Options options = new Options();
@@ -41,6 +49,7 @@ public class Parameters {
                         true,
                         "Location of the channel list xml"));
         options.addOption(new Option(null, SLACK_URL_OPTION, true, "URL for MSI Slack instance"));
+        options.addOption(new Option(null, POLYGON_API_KEY, true, "API Key for Polygon.io API"));
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -59,6 +68,8 @@ public class Parameters {
         this.databasePath = cmd.getOptionValue(DATABASE_PATH_OPTION);
         this.channelListLocation = cmd.getOptionValue(CHANNEL_LIST_LOCATION_OPTION);
         this.slackUrl = cmd.getOptionValue(SLACK_URL_OPTION);
+        this.polygonApiKey = cmd.getOptionValue(POLYGON_API_KEY);
+
     }
 
     public Optional<String> getToken() {
@@ -75,5 +86,9 @@ public class Parameters {
 
     public Optional<String> getSlackUrl() {
         return Optional.ofNullable(slackUrl);
+    }
+
+    public Optional<String> getPolygonApiKey() {
+        return Optional.ofNullable(polygonApiKey);
     }
 }
