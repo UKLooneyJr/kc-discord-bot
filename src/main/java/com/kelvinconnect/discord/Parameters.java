@@ -9,6 +9,7 @@ public class Parameters {
     private static final Logger logger = LogManager.getLogger(Parameters.class);
 
     private static final String TOKEN_OPTION = "token";
+    private static final String TOKEN_PATH_OPTION = "token-path";
     private static final String DATABASE_PATH_OPTION = "database";
     private static final String CHANNEL_LIST_LOCATION_OPTION = "channel-list";
     private static final String SLACK_URL_OPTION = "slack-url";
@@ -23,6 +24,7 @@ public class Parameters {
     }
 
     private String token;
+    private String tokenPath;
     private String databasePath;
     private String channelListLocation;
     private String slackUrl;
@@ -33,6 +35,7 @@ public class Parameters {
         Options options = new Options();
 
         options.addOption(new Option("t", TOKEN_OPTION, true, "Discord login token"));
+        options.addOption(new Option(null, TOKEN_PATH_OPTION, true, "Path to Discord login token"));
         options.addOption(new Option("d", DATABASE_PATH_OPTION, true, "Path to the database"));
         options.addOption(
                 new Option(
@@ -56,6 +59,7 @@ public class Parameters {
         }
 
         this.token = cmd.getOptionValue(TOKEN_OPTION);
+        this.tokenPath = cmd.getOptionValue(TOKEN_PATH_OPTION);
         this.databasePath = cmd.getOptionValue(DATABASE_PATH_OPTION);
         this.channelListLocation = cmd.getOptionValue(CHANNEL_LIST_LOCATION_OPTION);
         this.slackUrl = cmd.getOptionValue(SLACK_URL_OPTION);
@@ -63,6 +67,10 @@ public class Parameters {
 
     public Optional<String> getToken() {
         return Optional.ofNullable(token);
+    }
+
+    public Optional<String> getTokenPath() {
+        return Optional.ofNullable(tokenPath);
     }
 
     public Optional<String> getDatabasePath() {

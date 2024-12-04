@@ -16,6 +16,7 @@ import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.JavacordHandler;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Scanner;
 import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +30,7 @@ import org.javacord.api.DiscordApi;
 public class KCDiscordBot {
     private static final Logger logger = LogManager.getLogger(KCDiscordBot.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Parameters parameters = Parameters.getInstance();
         parameters.parseCommandLine(args);
 
@@ -52,12 +53,15 @@ public class KCDiscordBot {
     }
 
     private static DiscordApi login(Parameters parameters) {
-        Login l =
-                parameters
-                        .getToken()
-                        .map((Function<String, Login>) TokenLogin::new)
-                        .orElse(new TokenFileLogin("resources/loginToken.txt"));
-        return l.login();
+        if (parameters.getToken().isPresent()) {
+            return new TokenLogin(parameters.getToken().get()).login();
+        }
+
+        if (parameters.getTokenPath().isPresent()) {
+            return new TokenFileLogin(parameters.getTokenPath().get()).login();
+        }
+
+        return new TokenFileLogin("resources/loginToken.txt").login();
     }
 
     private static void registerCommands(DiscordApi api, Parameters parameters) {
