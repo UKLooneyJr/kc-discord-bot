@@ -9,7 +9,7 @@ public class BangCommand implements CommandExecutor {
     private int line = 0;
 
     @Command(aliases = "!bang", description = "Sings a line of a song.", usage = "!bang")
-    public String onInfoCommand(String[] args) {
+    public String onBang(String[] args) {
         String message;
         switch (line) {
             case 0:

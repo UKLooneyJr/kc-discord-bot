@@ -203,3 +203,4 @@ buildNumber.properties
 
 # Bot token
 /src/main/resources/loginToken.txt
+.local/
