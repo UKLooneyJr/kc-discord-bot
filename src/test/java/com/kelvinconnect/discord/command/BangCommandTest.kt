@@ -21,7 +21,7 @@ class BangCommandTest {
         )
         val command = BangCommand()
         (0..100).forEach { i ->
-            val message = command.onBang(arrayOf("ignore", "contents"))
+            val message = command.getNextLine()
             val expectedLyric = lyrics[i % lyrics.size]
             assertEquals("${i.asOrdinal()} response", expectedLyric, message)
         }

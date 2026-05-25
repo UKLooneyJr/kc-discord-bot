@@ -1,7 +1,5 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
 import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -11,10 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
@@ -23,28 +21,36 @@ import yahoofinance.quotes.fx.FxQuote;
 import yahoofinance.quotes.fx.FxSymbols;
 import yahoofinance.quotes.stock.StockQuote;
 
-public class StockCommand implements CommandExecutor {
+public class StockCommand implements BotCommand {
     private static final Logger logger = LogManager.getLogger(StockCommand.class);
     private final HashMap<Calendar, BigDecimal> startDatePrices = new HashMap<>();
 
-    @Command(
-            aliases = "!stock",
-            description = "Display the current NYSE:MSI stock price",
-            usage = "!stock")
-    public String onStockCommand(Message message) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!stock"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Display the current NYSE:MSI stock price";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!stock";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
         try {
             EmbedBuilder embed = new EmbedBuilder();
-
             Stock stock = YahooFinance.get("MSI");
-
             setTitleWithQuote(embed, stock);
             setDescription(embed, stock);
-            message.getChannel().sendMessage(embed);
-
-            return null;
+            event.getChannel().sendMessageEmbeds(embed.build()).queue();
         } catch (IOException e) {
             logger.error("Error getting stock.", e);
-            return "Error getting stock.";
+            event.getChannel().sendMessage("Error getting stock.").queue();
         }
     }
 
@@ -56,13 +62,11 @@ public class StockCommand implements CommandExecutor {
         sb.append("*** ");
         BigDecimal change = quote.getChange();
         if (null != change) {
-            // test if change is negative
             if (change.signum() == -1) {
-                // chart decreasing
-                sb.append("\uD83D\uDCC9");
+                sb.append("📉");
                 embed.setColor(Color.RED);
             } else {
-                sb.append("\uD83D\uDCC8");
+                sb.append("📈");
                 embed.setColor(Color.GREEN);
             }
             sb.append("  ");
@@ -81,7 +85,6 @@ public class StockCommand implements CommandExecutor {
         ZonedDateTime currentDate = ZonedDateTime.now();
         NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.US);
 
-        // MSI as of <current date>
         sb.append("**[");
         sb.append(stock.getSymbol());
         sb.append("](https://www.google.com/finance/quote/");
@@ -114,17 +117,15 @@ public class StockCommand implements CommandExecutor {
         ZonedDateTime currentDate = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS);
         boolean isLeapYear = currentDate.toLocalDate().isLeapYear();
 
-        // 2021-04-01 = 91st day of year
         ZonedDateTime summerStartDate = currentDate.withDayOfYear(isLeapYear ? 92 : 91);
-        // 2021-10-01 = 274th day of year
         ZonedDateTime winterStartDate = currentDate.withDayOfYear(isLeapYear ? 275 : 274);
         boolean isSummer =
                 (currentDate.isAfter(summerStartDate) && currentDate.isBefore(winterStartDate));
 
         ZonedDateTime firstDayOfYear = currentDate.withDayOfYear(1);
         if (!isSummer
-                && (currentDate.isBefore(summerStartDate) && currentDate.isAfter(firstDayOfYear))) {
-            // Between January 1st and April 1st, we're interested in last year's October
+                && (currentDate.isBefore(summerStartDate)
+                        && currentDate.isAfter(firstDayOfYear))) {
             winterStartDate = winterStartDate.minusYears(1);
         }
 
@@ -137,19 +138,11 @@ public class StockCommand implements CommandExecutor {
             startPrice = startDatePrices.get(startDate);
         } else {
             Calendar endDate = (Calendar) startDate.clone();
-            // we only really need one day's worth of history
             endDate.add(Calendar.DAY_OF_YEAR, 1);
 
-            // fetch stock history only if we don't have this start date already
             List<HistoricalQuote> stockHistory =
                     stock.getHistory(startDate, endDate, Interval.DAILY);
 
-            // Okay, so when we get this historical data, we actually don't necessarily know if the
-            // date we selected
-            // has any data, and if it doesn't, we can end up a weekend off.
-            // So here, we prefer to select a quote from the exact date, and if that doesn't exist,
-            // we just take
-            // the first one in the collection
             Optional<HistoricalQuote> startDateQuote =
                     stockHistory.stream()
                             .filter(q -> q.getDate().toInstant().equals(startDate.toInstant()))
@@ -163,10 +156,6 @@ public class StockCommand implements CommandExecutor {
             startDatePrices.put(startDate, startPrice);
         }
 
-        // ESPP purchase price is 15% off either the first day's closing price, or the last day's,
-        // whichever is lower.
-        // We never know the last day's price until it's over, so we can guess with today's (or most
-        // recent).
         return (0.85 * startPrice.min(currentPrice).doubleValue());
     }
 }

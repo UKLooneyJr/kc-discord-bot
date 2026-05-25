@@ -3,7 +3,7 @@ package com.kelvinconnect.discord.command.stando.filter;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.javacord.api.entity.message.Message;
+import net.dv8tion.jda.api.entities.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -13,7 +13,7 @@ import org.mockito.MockitoAnnotations;
 public class EveryoneFilterTest {
 
     private static final String MOCK_ID = "123456789012345678";
-    private static final String MOCK_ID_WRAPPED = "<@!" + MOCK_ID + ">";
+    private static final String MOCK_ID_WRAPPED = "<@" + MOCK_ID + ">";
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Message message;
@@ -24,7 +24,7 @@ public class EveryoneFilterTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         everyoneFilter = new EveryoneFilter();
-        when(message.getAuthor().getIdAsString()).thenReturn(MOCK_ID);
+        when(message.getAuthor().getId()).thenReturn(MOCK_ID);
     }
 
     @Test

@@ -10,42 +10,39 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.managers.AudioManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javacord.api.DiscordApi;
-import org.javacord.api.audio.AudioConnection;
-import org.javacord.api.audio.AudioSource;
-import org.javacord.api.entity.channel.ServerTextChannel;
-import org.javacord.api.entity.message.MessageAuthor;
 
 public class MusicPlayer {
     private static final Logger logger = LogManager.getLogger(MusicPlayer.class);
-    // TODO: make this configurable
     private static final boolean SEND_PLAYLIST_UPDATE_MESSAGES = false;
 
     private final AudioPlayerManager playerManager;
     private final AudioPlayer player;
-    private final AudioSource source;
+    private final LavaplayerAudioSendHandler sendHandler;
     private final Queue<TrackRequest> requestQueue;
-    private final ServerTextChannel textChannel;
-    private AudioConnection audioConnection;
+    private final TextChannel textChannel;
+    private final AudioManager audioManager;
     private TrackRequest currentTrackRequest;
 
-    public MusicPlayer(DiscordApi api, ServerTextChannel tc) {
+    public MusicPlayer(AudioManager audioManager, TextChannel tc) {
+        this.audioManager = audioManager;
         this.textChannel = tc;
         requestQueue = new LinkedBlockingQueue<>();
 
         playerManager = new DefaultAudioPlayerManager();
         playerManager.registerSourceManager(new YoutubeAudioSourceManager());
         player = playerManager.createPlayer();
-
-        source = new LavaplayerAudioSource(api, player);
+        sendHandler = new LavaplayerAudioSendHandler(player);
 
         player.addListener(
                 new AudioEventHandler() {
@@ -91,33 +88,21 @@ public class MusicPlayer {
     }
 
     public boolean isConnected() {
-        return null != audioConnection;
+        return audioManager.isConnected();
     }
 
-    public void setAudioConnection(AudioConnection connection) {
-        if (Objects.equals(audioConnection, connection)) {
-            return;
-        }
-
-        if (null != audioConnection) {
-            audioConnection.removeAudioSource();
-        }
-
-        audioConnection = connection;
-        audioConnection.setAudioSource(source);
+    public void connect(VoiceChannel voiceChannel) {
+        audioManager.setSendingHandler(sendHandler);
+        audioManager.openAudioConnection(voiceChannel);
     }
 
     public void disconnect() {
-        if (null != audioConnection) {
-            audioConnection.removeAudioSource();
-            audioConnection.close();
-            audioConnection = null;
-        }
-
+        audioManager.setSendingHandler(null);
+        audioManager.closeAudioConnection();
         currentTrackRequest = null;
     }
 
-    public void addRequest(String url, MessageAuthor user) {
+    public void addRequest(String url, User user) {
         playerManager.loadItem(
                 url,
                 new AudioLoadResultHandler() {
@@ -148,7 +133,6 @@ public class MusicPlayer {
                 });
     }
 
-    /** Plays the next track, if no tracks are left disconnects. */
     public void next() {
         currentTrackRequest = requestQueue.poll();
 
@@ -161,7 +145,6 @@ public class MusicPlayer {
         player.playTrack(currentTrackRequest.getTrack());
     }
 
-    /** Removes all requests from the queue. */
     public void clear() {
         requestQueue.clear();
     }
@@ -184,7 +167,7 @@ public class MusicPlayer {
 
     private void sendTextChannelMessage(Supplier<String> message) {
         if (SEND_PLAYLIST_UPDATE_MESSAGES) {
-            textChannel.sendMessage(message.get());
+            textChannel.sendMessage(message.get()).queue();
         }
     }
 }

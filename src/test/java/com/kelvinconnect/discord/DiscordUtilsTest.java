@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.MessageAuthor;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import org.junit.Test;
 
 public class DiscordUtilsTest {
@@ -26,9 +26,9 @@ public class DiscordUtilsTest {
 
     private Message mockMessage(String displayName) {
         Message message = mock(Message.class);
-        MessageAuthor messageAuthor = mock(MessageAuthor.class);
-        when(message.getAuthor()).thenReturn(messageAuthor);
-        when(messageAuthor.getDisplayName()).thenReturn(displayName);
+        Member member = mock(Member.class);
+        when(message.getMember()).thenReturn(member);
+        when(member.getEffectiveName()).thenReturn(displayName);
         return message;
     }
 }

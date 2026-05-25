@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord.login;
 
-import org.javacord.api.DiscordApi;
+import net.dv8tion.jda.api.JDA;
 
 /**
  * Interface for login classes
@@ -9,5 +9,5 @@ import org.javacord.api.DiscordApi;
  */
 public interface Login {
 
-    DiscordApi login();
+    JDA login();
 }

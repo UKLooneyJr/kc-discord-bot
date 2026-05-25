@@ -2,7 +2,7 @@ package com.kelvinconnect.discord.command.stando.filter;
 
 import java.util.Arrays;
 import java.util.Random;
-import org.javacord.api.entity.message.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 public class SlurFilter implements StandoFilter {
     private final Random random = new Random();
@@ -21,13 +21,13 @@ public class SlurFilter implements StandoFilter {
 
     private static int getBeerCount(String message) {
         final String[] beerEmojis = {
-            "\uD83C\uDF7A",
-            "\uD83C\uDF7B",
-            "\uD83C\uDF77",
-            "\uD83C\uDF78",
-            "\uD83C\uDF79",
-            "\uD83C\uDF7E",
-            "\uD83C\uDF76"
+            "🍺",
+            "🍻",
+            "🍷",
+            "🍸",
+            "🍹",
+            "🍾",
+            "🍶"
         };
         final String[] words = message.split("\\s");
         int beers = 0;
@@ -41,13 +41,12 @@ public class SlurFilter implements StandoFilter {
 
     @Override
     public String filter(String input) {
-        // We only want to slur if the message contains beer emoji
         return input;
     }
 
     @Override
     public String filterWithMessage(String input, Message message) {
-        if (getBeerCount(message.getContent()) > 6) {
+        if (getBeerCount(message.getContentRaw()) > 6) {
             input = slur(input);
         }
         return input;

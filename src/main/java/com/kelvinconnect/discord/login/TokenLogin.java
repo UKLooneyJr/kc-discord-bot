@@ -1,7 +1,8 @@
 package com.kelvinconnect.discord.login;
 
-import org.javacord.api.DiscordApi;
-import org.javacord.api.DiscordApiBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class TokenLogin implements Login {
 
@@ -11,7 +12,18 @@ public class TokenLogin implements Login {
         this.token = token;
     }
 
-    public DiscordApi login() {
-        return new DiscordApiBuilder().setToken(token).login().join();
+    public JDA login() {
+        try {
+            return JDABuilder.createDefault(token)
+                    .enableIntents(
+                            GatewayIntent.GUILD_MESSAGES,
+                            GatewayIntent.MESSAGE_CONTENT,
+                            GatewayIntent.GUILD_MEMBERS,
+                            GatewayIntent.GUILD_VOICE_STATES)
+                    .build()
+                    .awaitReady();
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to log in to Discord", e);
+        }
     }
 }

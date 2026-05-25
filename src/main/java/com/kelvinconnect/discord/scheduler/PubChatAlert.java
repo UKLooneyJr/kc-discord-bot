@@ -1,8 +1,9 @@
 package com.kelvinconnect.discord.scheduler;
 
-import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.channel.TextChannel;
-import org.javacord.api.entity.message.MessageBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Sends an alert to the pub chat channel every friday at 4.
@@ -10,22 +11,23 @@ import org.javacord.api.entity.message.MessageBuilder;
  * <p>Created by Adam on 22/03/2017.
  */
 public class PubChatAlert implements Runnable {
+    private static final Logger logger = LogManager.getLogger(PubChatAlert.class);
 
-    private final DiscordApi api;
+    private static final String PUB_CHAT_CHANNEL_ID = "276318041443270657";
 
-    public PubChatAlert(DiscordApi api) {
-        this.api = api;
+    private final JDA jda;
+
+    public PubChatAlert(JDA jda) {
+        this.jda = jda;
     }
 
     @Override
     public void run() {
-        MessageBuilder builder = new MessageBuilder();
-        builder.append("PUB TIME \uD83C\uDF7B");
-
-        // bottest = 291689291090886656
-        // pubchat = 276318041443270657
-        api.getChannelById("276318041443270657")
-                .filter(TextChannel.class::isInstance)
-                .ifPresent(c -> builder.send((TextChannel) c));
+        TextChannel channel = jda.getTextChannelById(PUB_CHAT_CHANNEL_ID);
+        if (channel != null) {
+            channel.sendMessage("PUB TIME 🍻").queue();
+        } else {
+            logger.warn("Could not find pub chat channel {}", PUB_CHAT_CHANNEL_ID);
+        }
     }
 }

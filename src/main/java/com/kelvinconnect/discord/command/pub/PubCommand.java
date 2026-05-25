@@ -1,18 +1,16 @@
 package com.kelvinconnect.discord.command.pub;
 
 import com.kelvinconnect.discord.DiscordUtils;
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
+import com.kelvinconnect.discord.command.BotCommand;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Random;
-import org.javacord.api.entity.message.Message;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-/** Created by Adam on 21/04/2017. */
-public class PubCommand implements CommandExecutor {
+public class PubCommand implements BotCommand {
 
     private static final String[] choices = {
         "Brass Monkey",
@@ -55,12 +53,36 @@ public class PubCommand implements CommandExecutor {
         this.votingBooth = new VotingBooth();
     }
 
-    @Command(
-            aliases = "!pub",
-            description = "Ask for some random pub. Or get the results of the pub election.",
-            usage = "!pub [results | reset | time | vote]")
-    public String onPubCommand(String[] args, Message message) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!pub", "!vote"};
+    }
 
+    @Override
+    public String getDescription() {
+        return "Ask for some random pub. Or get the results of the pub election.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!pub [results | reset | time | vote]";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
+        String command = event.getMessage().getContentRaw().trim().split("\\s+")[0].toLowerCase();
+        String reply;
+
+        if ("!vote".equals(command)) {
+            reply = submitVote(args, event);
+        } else {
+            reply = handlePubCommand(args, event);
+        }
+
+        event.getChannel().sendMessage(reply).queue();
+    }
+
+    private String handlePubCommand(String[] args, MessageReceivedEvent event) {
         if (args.length == 1) {
             if (args[0].equals("time")) {
                 return timeUntilPub();
@@ -74,19 +96,11 @@ public class PubCommand implements CommandExecutor {
         }
         if (args.length >= 2 && args[0].equals("vote")) {
             String[] nameArgs = Arrays.copyOfRange(args, 1, args.length);
-            return submitVote(nameArgs, message);
+            return submitVote(nameArgs, event);
         }
 
         String suggestion = choices[random.nextInt(choices.length)];
         return "What about " + suggestion + "?";
-    }
-
-    @Command(
-            aliases = "!vote",
-            description = "Vote for what pub you want to go to.",
-            usage = "!vote [name]")
-    public String onVoteCommand(String[] args, Message message) {
-        return submitVote(args, message);
     }
 
     private String timeUntilPub() {
@@ -109,16 +123,14 @@ public class PubCommand implements CommandExecutor {
         return "The results are in!\n\n" + votingBooth.getResults();
     }
 
-    private String submitVote(String[] args, Message message) {
+    private String submitVote(String[] args, MessageReceivedEvent event) {
         if (args.length < 1) {
             return "You need to vote for something.";
         }
 
         String name = String.join(" ", args);
-
-        boolean voteChanged = votingBooth.vote(name, message.getAuthor().getIdAsString());
-
-        String voterName = DiscordUtils.getAuthorShortUserName(message);
+        boolean voteChanged = votingBooth.vote(name, event.getAuthor().getId());
+        String voterName = DiscordUtils.getAuthorShortUserName(event.getMessage());
 
         if (voteChanged) {
             return "You have changed your vote " + voterName + ".";

@@ -1,20 +1,19 @@
 package com.kelvinconnect.discord.command.music;
 
 import com.kelvinconnect.discord.DiscordUtils;
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
+import com.kelvinconnect.discord.command.BotCommand;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.channel.ServerTextChannel;
-import org.javacord.api.entity.channel.ServerVoiceChannel;
-import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
-import org.javacord.api.entity.server.Server;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class MusicCommand implements CommandExecutor {
+public class MusicCommand implements BotCommand {
 
     private static final String PLAY_INVALID_ARGS =
             "Invalid arguments, please enter URL of YouTube video or playlist";
@@ -23,31 +22,64 @@ public class MusicCommand implements CommandExecutor {
     private static final long MUSIC_VOICE_CHANNEL_ID = 902665967258189906L;
     private static final long PLAYLIST_TEXT_CHANNEL_ID = 903337539077832736L;
 
-    private final ServerVoiceChannel voiceChannel;
+    private final VoiceChannel voiceChannel;
     private final MusicPlayer player;
 
-    public MusicCommand(DiscordApi api) {
-        Server server =
-                api.getServerById(DiscordUtils.KC_SERVER_ID)
+    public MusicCommand(JDA jda) {
+        Guild server =
+                java.util.Optional.ofNullable(jda.getGuildById(DiscordUtils.KC_SERVER_ID))
                         .orElseThrow(() -> new RuntimeException("Failed to find KC server."));
         voiceChannel =
-                server.getVoiceChannelById(MUSIC_VOICE_CHANNEL_ID)
+                java.util.Optional.ofNullable(
+                                server.getChannelById(VoiceChannel.class, MUSIC_VOICE_CHANNEL_ID))
                         .orElseThrow(
                                 () -> new RuntimeException("Failed to find music voice channel."));
-        ServerTextChannel textChannel =
-                server.getTextChannelById(PLAYLIST_TEXT_CHANNEL_ID)
+        TextChannel textChannel =
+                java.util.Optional.ofNullable(
+                                server.getChannelById(TextChannel.class, PLAYLIST_TEXT_CHANNEL_ID))
                         .orElseThrow(
                                 () -> new RuntimeException("Failed to find music text channel."));
-        player = new MusicPlayer(api, textChannel);
+        player = new MusicPlayer(server.getAudioManager(), textChannel);
     }
 
-    @Command(
-            aliases = "!play",
-            description = "Requests the track at the given YouTube URL",
-            usage = "!play [<url>]")
-    public String onPlay(String[] args, DiscordApi api, Message message) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!play", "!playing", "!playlist", "!skip"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Music player commands.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!play [<url>] | !playing | !skip";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
+        String command = event.getMessage().getContentRaw().trim().split("\\s+")[0].toLowerCase();
+        switch (command) {
+            case "!play":
+                onPlay(args, event);
+                break;
+            case "!playing":
+            case "!playlist":
+                onNowPlaying(event);
+                break;
+            case "!skip":
+                onSkip(args, event);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void onPlay(String[] args, MessageReceivedEvent event) {
         if (args.length != 1) {
-            return PLAY_INVALID_ARGS;
+            event.getChannel().sendMessage(PLAY_INVALID_ARGS).queue();
+            return;
         }
 
         String url = args[0];
@@ -55,21 +87,16 @@ public class MusicCommand implements CommandExecutor {
         try {
             new URL(url);
         } catch (MalformedURLException e) {
-            return PLAY_INVALID_ARGS;
+            event.getChannel().sendMessage(PLAY_INVALID_ARGS).queue();
+            return;
         }
 
         int remaining = player.getRemainingRequestCount();
-
-        player.addRequest(args[0], message.getAuthor());
+        player.addRequest(url, event.getAuthor());
 
         if (!player.isConnected()) {
-            voiceChannel
-                    .connect()
-                    .thenAccept(
-                            connection -> {
-                                player.setAudioConnection(connection);
-                                player.next();
-                            });
+            player.connect(voiceChannel);
+            player.next();
         }
 
         StringBuilder reply = new StringBuilder();
@@ -78,7 +105,7 @@ public class MusicCommand implements CommandExecutor {
             reply.append("s");
         }
         reply.append(" ");
-        reply.append(DiscordUtils.getAuthorShortUserName(message));
+        reply.append(DiscordUtils.getAuthorShortUserName(event.getMessage()));
         reply.append(", ");
 
         if (remaining == 0) {
@@ -89,19 +116,14 @@ public class MusicCommand implements CommandExecutor {
             reply.append("it'll be on soon");
         }
 
-        return reply.toString();
+        event.getChannel().sendMessage(reply.toString()).queue();
     }
 
-    @Command(
-            aliases = {"!playing", "!playlist"},
-            description = "Shows all upcoming tracks in the playlist",
-            usage = "!playing")
-    public void onNowPlaying(Message message) {
+    private void onNowPlaying(MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(player.getRemainingRequestCount() == 0 ? Color.RED : Color.GREEN);
 
         StringBuilder description = new StringBuilder();
-
         description.append("*Now Playing*\n\n - ");
         description.append(player.getCurrentRequest().orElse("Nothing"));
 
@@ -126,29 +148,27 @@ public class MusicCommand implements CommandExecutor {
         }
 
         eb.setDescription(description.toString());
-
-        message.getChannel().sendMessage(eb);
+        event.getChannel().sendMessageEmbeds(eb.build()).queue();
     }
 
-    @Command(
-            aliases = "!skip",
-            description = "Skips the current track",
-            usage = "!skip",
-            showInHelpPage = false)
-    public void onSkip(String[] args, Message message) {
-        if (PLAYLIST_TEXT_CHANNEL_ID != message.getChannel().getId()) {
+    private void onSkip(String[] args, MessageReceivedEvent event) {
+        if (PLAYLIST_TEXT_CHANNEL_ID != event.getChannel().getIdLong()) {
             return;
         }
 
         boolean skipAll = args.length > 0 && "all".equalsIgnoreCase(args[0]);
 
         if (skipAll) {
-            message.getChannel().sendMessage("Clearing playlist");
+            event.getChannel().sendMessage("Clearing playlist").queue();
             player.clear();
             player.disconnect();
         } else {
             player.getCurrentRequest()
-                    .ifPresent(track -> message.getChannel().sendMessage("Skipped track " + track));
+                    .ifPresent(
+                            track ->
+                                    event.getChannel()
+                                            .sendMessage("Skipped track " + track)
+                                            .queue());
             player.next();
         }
     }

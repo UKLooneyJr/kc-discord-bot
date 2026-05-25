@@ -3,7 +3,7 @@ package com.kelvinconnect.discord.command.stando.filter;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.javacord.api.entity.message.Message;
+import net.dv8tion.jda.api.entities.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 
 public class SlurFilterTest {
 
-    private static final String BEER_EMOJI = "\uD83C\uDF7A ";
+    private static final String BEER_EMOJI = "🍺 ";
 
     @Mock private Message message;
     private StandoFilter slurFilter;
@@ -27,7 +27,7 @@ public class SlurFilterTest {
     }
 
     private void setMessage(String m) {
-        when(message.getContent()).thenReturn(m);
+        when(message.getContentRaw()).thenReturn(m);
     }
 
     @Test

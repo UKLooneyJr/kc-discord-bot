@@ -1,60 +1,53 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
-import de.btobastian.sdcf4j.CommandHandler;
-import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-/** Created by Adam on 15/03/2017. */
-public class HelpCommand implements CommandExecutor {
+public class HelpCommand implements BotCommand {
 
-    private final CommandHandler commandHandler;
+    private final CommandDispatcher dispatcher;
 
-    public HelpCommand(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
+    public HelpCommand(CommandDispatcher dispatcher) {
+        this.dispatcher = dispatcher;
     }
 
-    @Command(
-            aliases = {"!help", "!commands"},
-            description = "Shows this page.")
-    public String onHelpCommand(Message message) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!help", "!commands"};
+    }
 
-        StringBuilder builder = buildDescription();
-        String description = builder.toString();
+    @Override
+    public String getDescription() {
+        return "Shows this page.";
+    }
 
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setDescription(description);
         embed.setTitle("Commands");
-
-        message.getChannel().sendMessage(embed);
-
-        return null;
+        embed.setDescription(buildDescription());
+        event.getChannel().sendMessageEmbeds(embed.build()).queue();
     }
 
-    private StringBuilder buildDescription() {
+    private String buildDescription() {
         StringBuilder builder = new StringBuilder();
-        builder.append("```xml"); // a xml code block looks fancy
-        for (CommandHandler.SimpleCommand simpleCommand : commandHandler.getCommands()) {
-            if (!simpleCommand.getCommandAnnotation().showInHelpPage()) {
-                continue; // skip command
+        builder.append("```xml");
+        for (BotCommand cmd : dispatcher.getCommands()) {
+            if (!cmd.showInHelpPage()) {
+                continue;
             }
             builder.append("\n");
-            if (!simpleCommand.getCommandAnnotation().requiresMention()) {
-                // the default prefix only works if the command does not require a mention
-                builder.append(commandHandler.getDefaultPrefix());
-            }
-            String usage = simpleCommand.getCommandAnnotation().usage();
-            if (usage.isEmpty()) { // no usage provided, using the first alias
-                usage = simpleCommand.getCommandAnnotation().aliases()[0];
+            String usage = cmd.getUsage();
+            if (usage.isEmpty()) {
+                usage = cmd.getAliases()[0];
             }
             builder.append(usage);
-            String description = simpleCommand.getCommandAnnotation().description();
-            if (!description.equals("none")) {
+            String description = cmd.getDescription();
+            if (!description.isEmpty()) {
                 builder.append(" | ").append(description);
             }
         }
-        builder.append("\n```"); // end of xml code block
-        return builder;
+        builder.append("\n```");
+        return builder.toString();
     }
 }

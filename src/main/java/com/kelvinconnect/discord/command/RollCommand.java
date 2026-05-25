@@ -1,40 +1,51 @@
 package com.kelvinconnect.discord.command;
 
 import com.kelvinconnect.discord.DiscordUtils;
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RollCommand implements CommandExecutor {
+public class RollCommand implements BotCommand {
     private static final Logger logger = LogManager.getLogger(RollCommand.class);
 
     private static final String ROLL_PATTERN = "d?(\\d+)(([d\\-])(\\d+))?";
 
-    @Command(
-            aliases = "!roll",
-            description = "Rolls a dice.",
-            usage = "!roll [<number>[(-|d)<number>]]")
-    public String onRollCommand(String[] args) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!roll"};
+    }
 
+    @Override
+    public String getDescription() {
+        return "Rolls a dice.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!roll [<number>[(-|d)<number>]]";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
+        event.getChannel().sendMessage(computeRoll(args)).queue();
+    }
+
+    String computeRoll(String[] args) {
         if (args.length == 0) {
             return rollSingle(6);
         } else if (args.length > 1) {
             return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
-        }
-
-        if (!Pattern.matches(ROLL_PATTERN, args[0])) {
+        } else if (!Pattern.matches(ROLL_PATTERN, args[0])) {
             return DiscordUtils.INVALID_ARGUMENTS_MESSAGE;
         }
 
         Pattern pattern = Pattern.compile(ROLL_PATTERN);
         Matcher matcher = pattern.matcher(args[0]);
-
         if (matcher.find()) {
             String num1 = matcher.group(1);
             String num2 = matcher.group(4);

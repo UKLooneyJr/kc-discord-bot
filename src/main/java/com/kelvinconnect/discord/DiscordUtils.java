@@ -1,7 +1,7 @@
 package com.kelvinconnect.discord;
 
-import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.MessageAuthor;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 
 public class DiscordUtils {
 
@@ -16,10 +16,8 @@ public class DiscordUtils {
     public static final int MAX_MESSAGE_LENGTH = 2000;
 
     public static String getAuthorShortUserName(Message message) {
-        return getShortUserName(message.getAuthor());
-    }
-
-    private static String getShortUserName(MessageAuthor user) {
-        return user.getDisplayName().split(" ")[0];
+        Member member = message.getMember();
+        String name = (member != null) ? member.getEffectiveName() : message.getAuthor().getName();
+        return name.split(" ")[0];
     }
 }

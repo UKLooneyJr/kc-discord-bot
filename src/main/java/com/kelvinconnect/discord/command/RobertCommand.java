@@ -1,12 +1,9 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
 import java.util.Random;
-import org.javacord.api.DiscordApi;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-/** Created by Adam on 21/04/2017. */
-public class RobertCommand implements CommandExecutor {
+public class RobertCommand implements BotCommand {
 
     private static final String[] choices = {
         "...Terri?",
@@ -18,9 +15,24 @@ public class RobertCommand implements CommandExecutor {
         "You got a minute?"
     };
 
-    @Command(aliases = "!robert", description = "Ask for some help from robert.", usage = "!robert")
-    public String onRobertCommand(String[] args, DiscordApi api) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!robert"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Ask for some help from robert.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!robert";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
         String message = choices[new Random().nextInt(choices.length)];
-        return "**Robert Mackin** " + message;
+        event.getChannel().sendMessage("**Robert Mackin** " + message).queue();
     }
 }

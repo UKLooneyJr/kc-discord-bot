@@ -3,36 +3,38 @@ package com.kelvinconnect.discord.rss;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
-import org.javacord.api.DiscordApi;
-import org.javacord.api.entity.channel.TextChannel;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TracTimeline implements Runnable {
+    private static final Logger logger = LogManager.getLogger(TracTimeline.class);
 
     private static final int MAX_FEED = 5;
+    private static final long TRAC_CHANNEL_ID = 416596650497277962L;
 
     private static final boolean INCLUDE_TICKET = true;
     private static final boolean INCLUDE_MILESTONE = true;
     private static final boolean INCLUDE_CHANGESET = true;
     private static final boolean INCLUDE_WIKI = true;
 
-    private final DiscordApi api;
+    private final JDA jda;
     private final List<String> lastEntries = Arrays.asList(new String[MAX_FEED]);
 
-    public TracTimeline(DiscordApi api) {
-        this.api = api;
+    public TracTimeline(JDA jda) {
+        this.jda = jda;
     }
 
     @Override
     public void run() {
-        printTimeline(api);
-    }
-
-    private void printTimeline(DiscordApi api) {
-        Feed feed = getFeed();
-
-        api.getTextChannelById(416596650497277962L)
-                .ifPresent((channel -> writeFeedToChannel(feed, channel)));
+        TextChannel channel = jda.getTextChannelById(TRAC_CHANNEL_ID);
+        if (channel == null) {
+            logger.warn("Could not find Trac timeline channel {}", TRAC_CHANNEL_ID);
+            return;
+        }
+        writeFeedToChannel(getFeed(), channel);
     }
 
     private void writeFeedToChannel(Feed feed, TextChannel channel) {
@@ -61,7 +63,7 @@ public class TracTimeline implements Runnable {
             eb.setColor(Color.RED);
         }
 
-        channel.sendMessage(eb);
+        channel.sendMessageEmbeds(eb.build()).queue();
     }
 
     private Feed getFeed() {

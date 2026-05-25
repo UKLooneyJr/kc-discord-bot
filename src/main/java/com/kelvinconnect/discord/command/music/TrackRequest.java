@@ -3,13 +3,13 @@ package com.kelvinconnect.discord.command.music;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import java.util.Objects;
-import org.javacord.api.entity.message.MessageAuthor;
+import net.dv8tion.jda.api.entities.User;
 
 public class TrackRequest {
     private final AudioTrack track;
-    private final MessageAuthor user;
+    private final User user;
 
-    public TrackRequest(AudioTrack track, MessageAuthor user) {
+    public TrackRequest(AudioTrack track, User user) {
         this.track = Objects.requireNonNull(track);
         this.user = Objects.requireNonNull(user);
     }
@@ -20,7 +20,7 @@ public class TrackRequest {
 
     public String getLabel() {
         AudioTrackInfo info = track.getInfo();
-        return String.format("**%s** requested by *%s*", info.title, user.getDisplayName());
+        return String.format("**%s** requested by *%s*", info.title, user.getEffectiveName());
     }
 
     @Override

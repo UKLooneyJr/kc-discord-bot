@@ -1,15 +1,35 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-/** Created by Adam on 31/03/2017. */
-public class BangCommand implements CommandExecutor {
+public class BangCommand implements BotCommand {
 
     private int line = 0;
 
-    @Command(aliases = "!bang", description = "Sings a line of a song.", usage = "!bang")
-    public String onBang(String[] args) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!bang"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Sings a line of a song.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!bang";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
+        String message = getNextLine();
+        if (!message.isEmpty()) {
+            event.getChannel().sendMessage(message).queue();
+        }
+    }
+
+    String getNextLine() {
         String message;
         switch (line) {
             case 0:

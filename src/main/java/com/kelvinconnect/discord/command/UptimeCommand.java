@@ -1,25 +1,36 @@
 package com.kelvinconnect.discord.command;
 
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class UptimeCommand implements CommandExecutor {
+public class UptimeCommand implements BotCommand {
     private final Temporal startTime;
 
     public UptimeCommand(Temporal startTime) {
         this.startTime = startTime;
     }
 
-    @Command(
-            aliases = "!uptime",
-            description = "Display how long the bot has been running for",
-            usage = "!slack")
-    public String onUptimeCommand(String[] args) {
-        return timeSince(Instant.now());
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!uptime"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Display how long the bot has been running for";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!uptime";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
+        event.getChannel().sendMessage(timeSince(Instant.now())).queue();
     }
 
     String timeSince(Temporal endTime) {

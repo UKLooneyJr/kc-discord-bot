@@ -3,10 +3,9 @@ package com.kelvinconnect.discord.login;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import net.dv8tion.jda.api.JDA;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javacord.api.DiscordApi;
-import org.javacord.api.DiscordApiBuilder;
 
 /**
  * Logs in with a Token read from a file
@@ -22,16 +21,15 @@ public class TokenFileLogin implements Login {
         this.filepath = filepath;
     }
 
-    public DiscordApi login() {
+    public JDA login() {
         logger.info(() -> "Working Directory = " + System.getProperty("user.dir"));
         String token;
         try {
             token = new String(Files.readAllBytes(Paths.get(filepath)));
         } catch (IOException e) {
             logger.error(() -> "Could not read file " + filepath, e);
-            return null; // TODO: Make this throw an appropriate exception rather than returning
-            // null
+            return null;
         }
-        return new DiscordApiBuilder().setToken(token).login().join();
+        return new TokenLogin(token.trim()).login();
     }
 }

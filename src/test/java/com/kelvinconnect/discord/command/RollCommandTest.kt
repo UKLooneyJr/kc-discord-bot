@@ -13,7 +13,7 @@ class RollCommandTest {
     fun `default roll`() {
         // when no arguments are provided, we roll a d6
         repeat(1_000_000) {
-            val result = cmd.onRollCommand(arrayOf())
+            val result = cmd.computeRoll(arrayOf())
             assertTrue(result.toInt() in 1..6)
         }
     }
@@ -24,7 +24,7 @@ class RollCommandTest {
             val rollsPerNumber = IntArray(diceSize) { 0 }
             val totalRolls = 10_000
             repeat(totalRolls) { _ ->
-                val response = cmd.onRollCommand(arrayOf("$diceSize"))
+                val response = cmd.computeRoll(arrayOf("$diceSize"))
                 response.toInt().let {
                     assertTrue(it in 1..diceSize)
                     rollsPerNumber[it - 1]++
@@ -38,7 +38,7 @@ class RollCommandTest {
     @Test
     fun `roll range`() {
         repeat(1_000_000) {
-            val result = cmd.onRollCommand(arrayOf("10-20"))
+            val result = cmd.computeRoll(arrayOf("10-20"))
             val intResult = result.toInt()
             assertTrue(intResult in 10..20)
         }
@@ -47,7 +47,7 @@ class RollCommandTest {
     @Test
     fun `roll many dice at once`() {
         repeat(1_000_000) {
-            val result = cmd.onRollCommand(arrayOf("10d20"))
+            val result = cmd.computeRoll(arrayOf("10d20"))
             val intResult = result.substring(0, result.indexOf(' '.code.toChar())).toInt()
             assertTrue(intResult >= 20 && intResult <= 10 * 20)
             // (10 - 1) commas means there are 10 comma separated values listed

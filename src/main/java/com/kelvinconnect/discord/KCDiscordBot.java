@@ -10,14 +10,11 @@ import com.kelvinconnect.discord.login.TokenLogin;
 import com.kelvinconnect.discord.scheduler.PubChatAlert;
 import com.kelvinconnect.discord.scheduler.TaskScheduler;
 import com.kelvinconnect.discord.ui.BotUI;
-import de.btobastian.sdcf4j.CommandExecutor;
-import de.btobastian.sdcf4j.CommandHandler;
-import de.btobastian.sdcf4j.handler.JavacordHandler;
 import java.time.Instant;
 import java.util.function.Function;
+import net.dv8tion.jda.api.JDA;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javacord.api.DiscordApi;
 
 /**
  * Entry point for KC Discord Bot
@@ -31,19 +28,19 @@ public class KCDiscordBot {
         Parameters parameters = Parameters.getInstance();
         parameters.parseCommandLine(args);
 
-        DiscordApi api = login(parameters);
+        JDA jda = login(parameters);
 
-        if (null == api) {
+        if (null == jda) {
             logger.error("Error logging in.");
             return;
         }
 
-        registerCommands(api);
-        startTasks(api);
+        registerCommands(jda);
+        startTasks(jda);
         initUI();
     }
 
-    private static DiscordApi login(Parameters parameters) {
+    private static JDA login(Parameters parameters) {
         Login l =
                 parameters
                         .getToken()
@@ -52,39 +49,31 @@ public class KCDiscordBot {
         return l.login();
     }
 
-    private static void registerCommands(DiscordApi api) {
-        CommandHandler handler = new JavacordHandler(api);
-        registerCommand(handler, new HelpCommand(handler));
-        registerCommand(handler, new InfoCommand());
-        registerCommand(handler, new UptimeCommand(Instant.now()));
-        registerCommand(handler, new SlackCommand());
-        registerCommand(handler, new BangCommand());
-        registerCommand(handler, new RobertCommand());
-        registerCommand(handler, new StandoCommand());
-        registerCommand(handler, new PubCommand());
-        registerCommand(handler, new RollCommand());
-        registerCommand(handler, new JoinLeaveCommand(api));
-        registerCommand(handler, new StockCommand());
-        registerCommand(handler, new MusicCommand(api));
+    private static void registerCommands(JDA jda) {
+        long botOwnerId =
+                jda.retrieveApplicationInfo().complete().getOwner().getIdLong();
+
+        CommandDispatcher dispatcher = new CommandDispatcher();
+        dispatcher.register(new HelpCommand(dispatcher));
+        dispatcher.register(new InfoCommand());
+        dispatcher.register(new UptimeCommand(Instant.now()));
+        dispatcher.register(new SlackCommand());
+        dispatcher.register(new BangCommand());
+        dispatcher.register(new RobertCommand());
+        dispatcher.register(new StandoCommand());
+        dispatcher.register(new PubCommand());
+        dispatcher.register(new RollCommand());
+        dispatcher.register(new JoinLeaveCommand(jda, botOwnerId));
+        dispatcher.register(new StockCommand());
+        dispatcher.register(new MusicCommand(jda));
+        jda.addEventListener(dispatcher);
     }
 
-    private static void registerCommand(CommandHandler handler, CommandExecutor executor) {
-        try {
-            handler.registerCommand(executor);
-        } catch (Exception e) {
-            logger.error(
-                    () ->
-                            "Error registering command(s) for class "
-                                    + executor.getClass().getSimpleName(),
-                    e);
-        }
-    }
-
-    private static void startTasks(DiscordApi api) {
+    private static void startTasks(JDA jda) {
         GameRandomiser gameRandomiser = new GameRandomiser();
-        gameRandomiser.start(api);
+        gameRandomiser.start(jda);
         TaskScheduler scheduler = new TaskScheduler();
-        scheduler.runWeekly("pub chat", new PubChatAlert(api), 6, 16, 0);
+        scheduler.runWeekly("pub chat", new PubChatAlert(jda), 6, 16, 0);
     }
 
     private static void initUI() {

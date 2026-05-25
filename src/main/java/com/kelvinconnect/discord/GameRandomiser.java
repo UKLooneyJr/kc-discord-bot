@@ -3,7 +3,10 @@ package com.kelvinconnect.discord;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import org.javacord.api.DiscordApi;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.managers.Presence;
+import net.dv8tion.jda.api.requests.restaction.CacheRestAction;
+import net.dv8tion.jda.api.entities.Activity;
 
 /**
  * Randomises the game the bot is playing every two minutes
@@ -35,13 +38,12 @@ public class GameRandomiser {
                 };
     }
 
-    public void start(final DiscordApi api) {
-
+    public void start(final JDA jda) {
         TimerTask gameRandomiserTask =
                 new TimerTask() {
                     @Override
                     public void run() {
-                        api.updateActivity(getRandomActivity());
+                        jda.getPresence().setActivity(Activity.playing(getRandomActivity()));
                     }
                 };
 

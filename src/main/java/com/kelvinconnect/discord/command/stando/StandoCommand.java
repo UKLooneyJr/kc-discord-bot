@@ -2,21 +2,20 @@ package com.kelvinconnect.discord.command.stando;
 
 import static com.kelvinconnect.discord.command.stando.StandoStatement.Severity.*;
 
+import com.kelvinconnect.discord.command.BotCommand;
 import com.kelvinconnect.discord.command.stando.filter.EveryoneFilter;
 import com.kelvinconnect.discord.command.stando.filter.SlurFilter;
 import com.kelvinconnect.discord.command.stando.filter.StandoFilter;
 import com.kelvinconnect.discord.persistence.KCBotDatabase;
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import org.javacord.api.entity.message.Message;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-/** Created by Captain Steve Rodger on 21/04/2017. */
-public class StandoCommand implements CommandExecutor {
+public class StandoCommand implements BotCommand {
 
     private static final String LEARN_LOW = "New Scientist said ";
     private static final String LEARN_MEDIUM = "The Times said ";
@@ -26,15 +25,7 @@ public class StandoCommand implements CommandExecutor {
     private static final String QUERY_DRINK = "What do you drink?";
 
     private static final String[] DRINK_EMOJIS = {
-        "\uD83C\uDF7A",
-        "\uD83C\uDF7B",
-        "\uD83C\uDF77",
-        "\uD83C\uDF78",
-        "\uD83C\uDF79",
-        "\uD83C\uDF7E",
-        "\uD83C\uDF76",
-        "\uD83E\uDD42",
-        "\uD83E\uDD43"
+        "🍺", "🍻", "🍷", "🍸", "🍹", "🍾", "🍶", "🥂", "🥃"
     };
 
     private List<StandoStatement> standoStatements;
@@ -55,7 +46,6 @@ public class StandoCommand implements CommandExecutor {
 
     private void loadFilters() {
         inputFilters.add(new EveryoneFilter());
-
         outputFilters.add(new SlurFilter());
         outputFilters.add(new EveryoneFilter());
     }
@@ -107,12 +97,24 @@ public class StandoCommand implements CommandExecutor {
         getDatabaseTable().insert(s);
     }
 
-    @Command(
-            aliases = "!stando",
-            description = "Have a chat with Stando. Get him a beer or two for some fun facts.",
-            usage = "!stando [<beverages>]")
-    public String onStandoCommand(String[] args, Message message) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!stando"};
+    }
 
+    @Override
+    public String getDescription() {
+        return "Have a chat with Stando. Get him a beer or two for some fun facts.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!stando [<beverages>]";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
+        Message message = event.getMessage();
         String fullFact = String.join(" ", args);
         String response;
 
@@ -130,7 +132,7 @@ public class StandoCommand implements CommandExecutor {
             response = giveFunFact(args, message);
         }
 
-        return "**Steven Standaloft** " + response;
+        event.getChannel().sendMessage("**Steven Standaloft** " + response).queue();
     }
 
     private String learnFromLowSource(String fullFact, Message message) {
@@ -184,7 +186,6 @@ public class StandoCommand implements CommandExecutor {
         }
 
         fact = filterFact(fact, message);
-
         return fact;
     }
 

@@ -1,6 +1,6 @@
 package com.kelvinconnect.discord.command.stando.filter;
 
-import org.javacord.api.entity.message.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 public interface StandoFilter {
 

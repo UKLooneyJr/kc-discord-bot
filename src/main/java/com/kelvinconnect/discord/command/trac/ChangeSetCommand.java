@@ -1,7 +1,6 @@
 package com.kelvinconnect.discord.command.trac;
 
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
+import com.kelvinconnect.discord.command.BotCommand;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,24 +22,40 @@ import org.jsoup.select.Elements;
  *
  * <p>Created by Adam on 15/03/2017.
  */
-public class ChangeSetCommand implements CommandExecutor {
+public class ChangeSetCommand implements BotCommand {
     private static final Logger logger = LogManager.getLogger(ChangeSetCommand.class);
 
     private static final String REVISION_NUMBER_FORMAT = "^[1-9]\\d*$";
     private static final int MAX_CHANGES_PER_MESSAGE = 25;
 
-    @Command(
-            aliases = "!changeset",
-            description = "Creates a link to the mentioned changeset.",
-            usage = "!changeset <revision-number>")
-    public String onChangeSetCommand(String[] args, Message message) {
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!changeset"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Creates a link to the mentioned changeset.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!changeset <revision-number>";
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
         if (args.length != 1) {
-            return "Incorrect number of arguments!";
+            event.getChannel().sendMessage("Incorrect number of arguments!").queue();
+            return;
         }
         String revision = args[0].trim();
 
         if (!isValidRevisionNumber(revision)) {
-            return revision + " is not a valid SVN revision.";
+            event.getChannel()
+                    .sendMessage(revision + " is not a valid SVN revision.")
+                    .queue();
+            return;
         }
 
         String url = getUrl(revision);
@@ -50,11 +65,11 @@ public class ChangeSetCommand implements CommandExecutor {
             doc = getDocument(url);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Error connecting to " + url;
+            event.getChannel().sendMessage("Error connecting to " + url).queue();
+            return;
         }
 
-        sendEmbedMessage(revision, url, message, doc);
-        return null;
+        sendEmbedMessage(revision, url, event, doc);
     }
 
     private boolean isValidRevisionNumber(String revision) {
@@ -67,24 +82,25 @@ public class ChangeSetCommand implements CommandExecutor {
         return "http://trac.pronto.pri/KC/changeset/" + revision;
     }
 
-    private void sendEmbedMessage(String revision, String url, Message message, Document doc) {
+    private void sendEmbedMessage(
+            String revision, String url, MessageReceivedEvent event, Document doc) {
         List<EmbedBuilder> embeds = new ArrayList<>();
-        embeds.add(sendEmbedForDescription(revision, url, doc));
+        embeds.add(buildEmbedForDescription(revision, url, doc));
 
         Element files = doc.body().getElementsByClass("files").get(1);
-        sendEmbedForChangeType(files, "add", Color.GREEN, "Files added:").ifPresent(embeds::add);
-        sendEmbedForChangeType(files, "rem", Color.RED, "Files removed:").ifPresent(embeds::add);
-        sendEmbedForChangeType(files, "mod", Color.ORANGE, "Files modified:")
+        buildEmbedForChangeType(files, "add", Color.GREEN, "Files added:").ifPresent(embeds::add);
+        buildEmbedForChangeType(files, "rem", Color.RED, "Files removed:").ifPresent(embeds::add);
+        buildEmbedForChangeType(files, "mod", Color.ORANGE, "Files modified:")
                 .ifPresent(embeds::add);
-        sendEmbedForChangeType(files, "cp", Color.BLUE, "Files copied:").ifPresent(embeds::add);
-        sendEmbedForChangeType(files, "mv", Color.GRAY, "Files moved:").ifPresent(embeds::add);
+        buildEmbedForChangeType(files, "cp", Color.BLUE, "Files copied:").ifPresent(embeds::add);
+        buildEmbedForChangeType(files, "mv", Color.GRAY, "Files moved:").ifPresent(embeds::add);
 
         for (EmbedBuilder e : embeds) {
-            message.getChannel().sendMessage(null, e);
+            event.getChannel().sendMessageEmbeds(e.build()).queue();
         }
     }
 
-    private EmbedBuilder sendEmbedForDescription(String revision, String url, Document doc) {
+    private EmbedBuilder buildEmbedForDescription(String revision, String url, Document doc) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("Revision " + revision);
         embed.setUrl(url);
@@ -98,12 +114,11 @@ public class ChangeSetCommand implements CommandExecutor {
         return embed;
     }
 
-    private Optional<EmbedBuilder> sendEmbedForChangeType(
+    private Optional<EmbedBuilder> buildEmbedForChangeType(
             Element files, String type, Color colour, String title) {
         Elements changes = files.getElementsByClass(type);
         if (!changes.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            // ignore the first 'change' as that is just the legend
             int filesToList = Math.min(changes.size(), MAX_CHANGES_PER_MESSAGE);
             for (int i = 1; i < filesToList; ++i) {
                 Element change = changes.get(i);

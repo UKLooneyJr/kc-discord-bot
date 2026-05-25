@@ -1,14 +1,13 @@
 package com.kelvinconnect.discord.command.trac;
 
-import de.btobastian.sdcf4j.Command;
-import de.btobastian.sdcf4j.CommandExecutor;
+import com.kelvinconnect.discord.command.BotCommand;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.javacord.api.entity.message.Message;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,23 +18,44 @@ import org.jsoup.select.Elements;
  *
  * <p>Created by Adam on 15/03/2017.
  */
-public class TicketCommand implements CommandExecutor {
+public class TicketCommand implements BotCommand {
 
     private static final String TICKET_FORMAT = "^(\\d|#)\\d*$";
 
-    @Command(
-            aliases = "!ticket",
-            description = "Creates a trac link to the mentioned ticket.",
-            usage = "!ticket <ticket-number>")
-    public String onTicketCommand(String[] args, Message message) {
-        if (args.length != 1) { // more than 1 argument
+    @Override
+    public String[] getAliases() {
+        return new String[] {"!ticket"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Creates a trac link to the mentioned ticket.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "!ticket <ticket-number>";
+    }
+
+    String validateArgs(String[] args) {
+        if (args.length != 1) {
             return "Incorrect number of arguments!";
         }
         String ticketNumber = args[0].trim();
-
         if (!isValidTicketNumber(ticketNumber)) {
             return ticketNumber + " is not a valid ticket number.";
         }
+        return null;
+    }
+
+    @Override
+    public void execute(MessageReceivedEvent event, String[] args) {
+        String validationError = validateArgs(args);
+        if (validationError != null) {
+            event.getChannel().sendMessage(validationError).queue();
+            return;
+        }
+        String ticketNumber = args[0].trim();
 
         String url = getUrl(ticketNumber);
 
@@ -44,11 +64,11 @@ public class TicketCommand implements CommandExecutor {
             doc = getDocument(url);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Error connecting to " + url;
+            event.getChannel().sendMessage("Error connecting to " + url).queue();
+            return;
         }
 
-        sendEmbedMessage(url, message, doc);
-        return null;
+        sendEmbedMessage(url, event, doc);
     }
 
     private boolean isValidTicketNumber(String ticketNumber) {
@@ -61,18 +81,16 @@ public class TicketCommand implements CommandExecutor {
         if (ticketNumber.startsWith("#")) {
             ticketNumber = ticketNumber.substring(1);
         }
-
         return "http://trac.pronto.pri/KC/ticket/" + ticketNumber;
     }
 
-    private void sendEmbedMessage(String url, Message message, Document doc) {
+    private void sendEmbedMessage(String url, MessageReceivedEvent event, Document doc) {
         EmbedBuilder embed = new EmbedBuilder();
 
         String tracStatus = getTracPropertyByClass(doc, "trac-status");
         setColourByStatus(embed, tracStatus);
 
         String description = buildDescription(doc, tracStatus);
-
         embed.setDescription(description);
         embed.setTitle(getTracPropertyByClass(doc, "summary"));
 
@@ -86,7 +104,7 @@ public class TicketCommand implements CommandExecutor {
 
         embed.setUrl(url);
 
-        message.getChannel().sendMessage(url, embed);
+        event.getChannel().sendMessage(url).setEmbeds(embed.build()).queue();
     }
 
     private String buildDescription(Document doc, String tracStatus) {
@@ -146,6 +164,8 @@ public class TicketCommand implements CommandExecutor {
             case "blocked":
             case "core_needed":
                 embed.setColor(Color.RED);
+                break;
+            default:
                 break;
         }
     }
