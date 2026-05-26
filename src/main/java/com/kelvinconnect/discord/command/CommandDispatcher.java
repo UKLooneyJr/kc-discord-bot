@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +19,14 @@ public class CommandDispatcher extends ListenerAdapter {
 
     private final List<BotCommand> commands = new ArrayList<>();
     private final Map<String, BotCommand> commandMap = new HashMap<>();
+
+    public void register(Supplier<? extends BotCommand> supplier) {
+        try {
+            register(supplier.get());
+        } catch (Exception e) {
+            logger.error("Failed to initialize command, skipping registration.", e);
+        }
+    }
 
     public void register(BotCommand command) {
         commands.add(command);

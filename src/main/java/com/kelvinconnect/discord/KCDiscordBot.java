@@ -63,9 +63,9 @@ public class KCDiscordBot {
         dispatcher.register(new StandoCommand());
         dispatcher.register(new PubCommand());
         dispatcher.register(new RollCommand());
-        dispatcher.register(new JoinLeaveCommand(jda, botOwnerId));
+        dispatcher.register(() -> new JoinLeaveCommand(jda, botOwnerId));
         dispatcher.register(new StockCommand());
-        dispatcher.register(new MusicCommand(jda));
+        dispatcher.register(() -> new MusicCommand(jda));
         jda.addEventListener(dispatcher);
     }
 
